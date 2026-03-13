@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_general_objects",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_general_objects",
+  "parent":{
+    "name":"GlobalScripts",
+    "path":"folders/Objects/GlobalScripts.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

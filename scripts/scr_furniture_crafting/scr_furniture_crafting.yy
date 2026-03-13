@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_furniture_crafting",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_furniture_crafting",
+  "parent":{
+    "name":"Crafting",
+    "path":"folders/Objects/Interactive/Furniture/Stations/Crafting.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

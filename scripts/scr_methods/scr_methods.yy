@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_methods",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_methods",
+  "parent":{
+    "name":"IndividualItems",
+    "path":"folders/Scripts/Items/IndividualItems.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

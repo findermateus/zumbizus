@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_entity_effects",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_entity_effects",
+  "parent":{
+    "name":"Entity",
+    "path":"folders/Objects/Entity.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_ammo_methods",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_ammo_methods",
+  "parent":{
+    "name":"Ammo",
+    "path":"folders/Scripts/Items/IndividualItems/Ammo.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

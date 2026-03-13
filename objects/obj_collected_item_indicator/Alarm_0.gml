@@ -1,0 +1,1 @@
+shouldFadeOut = true;

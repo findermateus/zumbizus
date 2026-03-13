@@ -1,0 +1,2 @@
+//drawSpriteShadow(xPosition, yPosition, sprite_index, image_index, image_angle, 1, 1, 0, 8);
+draw_sprite_ext(sprite_index, image_index, xPosition, yPosition, image_xscale, image_yscale, image_angle, image_blend, image_alpha);

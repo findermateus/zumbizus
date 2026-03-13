@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"snd_medicine",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "bitRate":128,
+  "compression":0,
+  "conversionMode":0,
+  "duration":0.365354,
+  "name":"snd_medicine",
+  "parent":{
+    "name":"Medicine",
+    "path":"folders/Sounds/Items/Medicine.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"snd_medicine.wav",
+  "type":0,
+  "volume":1.0,
+}

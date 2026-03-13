@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_base_resources",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_base_resources",
+  "parent":{
+    "name":"Base",
+    "path":"folders/Scripts/Bootstrap/Base.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

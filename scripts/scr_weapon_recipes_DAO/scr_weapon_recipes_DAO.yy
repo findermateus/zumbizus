@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_weapon_recipes_DAO",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_weapon_recipes_DAO",
+  "parent":{
+    "name":"Weapons",
+    "path":"folders/Scripts/Crafting/Recipes/Weapons.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

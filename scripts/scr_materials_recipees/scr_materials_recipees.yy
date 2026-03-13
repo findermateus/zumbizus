@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_materials_recipees",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_materials_recipees",
+  "parent":{
+    "name":"Trash",
+    "path":"folders/Scripts/Crafting/Recipes/Trash.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

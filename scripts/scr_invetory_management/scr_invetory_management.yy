@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_invetory_management",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_invetory_management",
+  "parent":{
+    "name":"IndividualItems",
+    "path":"folders/Scripts/Items/IndividualItems.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

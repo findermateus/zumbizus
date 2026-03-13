@@ -1,0 +1,2 @@
+part_system_destroy(particleSystem);
+part_type_destroy(particleDust);

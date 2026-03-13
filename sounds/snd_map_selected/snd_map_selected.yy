@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"snd_map_selected",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "bitRate":128,
+  "compression":0,
+  "conversionMode":0,
+  "duration":6.024,
+  "name":"snd_map_selected",
+  "parent":{
+    "name":"GUI",
+    "path":"folders/Sounds/GUI.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"snd_map_selected.mp3",
+  "type":0,
+  "volume":1.0,
+}

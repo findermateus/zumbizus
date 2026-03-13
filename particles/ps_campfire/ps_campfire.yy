@@ -1,0 +1,25 @@
+{
+  "$GMParticleSystem":"",
+  "%Name":"ps_campfire",
+  "backdropHeight":768,
+  "backdropImageOpacity":0.5,
+  "backdropImagePath":"",
+  "backdropWidth":1366,
+  "backdropXOffset":0.0,
+  "backdropYOffset":0.0,
+  "drawOrder":0,
+  "emitters":[
+    {"$GMPSEmitter":"","%Name":"Emitter","additiveBlend":false,"directionIncrease":0.0,"directionMax":90.0,"directionMin":90.0,"directionWiggle":0.0,"distribution":0,"editorColour":1593835519,"editorDrawShape":true,"emitCount":2,"emitDelayMax":0.0,"emitDelayMin":0.0,"emitDelayUnits":0,"emitIntervalMax":0.0,"emitIntervalMin":0.0,"emitIntervalUnits":0,"enabled":true,"endColour":2013266175,"GMPresetName":null,"gravityDirection":20.0,"gravityForce":0.0,"headPosition":0.0,"lifetimeMax":60.0,"lifetimeMin":40.0,"linkedEmitter":null,"locked":false,"midColour":2741894399,"mode":0,"name":"Emitter","orientationIncrease":0.0,"orientationMax":137.0,"orientationMin":52.0,"orientationRelative":false,"orientationWiggle":0.0,"regionH":25.0,"regionW":50.0,"regionX":0.0,"regionY":0.0,"resourceType":"GMPSEmitter","resourceVersion":"2.0","scaleX":0.1,"scaleY":0.1,"shape":0,"sizeIncrease":0.0,"sizeMax":1.3,"sizeMin":0.3,"sizeWiggle":0.0,"spawnOnDeathCount":1,"spawnOnDeathGMPreset":null,"spawnOnDeathId":null,"spawnOnUpdateCount":1,"spawnOnUpdateGMPreset":null,"spawnOnUpdateId":null,"speedIncrease":0.0,"speedMax":0.6,"speedMin":0.2,"speedWiggle":0.0,"spriteAnimate":false,"spriteId":null,"spriteRandom":false,"spriteStretch":true,"startColour":4282238207,"texture":2,},
+  ],
+  "name":"ps_campfire",
+  "parent":{
+    "name":"Particle Systems",
+    "path":"folders/Particle Systems.yy",
+  },
+  "resourceType":"GMParticleSystem",
+  "resourceVersion":"2.0",
+  "showBackdrop":true,
+  "showBackdropImage":false,
+  "xorigin":0,
+  "yorigin":0,
+}

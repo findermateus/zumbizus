@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_campfire",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_campfire",
+  "parent":{
+    "name":"Campfire",
+    "path":"folders/Objects/Interactive/Furniture/Stations/Campfire.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

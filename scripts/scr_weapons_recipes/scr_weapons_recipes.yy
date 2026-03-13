@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_weapons_recipes",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_weapons_recipes",
+  "parent":{
+    "name":"Weapons",
+    "path":"folders/Scripts/Crafting/Recipes/Weapons.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_hair",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_hair",
+  "parent":{
+    "name":"Player",
+    "path":"folders/Scripts/Bootstrap/Player.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

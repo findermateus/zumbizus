@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_cooking_recipes",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_cooking_recipes",
+  "parent":{
+    "name":"Cooking",
+    "path":"folders/Scripts/Crafting/Recipes/Cooking.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

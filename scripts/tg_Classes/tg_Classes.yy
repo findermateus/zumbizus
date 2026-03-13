@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"tg_Classes",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"tg_Classes",
+  "parent":{
+    "name":"Scripts",
+    "path":"folders/TouchGrass/Scripts.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

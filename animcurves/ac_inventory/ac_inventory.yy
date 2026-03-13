@@ -1,0 +1,41 @@
+{
+  "$GMAnimCurve":"",
+  "%Name":"ac_inventory",
+  "channels":[
+    {"$GMAnimCurveChannel":"","%Name":"inventory_full","colour":4290799884,"name":"inventory_full","points":[
+        {"th0":-0.1,"th1":0.012347467,"tv0":0.0,"tv1":0.0,"x":0.0,"y":0.0,},
+        {"th0":-0.031426765,"th1":0.017805204,"tv0":0.0,"tv1":0.0,"x":0.07061069,"y":1.0,},
+        {"th0":-0.02283033,"th1":0.035982415,"tv0":0.012711167,"tv1":-0.019106925,"x":0.13549618,"y":-0.9725891,},
+        {"th0":-0.044809014,"th1":0.027110055,"tv0":-0.024006426,"tv1":0.014202893,"x":0.21183206,"y":0.81777036,},
+        {"th0":-0.029967248,"th1":0.0320279,"tv0":0.0055687428,"tv1":-0.0058619976,"x":0.25381678,"y":-0.7702459,},
+        {"th0":-0.035159618,"th1":0.025239497,"tv0":-0.016028464,"tv1":0.011076391,"x":0.3148855,"y":0.33943442,},
+        {"th0":-0.026808977,"th1":0.036318928,"tv0":-0.001311481,"tv1":0.0020357072,"x":0.370229,"y":-0.42901734,},
+        {"th0":-0.038399458,"th1":0.09908494,"tv0":-0.016403794,"tv1":0.041739725,"x":0.4522901,"y":0.053089403,},
+        {"th0":-0.09423196,"th1":0.12292451,"tv0":0.018454783,"tv1":-0.02406203,"x":0.7347328,"y":0.011889765,},
+        {"th0":-0.024112582,"th1":0.1,"tv0":0.0,"tv1":0.0,"x":1.0,"y":0.0,},
+      ],"resourceType":"GMAnimCurveChannel","resourceVersion":"2.0","visible":true,},
+    {"$GMAnimCurveChannel":"","%Name":"item_description","colour":4281083598,"name":"item_description","points":[
+        {"th0":-0.1,"th1":0.07897972,"tv0":0.0,"tv1":0.0,"x":0.0,"y":-0.9862945,},
+        {"th0":-0.09456285,"th1":0.01863283,"tv0":-0.8927218,"tv1":0.17590345,"x":0.14312994,"y":0.04718357,},
+        {"th0":-0.021020293,"th1":0.1,"tv0":0.0,"tv1":0.0,"x":1.0,"y":0.0,},
+      ],"resourceType":"GMAnimCurveChannel","resourceVersion":"2.0","visible":true,},
+    {"$GMAnimCurveChannel":"","%Name":"inventory_show","colour":4279025727,"name":"inventory_show","points":[
+        {"th0":-0.25,"th1":0.25,"tv0":0.0,"tv1":0.0,"x":0.0,"y":-0.9960348,},
+        {"th0":-0.14359425,"th1":0.1100868,"tv0":-0.16720441,"tv1":0.12818758,"x":0.5,"y":-0.21899116,},
+        {"th0":-0.25,"th1":0.25,"tv0":-0.0016360028,"tv1":0.0,"x":1.0,"y":0.00017499924,},
+      ],"resourceType":"GMAnimCurveChannel","resourceVersion":"2.0","visible":true,},
+    {"$GMAnimCurveChannel":"","%Name":"inventory_hide","colour":4279234797,"name":"inventory_hide","points":[
+        {"th0":-0.25,"th1":0.25,"tv0":0.0,"tv1":0.0,"x":0.0,"y":-0.9965736,},
+        {"th0":-0.14359425,"th1":0.1100868,"tv0":-0.16726547,"tv1":0.12823439,"x":0.5,"y":-0.21924621,},
+        {"th0":-0.25,"th1":0.25,"tv0":-0.0016366002,"tv1":0.0,"x":1.0,"y":0.0,},
+      ],"resourceType":"GMAnimCurveChannel","resourceVersion":"2.0","visible":true,},
+  ],
+  "function":2,
+  "name":"ac_inventory",
+  "parent":{
+    "name":"Animation Curves",
+    "path":"folders/Animation Curves.yy",
+  },
+  "resourceType":"GMAnimCurve",
+  "resourceVersion":"2.0",
+}

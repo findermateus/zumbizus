@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_gui_stats",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_gui_stats",
+  "parent":{
+    "name":"GUI",
+    "path":"folders/Scripts/Player/GUI.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

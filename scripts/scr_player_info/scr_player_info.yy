@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_player_info",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_player_info",
+  "parent":{
+    "name":"GUI",
+    "path":"folders/Objects/Controllers/Inventory/GUI.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_human_bodies",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_human_bodies",
+  "parent":{
+    "name":"Bootstrap",
+    "path":"folders/Scripts/Bootstrap.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

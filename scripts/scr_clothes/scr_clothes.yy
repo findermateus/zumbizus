@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_clothes",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_clothes",
+  "parent":{
+    "name":"Clothes",
+    "path":"folders/Scripts/Equipment/Clothes.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

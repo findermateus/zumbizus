@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"snd_eat_canned_food",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "bitRate":128,
+  "compression":0,
+  "conversionMode":0,
+  "duration":0.937506,
+  "name":"snd_eat_canned_food",
+  "parent":{
+    "name":"CannedFood",
+    "path":"folders/Sounds/Items/CannedFood.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"snd_eat_canned_food.wav",
+  "type":0,
+  "volume":1.0,
+}

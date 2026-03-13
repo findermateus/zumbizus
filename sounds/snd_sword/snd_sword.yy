@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"snd_sword",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "bitRate":128,
+  "compression":0,
+  "conversionMode":0,
+  "duration":1.755624,
+  "name":"snd_sword",
+  "parent":{
+    "name":"Sword",
+    "path":"folders/Sounds/Items/Sword.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"snd_sword.wav",
+  "type":0,
+  "volume":1.0,
+}

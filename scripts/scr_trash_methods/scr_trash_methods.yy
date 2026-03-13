@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_trash_methods",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_trash_methods",
+  "parent":{
+    "name":"Trash",
+    "path":"folders/Scripts/Items/IndividualItems/Trash.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

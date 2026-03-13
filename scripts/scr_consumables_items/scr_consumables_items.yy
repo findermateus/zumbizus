@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_consumables_items",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_consumables_items",
+  "parent":{
+    "name":"Consumables",
+    "path":"folders/Scripts/Items/IndividualItems/Consumables.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

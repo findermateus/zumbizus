@@ -1,0 +1,2 @@
+//checkPlaceToExist();
+adjustObjectDepth();

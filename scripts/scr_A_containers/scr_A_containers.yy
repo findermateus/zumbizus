@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_A_containers",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_A_containers",
+  "parent":{
+    "name":"Containers",
+    "path":"folders/Objects/Interactive/Furniture/Containers.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

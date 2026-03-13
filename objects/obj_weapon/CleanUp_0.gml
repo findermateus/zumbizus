@@ -1,0 +1,3 @@
+part_system_destroy(explosionParticleSystem);
+part_type_destroy(faiscaParticleType);
+part_type_destroy(smokeParticleType);

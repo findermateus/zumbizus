@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_equipments",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_equipments",
+  "parent":{
+    "name":"Equipments",
+    "path":"folders/Scripts/Items/IndividualItems/Equipments.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

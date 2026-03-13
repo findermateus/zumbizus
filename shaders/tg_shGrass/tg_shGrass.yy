@@ -1,0 +1,12 @@
+{
+  "$GMShader":"",
+  "%Name":"tg_shGrass",
+  "name":"tg_shGrass",
+  "parent":{
+    "name":"Shaders",
+    "path":"folders/TouchGrass/Shaders.yy",
+  },
+  "resourceType":"GMShader",
+  "resourceVersion":"2.0",
+  "type":1,
+}

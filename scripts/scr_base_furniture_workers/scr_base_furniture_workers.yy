@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_base_furniture_workers",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_base_furniture_workers",
+  "parent":{
+    "name":"Furnitures",
+    "path":"folders/Objects/Controllers/Base/Furnitures.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

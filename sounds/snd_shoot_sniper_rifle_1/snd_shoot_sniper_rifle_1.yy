@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"snd_shoot_sniper_rifle_1",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "bitRate":128,
+  "compression":0,
+  "conversionMode":0,
+  "duration":2.611429,
+  "name":"snd_shoot_sniper_rifle_1",
+  "parent":{
+    "name":"SniperRifle",
+    "path":"folders/Sounds/Items/SniperRifle.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"snd_shoot_sniper_rifle_1.wav",
+  "type":0,
+  "volume":0.4,
+}

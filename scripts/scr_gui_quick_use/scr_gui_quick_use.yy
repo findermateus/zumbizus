@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_gui_quick_use",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_gui_quick_use",
+  "parent":{
+    "name":"GUI",
+    "path":"folders/Objects/Controllers/Inventory/GUI.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

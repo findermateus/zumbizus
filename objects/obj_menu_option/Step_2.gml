@@ -1,0 +1,1 @@
+adjustDepthToASpecificObject(obj_inventory);

@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"snd_level_up_music",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "bitRate":128,
+  "compression":0,
+  "conversionMode":0,
+  "duration":18.311811,
+  "name":"snd_level_up_music",
+  "parent":{
+    "name":"XP",
+    "path":"folders/Sounds/GUI/XP.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"snd_level_up_music.mp3",
+  "type":0,
+  "volume":0.8,
+}

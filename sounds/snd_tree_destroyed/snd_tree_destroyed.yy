@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"snd_tree_destroyed",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "bitRate":128,
+  "compression":0,
+  "conversionMode":0,
+  "duration":1.470499,
+  "name":"snd_tree_destroyed",
+  "parent":{
+    "name":"Tree",
+    "path":"folders/Sounds/Tree.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"snd_tree_destroyed.wav",
+  "type":0,
+  "volume":1.0,
+}

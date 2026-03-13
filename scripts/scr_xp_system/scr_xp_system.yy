@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_xp_system",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_xp_system",
+  "parent":{
+    "name":"LevelUps",
+    "path":"folders/Scripts/LevelUps.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

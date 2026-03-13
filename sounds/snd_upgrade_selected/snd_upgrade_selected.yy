@@ -1,0 +1,25 @@
+{
+  "$GMSound":"",
+  "%Name":"snd_upgrade_selected",
+  "audioGroupId":{
+    "name":"audiogroup_default",
+    "path":"audiogroups/audiogroup_default",
+  },
+  "bitDepth":1,
+  "bitRate":128,
+  "compression":0,
+  "conversionMode":0,
+  "duration":1.438844,
+  "name":"snd_upgrade_selected",
+  "parent":{
+    "name":"XP",
+    "path":"folders/Sounds/GUI/XP.yy",
+  },
+  "preload":false,
+  "resourceType":"GMSound",
+  "resourceVersion":"2.0",
+  "sampleRate":44100,
+  "soundFile":"snd_upgrade_selected.wav",
+  "type":0,
+  "volume":1.0,
+}

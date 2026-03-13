@@ -1,0 +1,11 @@
+global.itemMethods[itemType.trash][trashItems.nail] = [];
+global.itemMethods[itemType.trash][trashItems.empty_watter_bottle] = [];
+global.itemMethods[itemType.trash][trashItems.empty_canned_food] = [];
+global.itemMethods[itemType.trash][trashItems.wood_board] = [];
+global.itemMethods[itemType.trash][trashItems.empty_canned_fish] = [];
+global.itemMethods[itemType.trash][trashItems.duct_tape] = [];
+global.itemMethods[itemType.trash][trashItems.twig] = [];
+global.itemMethods[itemType.trash][trashItems.rock] = [];
+global.itemMethods[itemType.trash][trashItems.wood_log] = [];
+global.itemMethods[itemType.trash][trashItems.rope] = [];
+global.itemMethods[itemType.trash][trashItems.plant_fiber] = [];

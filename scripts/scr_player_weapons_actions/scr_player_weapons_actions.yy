@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_player_weapons_actions",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_player_weapons_actions",
+  "parent":{
+    "name":"Weapons",
+    "path":"folders/Objects/Entity/Player/Weapons.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

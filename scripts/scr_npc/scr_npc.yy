@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_npc",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_npc",
+  "parent":{
+    "name":"Base",
+    "path":"folders/Scripts/Base.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

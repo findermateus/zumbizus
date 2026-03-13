@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_base",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_base",
+  "parent":{
+    "name":"Base",
+    "path":"folders/Objects/Controllers/Base.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
