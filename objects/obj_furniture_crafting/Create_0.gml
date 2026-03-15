@@ -57,7 +57,7 @@ mouseIsOnItem = false;
 lastHoveredItem = global.blankInventorySpace;
 furnitureIluminator = noone;
 furnitureCategory = furnitureCategories.creation;
-furnitureId = furnitureIds.meeleCraftingStation;
+furnitureId = global.furnitureIds.meeleCraftingStation;
 activationMethod = function () {
 	playClickSound();
 	audio_play_sound(snd_open_crafting_station, 0, false);

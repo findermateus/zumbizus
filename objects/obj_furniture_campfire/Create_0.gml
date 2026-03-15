@@ -1,7 +1,7 @@
 event_inherited();
 actionDescription = "Cozinhar";
 furnitureCategory = furnitureCategories.creation;
-furnitureId = furnitureIds.campfire;
+furnitureId = global.furnitureIds.campfire;
 furnitureIluminator = noone;
 isUsing = false;
 allowedRecipees = ds_map_create();

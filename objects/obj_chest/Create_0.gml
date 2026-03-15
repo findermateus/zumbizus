@@ -15,7 +15,7 @@ containerData = undefined;
 
 function loadFurnitureByDefaultId() {
 	var _chestId = global.containerMapping[? containerId];
-	var _object = global.furnitureObjectConversor[_chestId];
+	var _object = global.furnitureObjectConversor[? _chestId];
 	setFurniture(_object, _object.info);
 }
 
@@ -48,7 +48,7 @@ function setFurniture(_furniture, _furnitureInfo = {}){
 containerOpen = false;
 sound = snd_open_container;
 furnitureCategory = furnitureCategories.storage;
-furnitureId = furnitureIds.chest;
+furnitureId = global.furnitureIds.chest;
 
 loadFurnitureByDefaultId();
 

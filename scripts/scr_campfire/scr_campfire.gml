@@ -102,7 +102,7 @@ function CampfireSlot() constructor {
 	}
 }
 
-function CampfireData(_slotLength, _objectId): ProductiveFurnitureData(furnitureIds.campfire, _objectId) constructor {
+function CampfireData(_slotLength, _objectId): ProductiveFurnitureData("campfire", _objectId) constructor {
     slotData = [];
 	repeat(_slotLength) {
 		array_push(slotData, new CampfireSlot());
