@@ -533,7 +533,7 @@ function handleCategoryClick(_attributeId) {
 	});
 	
 	productiveFurnitureList = array_filter(global.baseProductiveFurnitures, function (_item) {
-		return global.productiveFurnitures[_item.furnitureId].attribute == attributeFilter;
+		return global.productiveFurnitures[? _item.furnitureId].attribute == attributeFilter;
 	});
 }
 
@@ -574,7 +574,7 @@ function drawProductiveFurnitures(_gui, _x, _y) {
         drawFurnitureTitle(furnitureUiValues[i].x + _boxHeight, furnitureUiValues[i].y, 15, _boxHeight, _furniture.furniture, _boxWidth - _boxHeight - 40);
         drawFurnitureWorkers(furnitureUiValues[i].x + _boxHeight + 15, furnitureUiValues[i].y, 15, _boxHeight, furnitureUiValues[i].x + _boxWidth - 10, _furniture);
 		
-		var _attrIcon = attributes[global.productiveFurnitures[_furniture.furnitureId].attribute].icon;
+		var _attrIcon = attributes[global.productiveFurnitures[? _furniture.furnitureId].attribute].icon;
 		drawSpriteShadowStretched(furnitureUiValues[i].x + 10, furnitureUiValues[i].y + 10, _attrIcon, 0, 0, 40, 40);
 		draw_sprite_stretched(_attrIcon, 0, furnitureUiValues[i].x + 10, furnitureUiValues[i].y + 10, 40, 40);
 	}
@@ -604,7 +604,7 @@ function loadFurnitureHoverIndicatorValues() {
 }
 
 function drawFurnitureWorkers(_x, _y, _margin, _boxHeight, _boxX2, _furniture) {
-	var _productiveFurniture = global.productiveFurnitures[_furniture.furniture.furnitureId];
+	var _productiveFurniture = global.productiveFurnitures[? _furniture.furniture.furnitureId];
     var _totalWorkers = _productiveFurniture.workerQuantity;
     var _maxSize = _boxHeight * .4;
     var _adjustedSize = min(_maxSize, ((_boxX2 - _x) - ((_totalWorkers - 1) * _margin)) / _totalWorkers);
@@ -633,7 +633,7 @@ function drawFurnitureWorkers(_x, _y, _margin, _boxHeight, _boxX2, _furniture) {
 function drawFurnitureWorker(_x, _y, _size, _furnitureId, _objectId, _index){
 	var _worker = getFurnitureWorkers(_furnitureId, _objectId)[_index];
 	if (_worker == -1) {
-		var _lvl = global.productiveFurnitures[_furnitureId].workerRequirements[0].level;
+		var _lvl = global.productiveFurnitures[? _furnitureId].workerRequirements[0].level;
 		var _scale = getScale(_size * .6, string_width("Lv " + string(_lvl)));
 		draw_set_font(fnt_gui_default);
 		draw_text_scribble(_x, _y + _size / 2, "[fa_center][fa_middle][scale," + string(_scale) + "]Lv " + string(_lvl));
@@ -683,7 +683,7 @@ function verifyAllFurnitureWorkerRequirements(_reqs, _worker) {
 }
 
 function drawFurnitureLevel(_x, _y, _margin, _size, _boxX2, _furniture) {
-	var _productiveFurniture = global.productiveFurnitures[_furniture.furnitureId]
+	var _productiveFurniture = global.productiveFurnitures[? _furniture.furnitureId]
 }
 
 function drawFurnitureTitle(_x, _y, _margin, _size, _furniture, _maxWidth) {

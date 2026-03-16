@@ -25,8 +25,8 @@ function iterateBaseFurniture(i) {
 		_furniture.objectId = global.baseFurnitureIdCount;
 	}
 	
-	if (array_length(global.productiveFurnitures) <= _furniture.furnitureId) return;
-	var _productiveFurniture = global.productiveFurnitures[_furniture.furnitureId];
+	if (!ds_map_exists(global.productiveFurnitures, _furniture.furnitureId)) return;
+	var _productiveFurniture = global.productiveFurnitures[? _furniture.furnitureId];
 	
 	if (!is_struct(_productiveFurniture)) return;
 	array_push(global.baseProductiveFurnitures, _furniture);

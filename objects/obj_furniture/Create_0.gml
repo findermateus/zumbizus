@@ -7,7 +7,7 @@ animationCurveInventoryFull = animcurve_get_channel(ac_inventory,"inventory_full
 xPosition = x;
 yPosition = y;
 furnitureCategory = furnitureCategories.storage;
-furnitureId = furnitureIds.chest;
+furnitureId = global.furnitureIds.chest;
 spriteToDrawShadow = spr_item_default;
 
 xPositionToDrawShadow = xPosition;
@@ -35,7 +35,7 @@ function loadFurnitureByDefaultId(){
 			_furniture = _item;
 		}
 	}
-	var _furnitureConversor = global.furnitureObjectConversor[_furniture.furnitureId];
+	var _furnitureConversor = global.furnitureObjectConversor[? _furniture.furnitureId];
 	setFurniture(_furniture, _furnitureConversor.info);
 }
 

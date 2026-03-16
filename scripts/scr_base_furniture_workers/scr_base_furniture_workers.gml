@@ -33,7 +33,7 @@ function getWorkerData(_workerId) {
 }
 
 function getFurnitureWorkers(_furnitureId, _objectId) {
-	var _furniturePreset = global.productiveFurnitures[_furnitureId];
+	var _furniturePreset = global.productiveFurnitures[? _furnitureId];
 	var _return = [];
 	
 	for (var i = 0; i < _furniturePreset.workerQuantity; i++) {
@@ -76,7 +76,7 @@ function removeWorkerFromFurnitureBySlot(_furnitureId, _objectId, _workerSlot) {
 }
 
 function addWorkerToFurniture(_furnitureId, _objectId, _workerSlot, _workerId, _workerLevel = undefined) {
-	var _furniturePreset = global.productiveFurnitures[_furnitureId];
+	var _furniturePreset = global.productiveFurnitures[? _furnitureId];
 	var _furnitureData = getFurnitureData(_furnitureId, _objectId);
 	if (_furnitureData == undefined) return -1;
 	
@@ -106,7 +106,7 @@ function addWorkerToFurniture(_furnitureId, _objectId, _workerSlot, _workerId, _
 
 /// @method cleanFurnitureWorkersData(id da mobilia, id do objeto) serve para carregar os arrays impedindo erros
 function cleanFurnitureWorkersData(_furnitureId, _objectId) {
-	var _furniturePreset = global.productiveFurnitures[_furnitureId];
+	var _furniturePreset = global.productiveFurnitures[? _furnitureId];
 	var _furnitureData = getFurnitureData(_furnitureId, _objectId);
 	
 	if (_furnitureData == undefined) return;

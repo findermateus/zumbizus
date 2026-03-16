@@ -639,7 +639,7 @@ function handleBuildable(){
 	var _alert = instance_create_layer(furnitureDisplayInfo.xPosition, furnitureDisplayInfo.yPosition, "Alert", obj_alert);
 	_alert.textAlert = "Mobília construída";
 	_alert.alertColor = c_lime;
-	var _furnitureConversor = global.furnitureObjectConversor[selectedFurniture.furnitureId];
+	var _furnitureConversor = global.furnitureObjectConversor[? selectedFurniture.furnitureId];
 	var _object = _furnitureConversor.object;
 	var _furniture = instance_create_layer(furnitureDisplayInfo.xPosition, furnitureDisplayInfo.yPosition, "Instances", _object, {
 		image_angle: furnitureDisplayInfo.angle,

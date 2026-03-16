@@ -20,14 +20,14 @@ function ProductiveFurnitureData(_id, _objectId) constructor {
 	workers = [];
 }
 
-global.productiveFurnitures = [];
+global.productiveFurnitures = ds_map_create();
 
-global.productiveFurnitures[furnitureIds.campfire] = new ProductiveFurniture(furnitureIds.campfire, baseAttribute.supplies, 1, [
+global.productiveFurnitures[? global.furnitureIds.campfire] = new ProductiveFurniture(global.furnitureIds.campfire, baseAttribute.supplies, 1, [
 	new WorkerRequirement(baseAttribute.supplies, 1)
 ]);
-global.productiveFurnitures[furnitureIds.meeleCraftingStation] = new ProductiveFurniture(furnitureIds.meeleCraftingStation, baseAttribute.crafting, 1, [
+global.productiveFurnitures[? global.furnitureIds.meeleCraftingStation] = new ProductiveFurniture(global.furnitureIds.meeleCraftingStation, baseAttribute.crafting, 1, [
 	new WorkerRequirement(baseAttribute.crafting, 1)
 ]);
-global.productiveFurnitures[furnitureIds.medicineCraftingStation] = new ProductiveFurniture(furnitureIds.medicineCraftingStation, baseAttribute.crafting, 1, [
+global.productiveFurnitures[? global.furnitureIds.medicineCraftingStation] = new ProductiveFurniture(global.furnitureIds.medicineCraftingStation, baseAttribute.crafting, 1, [
 	new WorkerRequirement(baseAttribute.supplies, 1)
 ]);
