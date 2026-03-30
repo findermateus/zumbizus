@@ -1,6 +1,6 @@
 father = noone;
 
-
+#region SISTEMA DE PARTÍCULAS
 {
 	explosionParticleSystem = part_system_create();
 
@@ -28,8 +28,9 @@ father = noone;
 
 	ps_emissor = part_emitter_create(explosionParticleSystem);	
 }
+#endregion
 
-
+#region ESTRUTURAS DE DADOS
 defaultWeapon = {
 	xPosition: 0,
 	yPosition: 0,
@@ -51,6 +52,7 @@ reloadingAnimation = {
 weapon = defaultWeapon;
 recoilAnimationCurve = animcurve_get_channel(ac_weapons, "weaponRecoil");
 curveAnimationIndex = 0;
+
 weaponAction = {
 	weaponId: noone,
 	item: global.blankInventorySpace,
@@ -65,32 +67,23 @@ weaponAction = {
 	animation: spr_baseball_bat,
 	info: {}
 }
+#endregion
 
+// --- ESTADOS LÓGICOS
 
-function nothing(){
-	if (drawState != drawNothing) {
-		obj_controller.setDefaultCursor();
-	}
-	weapon.xPosition = father.x;
-	weapon.yPosition = father.y;
-	drawState = drawNothing;	
+function drawNothing() {
 }
 
-function setAimingCursor() {
-	cursor_sprite = spr_cursor_aiming;
-	window_set_cursor(cr_none);
+function weaponIdleState(){
+	weapon.xPosition = father.x;
+	weapon.yPosition = father.y;
 }
 
 function weaponAimState(){
-	if(father.currentState != aimWeaponState) currentState = nothing;
+	updateWeaponActionData();
 	
-	weaponAction.info = global.activeEquipedItem;
-	if (global.activeEquipedItem != global.blankInventorySpace && variable_struct_exists(global.activeEquipedItem, "itemId")){
-		weaponAction.weaponId = global.activeEquipedItem.itemId;
-		weaponAction.item = global.weapons[weaponAction.weaponId];
-	} else {
-		weaponAction.weaponId = global.blankInventorySpace
-		weaponAction.item = global.blankInventorySpace;
+	if (weaponAction.item == global.blankInventorySpace) {
+		setStateIdle();
 		return;
 	}
 	
@@ -101,119 +94,148 @@ function weaponAimState(){
 	}
 }
 
-currentState = nothing;
-
-
-function weaponAim(_comingFromAttack = false){
-	obj_camera.setDefaultScale();
-	if (is_struct(weaponAction.info) && !checkDurability()){
-		global.equipedItems[| global.activeEquipedItemIndex] = global.blankInventorySpace;
-		global.activeEquipedItemIndex = global.blankInventorySpace;
-		global.activeEquipedItem = global.blankInventorySpace;
-		drawState = drawNothing;
-		weaponAction.item = global.blankInventorySpace;
-		weaponAction.info = global.blankInventorySpace;
-		currentState = nothing;
-		exit;
-	}
-	if (currentState != weaponAttackingState){
-		audio_play_sound(snd_equip_item, 0, false);
-	}
-	if(currentState == weaponAttackingState && !_comingFromAttack) return;
-	if(_comingFromAttack && weaponAction.item.type != weaponTypes.shoot){
-		defineMeeleWeaponPosition(true);
-	}
-	obj_player.currentState = aimWeaponState;
-	currentState = weaponAimState;
-	drawState = drawWeaponAiming;
-}
-
-function defineWeaponPosition(){
-	if (weaponAction.item == global.blankInventorySpace) return;
-	if (!variable_struct_exists(weaponAction.item, "type")) return;
-	if (weaponAction.item.type == weaponTypes.shoot){
-		defineFireWeaponPosition();
-		return;
-	}
-	defineMeeleWeaponPosition();
-}
-
-function drawWeaponAiming(){
-	if(global.activeEquipedItem == global.blankInventorySpace) return;
-	if (weaponAction.weaponId != global.activeEquipedItem.itemId){
-		weapon.yScale = 1;
-		weapon.angle = 0;
-		weapon.angleSwitching = 90;
-		weaponAction.weaponId = global.activeEquipedItem.itemId;	
-		weaponAction.item = global.weapons[weaponAction.weaponId];
-	}
-	if(currentState != weaponAimState && currentState != reloadingState){
-		//drawState = drawNothing;
-		return;
-	}
-	if (currentState == reloadingState && weaponAction.item.reloadingSprite != spr_item_default){
-		drawReloadAnimation();
-		return;
-	}
-	var _weaponId = global.activeEquipedItem.itemId;
-	var _weapon = global.weapons[_weaponId];
-	draw_sprite_ext(_weapon.sprite, 0, weapon.xPosition, weapon.yPosition, weapon.xScale, weapon.yScale, weapon.angle, c_white, 1);
-}
-
-function drawReloadAnimation(){
-	draw_sprite_ext(
-		reloadingAnimation.sprite,
-		reloadingAnimation.index,
-		weapon.xPosition,
-		weapon.yPosition,
-		weapon.xScale,
-		weapon.yScale,
-		weapon.angle,
-		c_white,
-		1
-	);
-}
-
-function drawNothing(){
-	return;
-}
-
-drawState = drawNothing;	
-
 function weaponAttackingState(){
-	drawState = handleAttackAnimation;
-	//currentState = weaponAimState;
-}
-
-function attackWithPlayer(){
-	if (instance_exists(obj_hitbox)) return;
-	if (currentState != weaponAimState) return;
-	if (weaponAction.item == global.blankInventorySpace) return false;
-	if(weaponAction.item.type == weaponTypes.shoot && !weaponAction.info.bullets){
-		if(mouse_check_button_pressed(mb_left)) audio_play_sound(weaponAction.item.emptyShot, 0, false);
-		return false;
-	}
-	if(variable_struct_exists(weaponAction.item, "staminaCost") && global.player.stamina <= 0){
-		return false;
-	}
-	handleWeaponAnimation();
-	handleWeaponHitBox();
-	handleInitialAttackVariables();
-	currentState = weaponAttackingState;
-	return true;
+	// O controle do desenho é feito pelo drawState (handleAttackAnimation)
+	// A transição de volta para AimState é feita nos scripts de animação
 }
 
 function reloadingState() {
 	adjustPlayerInteractions(false);
 	if (weaponAction.item.reloadingType == reloadingTypes.magazine) {
 		handleMagazineReload();
-		return
+	} else {
+		handleSingeShellReload();
 	}
-	handleSingeShellReload();
+}
+
+function setStateIdle(){
+    if (drawState != drawNothing) {
+        obj_controller.setDefaultCursor();
+    }
+
+    currentState = weaponIdleState;
+    
+    drawState = drawNothing; 
+}
+
+function getWeaponBackDrawData(){
+	if(global.activeEquipedItem == global.blankInventorySpace) return noone;
+	
+	var _weaponId = global.activeEquipedItem.itemId;
+	var _weapon = global.weapons[_weaponId];
+	
+	var _side = father.spriteXscale;
+	var _jiggle = father.playerAngleOffset; 
+	
+	var _baseXOffset = -8 * _side;
+	var _baseYOffset = -30; 
+	
+	var _dynamicX = father.x + _baseXOffset + lengthdir_x(_jiggle * 0.5, 90);
+	var _dynamicY = father.y + _baseYOffset + lengthdir_y(_jiggle * 0.5, 0);
+
+	var _finalAngle = (45 * _side) + _jiggle;
+
+	return {
+		sprite: _weapon.sprite,
+		x: _dynamicX,
+		y: _dynamicY,
+		xscale: 0.8 * _side,
+		yscale: 0.8,
+		angle: _finalAngle,
+		alpha: 1
+	};
+}
+
+function weaponAim(_comingFromAttack = false){
+	obj_camera.setDefaultScale();
+	
+	if (_comingFromAttack && !mouse_check_button(mb_right)) {
+		setStateIdle();
+		exit;
+	}
+
+	if (is_struct(weaponAction.info) && !checkDurability()){
+		resetActiveItem();
+		setStateIdle();
+		exit;
+	}
+	
+	if (currentState != weaponAttackingState && !_comingFromAttack){
+		audio_play_sound(snd_equip_item, 0, false);
+	}
+	
+	if(currentState == weaponAttackingState && !_comingFromAttack) return;
+	
+	if(_comingFromAttack && weaponAction.item.type != weaponTypes.shoot){
+		defineMeeleWeaponPosition(true);
+	}
+	
+	updateWeaponActionData();
+	currentState = weaponAimState;
+	drawState = drawWeaponAiming;
+}
+
+function attackWithPlayer(){
+	if (instance_exists(obj_hitbox)) return false;
+	if (currentState != weaponAimState) return false;
+	if (weaponAction.item == global.blankInventorySpace) return false;
+	
+	if(weaponAction.item.type == weaponTypes.shoot && !weaponAction.info.bullets){
+		if(mouse_check_button_pressed(mb_left)) audio_play_sound(weaponAction.item.emptyShot, 0, false);
+		return false;
+	}
+	
+	if(variable_struct_exists(weaponAction.item, "staminaCost") && global.player.stamina <= 0){
+		return false;
+	}
+	
+	handleWeaponAnimation();
+	handleWeaponHitBox();
+	handleInitialAttackVariables();
+	
+	currentState = weaponAttackingState;
+	drawState = handleAttackAnimation; 
+	return true;
+}
+
+function updateWeaponActionData() {
+	weaponAction.info = global.activeEquipedItem;
+	if (global.activeEquipedItem != global.blankInventorySpace && variable_struct_exists(global.activeEquipedItem, "itemId")){
+		weaponAction.weaponId = global.activeEquipedItem.itemId;
+		weaponAction.item = global.weapons[weaponAction.weaponId];
+	} else {
+		weaponAction.weaponId = global.blankInventorySpace;
+		weaponAction.item = global.blankInventorySpace;
+	}
+}
+
+function resetActiveItem() {
+	global.equipedItems[| global.activeEquipedItemIndex] = global.blankInventorySpace;
+	global.activeEquipedItemIndex = global.blankInventorySpace;
+	global.activeEquipedItem = global.blankInventorySpace;
+	weaponAction.item = global.blankInventorySpace;
+	weaponAction.info = global.blankInventorySpace;
+}
+
+function setAimingCursor() {
+	cursor_sprite = spr_cursor_aiming;
+	window_set_cursor(cr_none);
 }
 
 function finishReloading(){
 	adjustPlayerInteractions(true);
 	obj_camera.setDefaultScale();
-	weaponAim(false);
+	
+	if (mouse_check_button(mb_right) && global.activeEquipedItem != global.blankInventorySpace) {
+		weaponAim(true); 
+		obj_player.currentState = aimWeaponState;
+		
+		return;
+	}
+	
+	setStateIdle();
+	obj_player.currentState = playerIddleState;
 }
+
+currentState = weaponIdleState;
+drawState = drawNothing;

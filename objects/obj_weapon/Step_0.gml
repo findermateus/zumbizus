@@ -1,7 +1,7 @@
-if (global.timeStopped) {
-	exit;
-}
+if (global.timeStopped) exit;
 
 currentState();
+
 defineWeaponPosition();
+
 adjustClosestDepth();
