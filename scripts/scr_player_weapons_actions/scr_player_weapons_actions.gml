@@ -1,41 +1,51 @@
+#region POSICIONAMENTO E DIREÇÃO
+function defineWeaponPosition(){
+	if (weaponAction.item == global.blankInventorySpace) return;
+	if (!variable_struct_exists(weaponAction.item, "type")) return;
+	
+	if (weaponAction.item.type == weaponTypes.shoot){
+		defineFireWeaponPosition();
+	} else {
+		defineMeeleWeaponPosition();
+	}
+}
+
+function defineMeeleWeaponPosition(_transition = false){
+	weapon.yScale = sign(weapon.angleSwitching);
+	weaponAction.yScale = -weapon.yScale;
+	
+	if(currentState == weaponAimState || _transition){
+		weapon.wDirection = point_direction(father.x, father.y, mouse_x, mouse_y);
+		weapon.angle = weapon.wDirection + weapon.angleSwitching;
+	}
+	
+	var _centralizedYPosition = father.y - sprite_get_height(spr_human_male_iddle) / 2;
+	if (!_transition){
+		weapon.xPosition = lerp(weapon.xPosition, father.x + lengthdir_x(weapon.distanceFromPlayer, weapon.wDirection), .3)
+		weapon.yPosition = lerp(weapon.yPosition , _centralizedYPosition + lengthdir_y(weapon.distanceFromPlayer, weapon.wDirection), .3);
+	} else {
+		weapon.xPosition = father.x + lengthdir_x(weapon.distanceFromPlayer, weapon.wDirection)
+		weapon.yPosition = _centralizedYPosition + lengthdir_y(weapon.distanceFromPlayer, weapon.wDirection);
+	}
+}
+
+function defineFireWeaponPosition(){
+	if(currentState == weaponAimState || currentState == weaponAttackingState){
+		weapon.wDirection = point_direction(father.x, father.y, mouse_x, mouse_y);
+		weapon.angle = weapon.wDirection;
+		weapon.yScale = sign(mouse_x - weapon.xPosition);	
+	}
+	var _centralizedYPosition = father.y - sprite_get_height(spr_human_male_iddle) / 2;
+	weapon.xPosition = lerp(weapon.xPosition, father.x, .3);
+	weapon.yPosition = lerp(weapon.yPosition, _centralizedYPosition + 15, .3);
+}
+#endregion
+
+#region LÓGICA DE ATAQUE (HITBOXES E TIROS)
 function handleWeaponAnimation(){
 	if (global.activeEquipedItem == global.blankInventorySpace) return;
 	if(variable_struct_exists(weaponAction.item, "animation")){
 		handleAnimatedWeaponAttack();
-		return;
-	}
-	if(weaponAction.item.attackType == weaponAttackType.swing){
-		return;
-	}
-}
-
-function handleAttackAnimation(){
-	if (global.activeEquipedItem == global.blankInventorySpace) return;
-	if (weaponAction.item == global.blankInventorySpace) return;
-	if(variable_struct_exists(weaponAction.item, "animation")){
-		drawWeaponAttackingWithAnimation();
-		return;
-	}
-	if(weaponAction.item.attackType == weaponAttackType.swing){
-		drawWeaponAttackingSwing();
-		return;
-	}
-	
-	if(weaponAction.item.type == weaponTypes.shoot){
-		drawWeaponShooting(weaponAction.item.recoilForce, weaponAction.item.delayToShoot);
-	}
-}
-function playAttackSound(){
-	if (global.activeEquipedItem == global.blankInventorySpace) return;
-	if (variable_struct_exists(weaponAction.item, "attackingSound")){
-		var _soundsCount = array_length(weaponAction.item.attackingSound);
-		if (_soundsCount){
-			var _soundIndex = irandom(_soundsCount - 1);
-			audio_play_sound(weaponAction.item.attackingSound[_soundIndex], 0, false);
-			var _x = getMiddlePoint(father.bbox_left, father.bbox_right);
-			var _y = getMiddlePoint(father.bbox_top, father.bbox_bottom);
-			obj_player_sound_controller.addSound(weaponAction.info.soundRadius, _x, _y, soundIntensity.standard, id);
-		}
 	}
 }
 
@@ -63,133 +73,24 @@ function handleAnimatedWeaponAttack(){
 }
 
 function handleInitialAttackVariables(){
-	if (variable_struct_exists(weaponAction.item,  "staminaCost")){
+	// RESET DO RECOIL: Essencial para a animação começar do zero
+	curveAnimationIndex = 0; 
+
+	if (variable_struct_exists(weaponAction.item, "staminaCost")){
 		obj_player.decreaseStamina(weaponAction.item.staminaCost);
 	}
+	
 	if(weaponAction.item.attackType == weaponAttackType.swing){
 		weaponAction.yScale = weapon.yScale;
 		weaponAction.angle = weapon.angle;
 		weapon.angleSwitching *= -1;
 		weapon.yScale *= -1;
 	}
+	
 	if(weaponAction.item.type == weaponTypes.shoot){
 		weaponAction.yScale = weapon.yScale;
 		weaponAction.angle = weapon.angle;
 	}
-}
-function defineMeeleWeaponPosition(_transition = false){
-	
-	weapon.yScale = sign(weapon.angleSwitching);
-	weaponAction.yScale = -weapon.yScale;
-	
-	
-	if(currentState == weaponAimState || _transition){
-		weapon.wDirection = point_direction(father.x, father.y, mouse_x, mouse_y);
-		weapon.angle = weapon.wDirection + weapon.angleSwitching;
-	}
-	var _centralizedYPosition = father.y - sprite_get_height(spr_human_male_iddle) / 2;
-	if (!_transition){
-		weapon.xPosition = lerp(weapon.xPosition, father.x + lengthdir_x(weapon.distanceFromPlayer, weapon.wDirection), .3)
-		weapon.yPosition = lerp(weapon.yPosition , _centralizedYPosition + lengthdir_y(weapon.distanceFromPlayer, weapon.wDirection), .3);
-		return;
-	}
-	weapon.xPosition = father.x + lengthdir_x(weapon.distanceFromPlayer, weapon.wDirection)
-	weapon.yPosition = _centralizedYPosition + lengthdir_y(weapon.distanceFromPlayer, weapon.wDirection);
-}
-
-function defineFireWeaponPosition(){
-	//weaponAction.yPosition
-	if(currentState == weaponAimState || currentState == weaponAttackingState){
-		weapon.wDirection = point_direction(father.x, father.y, mouse_x, mouse_y);
-		weapon.angle = weapon.wDirection;
-		weapon.yScale = sign(mouse_x - weapon.xPosition);	
-	}
-	var _centralizedYPosition = father.y - sprite_get_height(spr_human_male_iddle) / 2;
-	weapon.xPosition = lerp(weapon.xPosition, father.x, .3);
-	weapon.yPosition = lerp(weapon.yPosition, _centralizedYPosition + 15, .3);
-}
-
-function handleStepsForFireWeapon(){
-	var _bullets = weaponAction.info.bullets;
-	if (keyboard_check_pressed(ord("R"))){
-		if (weaponAction.info.bullets >= weaponAction.info.maxAmmo) return;
-		var _allowedAmmo = weaponAction.item.allowedAmmo;
-		var _bulletItem = findItemInInventoryByIdNoBullshit(global.inventory, _allowedAmmo, itemType.ammo);
-		if(_bulletItem == false) return;
-		setUpReloading();
-	}
-}
-
-function setUpReloading(){
-	cursor_sprite = noone;
-	window_set_cursor(cr_appstart);
-	if (weaponAction.item.reloadingSprite != spr_item_default) {
-		setUpReloadingAnimation();
-	}
-	if (weaponAction.item.reloadingType == reloadingTypes.magazine){
-		playReloadingSound();
-	}
-	obj_camera.setTargetWithZoom(obj_player);
-	obj_player.currentState = playerReloadingState;
-	currentState = reloadingState;
-}
-
-function setUpReloadingAnimation(){
-	var _sprite = weaponAction.item.reloadingSprite;
-	reloadingAnimation.index = 0;
-	reloadingAnimation.sprite = weaponAction.item.reloadingSprite;
-	reloadingAnimation.length = sprite_get_number(reloadingAnimation.sprite);
-	var _reloadTime = weaponAction.item.reloadTime;
-	reloadingAnimation.speed = reloadingAnimation.length / _reloadTime;
-}
-
-function handleMagazineReload(){
-	if (audio_is_playing(weaponAction.item.reloadSound) && weaponAction.item.reloadingSprite == spr_item_default) {
-		return;
-	}
-	if (weaponAction.item.reloadingSprite != spr_item_default) {
-		if (reloadingAnimation.index < reloadingAnimation.length) {
-			calculateReloadAnimation();
-			return;
-		}
-		reloadingAnimation.index = 0;
-	}
-	var _allowedAmmo = weaponAction.item.allowedAmmo;
-	var _bulletSpace = weaponAction.info.maxAmmo - weaponAction.info.bullets;
-	var _itemQuantityInInventory = getItemQuantityInInventory(global.inventory, _allowedAmmo, itemType.ammo);
-	var _bulletsToInsert = _itemQuantityInInventory < _bulletSpace ? _itemQuantityInInventory : _bulletSpace;
-	insertAmmo(_allowedAmmo, _bulletsToInsert);
-	finishReloading();
-}
-
-function calculateReloadAnimation(){
-	reloadingAnimation.index += reloadingAnimation.speed;
-}
-
-function handleSingeShellReload(){
-	var _allowedAmmo = weaponAction.item.allowedAmmo;
-	var _bulletSpace = weaponAction.info.maxAmmo - weaponAction.info.bullets;
-	var _itemQuantityInInventory = getItemQuantityInInventory(global.inventory, _allowedAmmo, itemType.ammo);
-	if (!_itemQuantityInInventory || !_bulletSpace){
-		finishReloading();
-		return;
-	}
-	if (reloadingAnimation.index < reloadingAnimation.length) {
-		calculateReloadAnimation();
-		return;
-	}
-	playReloadingSound();
-	insertAmmo(_allowedAmmo, 1);
-	reloadingAnimation.index = 0;
-}
-
-function playReloadingSound(){
-	audio_play_sound(weaponAction.item.reloadSound, 0, false);
-}
-
-function insertAmmo(_ammoType, _quantity){
-	decreaseItemQuantityInInventory(global.inventory, _ammoType, itemType.ammo, _quantity);
-	weaponAction.info.bullets += _quantity;
 }
 
 function handleSwingWeaponAttack(){
@@ -198,21 +99,19 @@ function handleSwingWeaponAttack(){
 }
 
 function handleFireWeaponAttack(){
-	if(instance_exists(obj_camera)){
-		obj_camera.currentShakeEffect = 2;
-	}
+	if(instance_exists(obj_camera)) obj_camera.currentShakeEffect = 2;
+	
 	weaponAction.info.bullets --;
 	var _directionToGo = weapon.wDirection;
 	var _sprite = weaponAction.item.sprite;
-	var _xOffset = sprite_get_xoffset(_sprite);
-	var _spriteWidth = sprite_get_width(_sprite);
-	var _xdistanceFromPoint = _spriteWidth - _xOffset;
+	var _xdistanceFromPoint = sprite_get_width(_sprite) - sprite_get_xoffset(_sprite);
 
 	var _xPosition = weapon.xPosition + lengthdir_x(_xdistanceFromPoint, _directionToGo);
-
 	var _yPosition = weapon.yPosition + lengthdir_y(_xdistanceFromPoint, _directionToGo);
 	var _dir = point_direction(_xPosition, _yPosition, mouse_x, mouse_y);
+	
 	createShotLight(_xPosition, _yPosition, weaponAction.item.lightSpread)
+	
 	if (weaponAction.item.attackType == weaponAttackType.tripleBullets) {
 		createBulletShot(_dir + 5, _xPosition, _yPosition);
 		createBulletShot(_dir - 5, _xPosition, _yPosition);
@@ -221,10 +120,182 @@ function handleFireWeaponAttack(){
 	createBulletExplosion(_xPosition, _yPosition, weaponAction.item.damage, weapon.wDirection);
 }
 
+function handleStepsForFireWeapon(){
+    if (keyboard_check_pressed(ord("R"))){
+        if (weaponAction.info.bullets >= weaponAction.info.maxAmmo) return;
+        
+        var _allowedAmmo = weaponAction.item.allowedAmmo;
+        var _bulletItem = findItemInInventoryByIdNoBullshit(global.inventory, _allowedAmmo, itemType.ammo);
+        
+        if(_bulletItem != false) {
+            setUpReloading();
+        }
+    }
+}
+
+function setUpReloading(){
+    cursor_sprite = noone;
+    window_set_cursor(cr_appstart);
+    
+    if (weaponAction.item.reloadingSprite != spr_item_default) {
+        setUpReloadingAnimation();
+    }
+    
+    if (weaponAction.item.reloadingType == reloadingTypes.magazine){
+        playReloadingSound();
+    }
+    
+    obj_camera.setTargetWithZoom(obj_player);
+    
+    // MUDANÇA DE ESTADO SINCRONIZADA
+    obj_player.currentState = playerReloadingState;
+    currentState = reloadingState;
+}
+
+function setUpReloadingAnimation(){
+	var _sprite = weaponAction.item.reloadingSprite;
+	var _reloadTime = variable_struct_exists(weaponAction.item, "reloadTime") ? weaponAction.item.reloadTime : 60;
+	
+	reloadingAnimation.sprite = _sprite;
+	reloadingAnimation.index = 0;
+	reloadingAnimation.length = sprite_get_number(_sprite);
+
+	reloadingAnimation.speed = reloadingAnimation.length / _reloadTime;
+	
+	// Segurança para não travar em 0
+	if (reloadingAnimation.speed <= 0) reloadingAnimation.speed = 0.1;
+}
+
+function handleMagazineReload(){
+    if (weaponAction.item.reloadingSprite != spr_item_default) {
+        if (reloadingAnimation.index < reloadingAnimation.length) {
+            reloadingAnimation.index += reloadingAnimation.speed;
+            return;
+        }
+        reloadingAnimation.index = 0;
+    } else {
+        if (audio_is_playing(weaponAction.item.reloadSound)) return;
+    }
+    
+    var _allowedAmmo = weaponAction.item.allowedAmmo;
+    var _bulletSpace = weaponAction.info.maxAmmo - weaponAction.info.bullets;
+    var _itemQuantity = getItemQuantityInInventory(global.inventory, _allowedAmmo, itemType.ammo);
+    var _bulletsToInsert = min(_itemQuantity, _bulletSpace);
+    
+    insertAmmo(_allowedAmmo, _bulletsToInsert);
+    finishReloading();
+}
+
+function handleSingeShellReload(){
+    var _allowedAmmo = weaponAction.item.allowedAmmo;
+    var _bulletSpace = weaponAction.info.maxAmmo - weaponAction.info.bullets;
+    var _itemQuantity = getItemQuantityInInventory(global.inventory, _allowedAmmo, itemType.ammo);
+    
+    if (_itemQuantity <= 0 || _bulletSpace <= 0){
+        finishReloading();
+        return;
+    }
+    
+    if (reloadingAnimation.index < reloadingAnimation.length) {
+        reloadingAnimation.index += reloadingAnimation.speed;
+        return;
+    }
+    
+    playReloadingSound();
+    insertAmmo(_allowedAmmo, 1);
+    reloadingAnimation.index = 0;
+}
+
+function playReloadingSound(){
+    audio_play_sound(weaponAction.item.reloadSound, 0, false);
+}
+
+function insertAmmo(_ammoType, _quantity){
+    decreaseItemQuantityInInventory(global.inventory, _ammoType, itemType.ammo, _quantity);
+    weaponAction.info.bullets += _quantity;
+}
+#endregion
+
+#region DESENHO (DRAW STATES)
+function handleAttackAnimation(){
+	if (weaponAction.item == global.blankInventorySpace) return;
+	
+	if(variable_struct_exists(weaponAction.item, "animation")){
+		drawWeaponAttackingWithAnimation();
+	} else if(weaponAction.item.attackType == weaponAttackType.swing){
+		drawWeaponAttackingSwing();
+	} else if(weaponAction.item.type == weaponTypes.shoot){
+		drawWeaponShooting(weaponAction.item.recoilForce, weaponAction.item.delayToShoot);
+	}
+}
+
+function drawWeaponAiming(){
+	if(global.activeEquipedItem == global.blankInventorySpace) return;
+	
+	if(currentState == reloadingState && weaponAction.item.reloadingSprite != spr_item_default){
+		drawReloadAnimation();
+		return;
+	}
+	
+	var _weaponId = global.activeEquipedItem.itemId;
+	var _weapon = global.weapons[_weaponId];
+	draw_sprite_ext(_weapon.sprite, 0, weapon.xPosition, weapon.yPosition, weapon.xScale, weapon.yScale, weapon.angle, c_white, 1);
+}
+
+function drawReloadAnimation(){
+	draw_sprite_ext(reloadingAnimation.sprite, reloadingAnimation.index, weapon.xPosition, weapon.yPosition, weapon.xScale, weapon.yScale, weapon.angle, c_white, 1);
+}
+
+function drawWeaponAttackingWithAnimation(){
+	draw_sprite_ext(weaponAction.animation, weaponAction.animationIndex, weapon.xPosition, weapon.yPosition, 1, weaponAction.yScale, weapon.wDirection, c_white, 1);
+	weaponAction.animationIndex += weaponAction.animationSpeed;
+	if (weaponAction.animationIndex >= weaponAction.animationLength) weaponAim(true);
+}
+
+function drawWeaponAttackingSwing(){
+	draw_sprite_ext(weaponAction.item.sprite, 0, weapon.xPosition, weapon.yPosition, weapon.xScale, weaponAction.yScale, weaponAction.angle, c_white, 1);
+	weaponAction.angle = lerp(weaponAction.angle, weaponAction.destinyAngle, weaponAction.item.attackSpeed);
+	if (abs(weaponAction.angle - weaponAction.destinyAngle) < 1) weaponAim(true);
+}
+
+function drawWeaponShooting(_recoilForce, _delay){
+	curveAnimationIndex += (delta_time/1000000) * _delay;
+	
+	var _posTransition = animcurve_channel_evaluate(recoilAnimationCurve, curveAnimationIndex) * _recoilForce;
+	
+	var _drawX = weapon.xPosition + lengthdir_x(-_posTransition, weapon.wDirection);
+	var _drawY = weapon.yPosition + lengthdir_y(-_posTransition, weapon.wDirection);
+	
+	weapon.wDirection = point_direction(father.x, father.y, mouse_x, mouse_y);
+	weapon.angle = weapon.wDirection;
+	weapon.yScale = sign(mouse_x - weapon.xPosition);
+	
+	draw_sprite_ext(weaponAction.item.sprite, 0, _drawX, _drawY, weapon.xScale, weapon.yScale, weapon.angle, c_white, 1);
+	
+	if (curveAnimationIndex >= 1){
+		curveAnimationIndex = 0;
+		weaponAim(true);
+	}
+}
+#endregion
+
+#region UTILITÁRIOS (SONS, PARTÍCULAS E COLISÃO)
+function playAttackSound(){
+	if (global.activeEquipedItem == global.blankInventorySpace) return;
+	if (variable_struct_exists(weaponAction.item, "attackingSound")){
+		var _soundsCount = array_length(weaponAction.item.attackingSound);
+		if (_soundsCount > 0){
+			var _soundIndex = irandom(_soundsCount - 1);
+			audio_play_sound(weaponAction.item.attackingSound[_soundIndex], 0, false);
+			var _x = getMiddlePoint(father.bbox_left, father.bbox_right);
+			var _y = getMiddlePoint(father.bbox_top, father.bbox_bottom);
+			obj_player_sound_controller.addSound(weaponAction.info.soundRadius, _x, _y, soundIntensity.standard, id);
+		}
+	}
+}
+
 function createShotLight(_x, _y, _lightRange){
-	instance_create_layer(_x, _y, "Particles", obj_fire_weapon_light, {
-		range: _lightRange
-	});
+	instance_create_layer(_x, _y, "Particles", obj_fire_weapon_light, { range: _lightRange });
 }
 
 function createBulletShot(_dir, _xPosition, _yPosition) {
@@ -234,18 +305,6 @@ function createBulletShot(_dir, _xPosition, _yPosition) {
 	_bullet.defineValues(_dir, 5, weaponAction.item.damage, weaponAction.item.bulletDistance , _thickness);
 }
 
-function createMeleeImpact(_x, _y, _intensity) {
-    part_system_depth(explosionParticleSystem, -10000);
-	var _faiscaCount = clamp(round(15 * _intensity), 5, 50);
-	var _smokeCount = clamp(round(5 * _intensity), 2, 15);
-	part_type_direction(faiscaParticleType, 0, 359, 0, 0);
-	part_type_direction(smokeParticleType, 0, 359, 0, 0);
-	part_emitter_region(explosionParticleSystem, ps_emissor, _x, _x, _y, _y, ps_shape_ellipse, ps_distr_linear);
-	part_emitter_burst(explosionParticleSystem, ps_emissor, faiscaParticleType, _faiscaCount);
-	part_emitter_burst(explosionParticleSystem, ps_emissor, smokeParticleType, _smokeCount);
-}
-
-
 function createBulletExplosion(_xPosition, _yPosition, _damage, _direction) {
     part_system_depth(explosionParticleSystem, getClosestDepth());
     var _faiscaCount = clamp(round(_damage * 1.5), 5, 40);
@@ -254,7 +313,6 @@ function createBulletExplosion(_xPosition, _yPosition, _damage, _direction) {
     part_emitter_burst(explosionParticleSystem, ps_emissor, faiscaParticleType, _faiscaCount);
     part_emitter_burst(explosionParticleSystem, ps_emissor, smokeParticleType, 5);
 }
-
 
 function createHitBox(_weapon){
 	var _hitBox = instance_create_layer(weapon.xPosition, weapon.yPosition, "Particles", obj_hitbox);
@@ -270,6 +328,7 @@ function hitEnemies(_hitBox, _weapon){
 	var _xPosition = weapon.xPosition + lengthdir_x(sprite_get_width(_sprite), weapon.wDirection);
 	var _yPosition = weapon.yPosition + lengthdir_y(sprite_get_height(_sprite), weapon.wDirection);
 	var _damage = random_range(_weapon.damage - 3, _weapon.damage + 3);
+	
 	if (_num > 0){
 		for(var _i = 0; _i < ds_list_size(_hitEnemies); _i ++){
 			_hitEnemies[| _i].getHit(_damage, weapon.wDirection, _weapon.pushForce, _weapon.type, weaponAction.weaponId);
@@ -277,6 +336,7 @@ function hitEnemies(_hitBox, _weapon){
 		createHitBoxImpact(_xPosition, _yPosition, 10, 20);
 		weaponAction.info.durability -= weaponAction.info.durabilityDecrease;
 	}
+	
 	_num = _hitBox.getHitObjects(obj_furniture);
 	var _hitFurniture = _hitBox.objectsHit;
 	if (_num > 0){
@@ -294,51 +354,17 @@ function createHitBoxImpact(_xPosition, _yPosition, _range1, _range2){
 	screenShake(_range1);
 }
 
-#region visuals
-function setXScaleAccordingToMouse(){
-	if (mouse_x < weapon.xPosition) {
-		weapon.xScale = -1;
-	} else {
-		weapon.xScale = 1;
-	}
+function createMeleeImpact(_x, _y, _intensity) {
+    part_system_depth(explosionParticleSystem, -10000);
+	part_type_direction(faiscaParticleType, 0, 359, 0, 0);
+	part_type_direction(smokeParticleType, 0, 359, 0, 0);
+	part_emitter_region(explosionParticleSystem, ps_emissor, _x, _x, _y, _y, ps_shape_ellipse, ps_distr_linear);
+	part_emitter_burst(explosionParticleSystem, ps_emissor, faiscaParticleType, clamp(round(15 * _intensity), 5, 50));
+	part_emitter_burst(explosionParticleSystem, ps_emissor, smokeParticleType, clamp(round(5 * _intensity), 2, 15));
 }
 
-function drawWeaponAttackingWithAnimation(){
-	draw_sprite_ext(weaponAction.animation, weaponAction.animationIndex, weapon.xPosition, weapon.yPosition, 1, weaponAction.yScale, weapon.wDirection, c_white, 1);
-	weaponAction.animationIndex += weaponAction.animationSpeed;
-	if (weaponAction.animationIndex >= weaponAction.animationLength){
-		weaponAim(true);
-	}
-}
-
-function drawWeaponAttackingSwing(){
-	draw_sprite_ext(weaponAction.item.sprite, 0, weapon.xPosition, weapon.yPosition, weapon.xScale, weaponAction.yScale, weaponAction.angle, c_white, 1);
-	weaponAction.angle = lerp(weaponAction.angle, weaponAction.destinyAngle, weaponAction.item.attackSpeed);
-	var _differenceBetweenAngles = abs(weaponAction.angle - weaponAction.destinyAngle);
-	if (_differenceBetweenAngles < 1){
-		weaponAim(true);
-		return;
-	}
-}
 function checkDurability(){
 	if (!itemHasDurability(weaponAction.info)) return true;
 	return weaponAction.info.durability > 0;
-}
-
-function drawWeaponShooting(_recoilForce, _delay){
-	curveAnimationIndex += (delta_time/1000000) * _delay;
-	var _curveLength = _recoilForce;
-	var _positionTransition = animcurve_channel_evaluate(recoilAnimationCurve, curveAnimationIndex) * _curveLength;
-	weapon.xPosition += lengthdir_x(_positionTransition, weapon.wDirection);
-	weapon.yPosition += lengthdir_y(_positionTransition, weapon.wDirection);
-	weapon.yPosition += lengthdir_y(_positionTransition, weapon.wDirection);
-	weapon.wDirection = point_direction(father.x, father.y, mouse_x, mouse_y);
-	weapon.angle = weapon.wDirection;
-	weapon.yScale = sign(mouse_x - weapon.xPosition);
-	draw_sprite_ext(weaponAction.item.sprite, 0, weapon.xPosition, weapon.yPosition, weapon.xScale, weapon.yScale, weapon.angle, c_white, 1);
-	if (curveAnimationIndex >= 1){
-		curveAnimationIndex = 0;
-		weaponAim(true);
-	}
 }
 #endregion

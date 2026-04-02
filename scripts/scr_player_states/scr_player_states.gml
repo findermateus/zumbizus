@@ -83,13 +83,25 @@ function playerAttackState(){
 	increaseThirst(.05);
 	increaseHunger(.04);
 	updateSpriteWithState(sprites.walking);
-	if (obj_weapon.currentState != obj_weapon.weaponAttackingState) {
-		currentState = playerIddleState;
+
+	if (obj_weapon.currentState == obj_weapon.weaponAttackingState) {
+		return;
 	}
+	
+	// Se o botão direito ainda estiver segurado, volta a mirar
+	if (mouse_check_button(mb_right) && global.activeEquipedItem != global.blankInventorySpace) {
+		currentState = aimWeaponState;
+		
+		return;
+	}
+	
+	obj_weapon.setStateIdle(); 
+	currentState = playerIddleState;
 }
 
 function switchToAimState(){
 	if(global.activeMenu) return;
+	
 	if(mouse_check_button(mb_right) && global.activeEquipedItem != global.blankInventorySpace){
 		obj_weapon.weaponAim();
 		currentState = aimWeaponState;
@@ -98,21 +110,30 @@ function switchToAimState(){
 
 function aimWeaponState(){
 	if (!mouse_check_button(mb_right) || global.activeEquipedItem == global.blankInventorySpace || global.activeMenu){
+		obj_weapon.setStateIdle();
 		currentState = playerIddleState;
+		return;
 	}
+	
 	adjustPlayerInteractions(false);
+	
 	var _isStoped = velh == 0 && velv == 0;
 	var _sprite = _isStoped ? sprites.iddle : sprites.walking;
 	updateSpriteWithState(_sprite);
+	
 	aimWeapon(global.activeEquipedItem);
+	
 	increaseThirst(.05);
 	increaseHunger(.04);
+	
 	if (mouse_check_button(mb_left)){
 		if(obj_weapon.currentState == obj_weapon.weaponAttackingState) return;
+		
 		if(obj_weapon.attackWithPlayer()){
 			currentState = playerAttackState;
 		}
 	}
+	
 	if (!_isStoped && (velh != 0 || velv != 0)) createWalkingParticles(x, y, velh, velv, .5);
 }
 
@@ -126,10 +147,13 @@ function playerReloadingState(){
 	if (mouse_check_button_pressed(mb_right)){
 		switchToAimState();
 	}
+
 	handleAngleOffset(true, .2, 2);
 	adjustPlayerInteractions(false);
-	var _sprite = velh == 0 && velv == 0 ? sprites.iddle : sprites.walking;
+	
+	var _sprite = (velh == 0 && velv == 0) ? sprites.iddle : sprites.walking;
 	updateSpriteWithState(_sprite);
+	
 	adjustPlayerSpeed(global.player.walkingSpeed * .5);
 	movimentPlayer();
 }
