@@ -99,6 +99,7 @@
     {"$GMFolder":"","%Name":"Enemy","folderPath":"folders/Scripts/Enemy.yy","name":"Enemy","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Equipment","folderPath":"folders/Scripts/Equipment.yy","name":"Equipment","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Clothes","folderPath":"folders/Scripts/Equipment/Clothes.yy","name":"Clothes","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Quest","folderPath":"folders/Scripts/Quest.yy","name":"Quest","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Inventory","folderPath":"folders/Scripts/Inventory.yy","name":"Inventory","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Items","folderPath":"folders/Scripts/Items.yy","name":"Items","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"IndividualItems","folderPath":"folders/Scripts/Items/IndividualItems.yy","name":"IndividualItems","resourceType":"GMFolder","resourceVersion":"2.0",},
@@ -259,7 +260,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.6.1.160",
+    "IDEVersion":"2024.6.0.157",
   },
   "name":"zumbizus",
   "resources":[
@@ -346,6 +347,7 @@
     {"id":{"name":"obj_player_sound_controller","path":"objects/obj_player_sound_controller/obj_player_sound_controller.yy",},},
     {"id":{"name":"obj_player_stats","path":"objects/obj_player_stats/obj_player_stats.yy",},},
     {"id":{"name":"obj_player","path":"objects/obj_player/obj_player.yy",},},
+    {"id":{"name":"obj_quest_manager","path":"objects/obj_quest_manager/obj_quest_manager.yy",},},
     {"id":{"name":"obj_resident_gui_controller","path":"objects/obj_resident_gui_controller/obj_resident_gui_controller.yy",},},
     {"id":{"name":"obj_slope","path":"objects/obj_slope/obj_slope.yy",},},
     {"id":{"name":"obj_spitter_enemy_entity","path":"objects/obj_spitter_enemy_entity/obj_spitter_enemy_entity.yy",},},
@@ -477,6 +479,7 @@
     {"id":{"name":"scr_player_weapons_actions","path":"scripts/scr_player_weapons_actions/scr_player_weapons_actions.yy",},},
     {"id":{"name":"scr_player_weapons","path":"scripts/scr_player_weapons/scr_player_weapons.yy",},},
     {"id":{"name":"scr_player","path":"scripts/scr_player/scr_player.yy",},},
+    {"id":{"name":"scr_quest","path":"scripts/scr_quest/scr_quest.yy",},},
     {"id":{"name":"scr_quick_use_DAO","path":"scripts/scr_quick_use_DAO/scr_quick_use_DAO.yy",},},
     {"id":{"name":"scr_save","path":"scripts/scr_save/scr_save.yy",},},
     {"id":{"name":"scr_sequences","path":"scripts/scr_sequences/scr_sequences.yy",},},
