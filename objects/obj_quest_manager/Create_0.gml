@@ -7,7 +7,6 @@ addQuest = function(_quest) {
 };
 
 startQuest = function(_quest) {
-	show_message("Quest " + _quest.name + " iniciada!");
 	_quest.start();
 	array_push(activeQuests, _quest);
 };
