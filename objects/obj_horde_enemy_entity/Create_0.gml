@@ -227,7 +227,11 @@ function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weapo
 
 function getKilled() {
 	currentState = getKilledState;
+	
+	obj_quest_manager.notifyEvent(QuestEvent.EnemyKilled, {enemyId: "horde"});
+	
 	xpAdd(choose(1, 2, 3));
+	
 	var _shouldDropItem = choose(false, true);
 	
 	if (!_shouldDropItem) return false;

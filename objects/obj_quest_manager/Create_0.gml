@@ -29,3 +29,18 @@ completeQuest = function(_quest) {
 	
 	array_push(completedQuests, _quest);
 };
+
+notifyEvent = function(_event, _data) {
+	for (var i = 0; i < array_length(activeQuests); i++) {
+		var _quest = activeQuests[i];
+		
+		if (!_quest.isActive || _quest.isCompleted) continue;
+		
+		var _step = _quest.getCurrentStep();
+		
+		if (is_undefined(_step)) continue;
+		
+		var _fn = method(_step, _step.onEvent);
+		_fn(_event, _data);
+	}
+};

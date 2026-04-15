@@ -1,3 +1,8 @@
+enum QuestEvent {
+	EnemyKilled,
+	ItemCollected
+}
+
 function Quest(_id, _name) constructor {
 	id = _id;
 	name = _name;
@@ -21,6 +26,8 @@ function Quest(_id, _name) constructor {
 			steps[0].onStart();
 		}
 	};
+	
+	onComplete = function () {};
 	
 	completeCurrentStep = function() {
 		var step = getCurrentStep();
@@ -50,6 +57,7 @@ function Quest(_id, _name) constructor {
 }
 
 function QuestStep(_description) constructor {
+	quest = undefined;
 	description = _description;
 	isCompleted = false;
 	onStart = function () {};
