@@ -30,6 +30,21 @@ function drawTextShadow(_x, _y, _text, _alpha, _offset = 3, _scale = 1){
 	draw_text_transformed_color(_x + _offset, _y + _offset, _text, _scale, _scale, 0, _color, _color, _color, _color, _alpha);
 }
 
+function drawTextExtShadow(_x, _y, _text, _sep, _w, _alpha, _offset = 3, _scale = 1, _color = c_black) {
+    draw_text_ext_transformed_color(
+        _x + _offset, 
+        _y + _offset, 
+        _text, 
+        _sep, 
+        _w, 
+        _scale, 
+        _scale, 
+        0, 
+        _color, _color, _color, _color, 
+        _alpha
+    );
+}
+
 function drawTextShadowScribble(_x, _y, _text, _alpha, _offset = 3) {
 	var _oldColor = draw_get_color();
 	var _oldAlpha = draw_get_alpha();

@@ -41,58 +41,6 @@ function drawTitle(_x, _y, _text){
 	draw_text(_x, _y, _text);
 }
 
-function drawLateralMenu() {
-	handleEveryStepLateralMenuGUI();
-    var _menu = [
-        new IconMenu("Construção", "T", spr_builder_icon, menu.builder),
-		new IconMenu("Construção", "M", spr_resident_icon, menu.resident),
-    ];
-	var _guiHeight = display_get_gui_height();
-	var _guiWidth = display_get_gui_width();
-    var _iconSize = 128;
-	var _optionSpacing = _iconSize * 1.5;
-	var _startX = _guiWidth - _iconSize * 1.2;
-    var _startY = _guiHeight/2 - _iconSize;
-    for (var i = 0; i < array_length(_menu); i++) {
-        var _option = _menu[i];
-        var _x = _startX;
-        var _y = _startY + i * _optionSpacing;
-        drawLateralOptionMenu(_option, _x, _y, _iconSize);
-    }
-}
-
-function handleEveryStepLateralMenuGUI(){
-	lateralMenuGUIInfo.shakeEffect = lerp(lateralMenuGUIInfo.shakeEffect, 0, .2);
-	
-	var _alphaEffect = lateralMenuGUIInfo.destinyAlpha == 0 ? .1 : .2;
-	
-	lateralMenuGUIInfo.alpha = lerp(lateralMenuGUIInfo.alpha, !global.activeMenu && !global.activeInventory, _alphaEffect);
-}
-
-function drawLateralOptionMenu(_option, _x, _y, _size) {
-	var _iconScale = getScale(_size, sprite_get_width(_option.icon));
-    var _alpha = lateralMenuGUIInfo.alpha;
-	if (_option.id == lateralMenuGUIInfo.selectedOption && lateralMenuGUIInfo.shakeEffect > .1) {
-		_alpha = .6
-		draw_sprite_stretched(spr_hover_indicator, 0, _x, _y, _size, _size);
-	}
-	draw_set_alpha(_alpha);
-	drawSpriteShadow(_x, _y, _option.icon, 0, 0, _iconScale + .1, _iconScale + .1);
-	draw_sprite_ext(_option.icon, 0, _x, _y, _iconScale, _iconScale, 0, c_white, _alpha);
-    var _label = "[" + string(_option.key) + "] ";
-	var _textHeight = string_height(_label);
-    var _textY = _y + _size - _textHeight;
-	var _textX = _x;
-    draw_set_color(c_white);
-	draw_set_valign(fa_top);
-	draw_set_halign(fa_center);
-	drawTextShadow(_textX, _textY, _label, _alpha);
-	draw_text(_textX, _textY, _label);
-	draw_set_halign(fa_left);
-	draw_set_valign(fa_top);
-	draw_set_alpha(1);
-}
-
 function createNpcs() {
 	var _npcListSize = array_length(global.npcList);
 	if (!_npcListSize) return;

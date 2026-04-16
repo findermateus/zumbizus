@@ -12,14 +12,6 @@ function BaseAttributeDisplay(_id, _displayName, _icon) constructor {
 	icon = _icon;
 }
 
-function IconMenu (_title, _key, _icon, _id, _backgroundColor = false) constructor {
-	title = _title;
-	key = _key;
-	icon = _icon;
-	backgroundColor = _backgroundColor;
-	id = _id;
-}
-
 global.attributes = [];
 global.baseFurnitureIdCount = 0;
 global.attributes[baseAttribute.crafting] = new BaseAttributeDisplay(baseAttribute.crafting, "Criação", spr_attribute_crafting);

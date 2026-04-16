@@ -1,3 +1,5 @@
+if (global.pause) exit;
+
 if (lifeSpan < 0) {
 	alpha = lerp(alpha, -1, .1);
 	
