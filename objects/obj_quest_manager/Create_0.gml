@@ -97,7 +97,7 @@ function drawQuests() {
 	    if (!is_undefined(step)) {
 	        var text = step.description;
             
-	        if (variable_instance_exists(step, "killTarget")) {
+	        if (variable_struct_exists(step, "killTarget")) {
 	            text += " (" + string(step.killCount) + "/" + string(step.killTarget) + ")";
 	        }
             
