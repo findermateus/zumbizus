@@ -12,6 +12,7 @@ function Quest(_id, _name) constructor {
 	isActive = false;
 	
 	addStep = function(_step) {
+		_step.quest = self;
 		array_push(steps, _step);
 	};
 	
