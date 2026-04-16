@@ -4,7 +4,7 @@ menu_offset_x = 0;
 function drawQuests() {
 	var _questsCount = array_length(activeQuests);
 
-	if (_questsCount == 0) return;;
+	if (_questsCount == 0) return;
 
 	var _maxTextWidth = 350;
 	var _margin = 30;
