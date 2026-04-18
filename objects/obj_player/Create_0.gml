@@ -431,10 +431,12 @@ function handleOtherEffects(_otherEffects) {
 
 
 function handleCleanInventoryAfterConsuming(_item, _data, _j, _i, _inventory) {
+	var _isPlayerInventory = _inventory == global.inventory;
 	var _itemToDrop = _data.itemToDrop;
 	
 	if (_itemToDrop == noone && !_item.stackable){
 		cleanInventoryGrid(_inventory, _j, _i);
+		
 		return true;
 	}
 		
@@ -443,11 +445,13 @@ function handleCleanInventoryAfterConsuming(_item, _data, _j, _i, _inventory) {
 		if (_item.quantity < 1) {
 			cleanInventoryGrid(_inventory, _j, _i);
 		}
+		
 		return true;
 	}
 		
 	if (_itemToDrop == noone) {
 		cleanInventoryGrid(_inventory, _j, _i);
+		
 		return true;
 	}
 		
@@ -461,7 +465,13 @@ function handleCleanInventoryAfterConsuming(_item, _data, _j, _i, _inventory) {
 	var _consumedItem = getConsumedItem(_itemToDrop);
 	
 	var _added = addItemToGrid(_inventory, _consumedItem);
-	if (_added != false) return true;
+	if (_added != false) {
+		if (_isPlayerInventory) {
+			obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, {itemId: _consumedItem.itemId, itemType: _consumedItem.type, quantity: 1});
+		}
+		
+		return true;	
+	}
 	createIndicatorForDroppedItems(_consumedItem, 1); 
 	createItem(_consumedItem, true);
 	return true;

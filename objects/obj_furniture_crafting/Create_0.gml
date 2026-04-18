@@ -872,7 +872,11 @@ function handleClickOnItem(_item, _requirementItem){
 	}
 	
 	if (addItemToGrid(global.inventory, _item)){
-		createIndicatorModal(_item, variable_struct_exists(_item, "quantity") ? _item.quantity : 1);
+		var _quantity = variable_struct_exists(_item, "quantity") ? _item.quantity : 1;
+		
+		obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, { itemId: _item.itemId, itemType: _item.type, quantity: _quantity});
+		
+		createIndicatorModal(_item, _quantity);
 		audio_play_sound(snd_builded_item, 0, false);
 		audio_play_sound(snd_equip_item, 0, false);
 	} 
