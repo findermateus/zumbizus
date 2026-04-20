@@ -269,7 +269,7 @@ function drawQuickUse() {
 	static _y = equipedItemsY;
 	_y = lerp(_y, equipedItemsY, .08);
 	var _quickUseSize = ds_list_size(global.quickUse);
-	var _sprite = spr_quick_use_bg;
+	var _sprite = spr_bar;
 	
 	var _gridMargin = 20;
 	var _margin = 60;
@@ -285,15 +285,15 @@ function drawQuickUse() {
 	
 	var tx = round(_initialX - _padding / 2), ty = round(_y - _padding / 2), tw = round(_totalWidth + _padding), th = round(_height + _padding)
 	
-	drawSpriteShadowStretched(
-		tx,
-		ty,
-		_sprite,
-		0,
-		0,
-		tw,
-		th,
-	);
+	//drawSpriteShadowStretched(
+	//	tx,
+	//	ty,
+	//	_sprite,
+	//	0,
+	//	0,
+	//	tw,
+	//	th,
+	//);
 	
 	draw_sprite_stretched_ext(
 		_sprite,

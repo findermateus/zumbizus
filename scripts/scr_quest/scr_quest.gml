@@ -1,6 +1,8 @@
 enum QuestEvent {
 	EnemyKilled,
-	ItemCollected
+	ItemCollected,
+	AreaEntered,
+	ItemCrafted
 }
 
 function Quest(_id, _name) constructor {

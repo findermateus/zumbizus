@@ -13,7 +13,6 @@ function drawQuests() {
 	var _guiWidth = display_get_gui_width();
 	var _guiHeight = display_get_gui_height();
 
-	// 1. Calcular a altura total primeiro (para o alinhamento vertical)
 	draw_set_font(fnt_gui_title);
 	var _mainTitle = "Missões Ativas";
 	var _mainTitleHeight = string_height(_mainTitle);
@@ -29,9 +28,8 @@ function drawQuests() {
 	
 		if (!is_undefined(step)) {
 			var text = step.description;
-			if (variable_struct_exists(step, "killTarget")) {
-				text += " (" + string(step.killCount) + "/" + string(step.killTarget) + ")";
-			}
+			
+			text += addCounterText(step); 
 		
 			var _stepScale = 0.7;
 			var _scaledMaxWidth = _maxTextWidth / _stepScale; 
@@ -99,10 +97,8 @@ function drawQuests() {
 		if (!is_undefined(step)) {
 			var text = step.description;
 			
-			if (variable_struct_exists(step, "killTarget")) {
-				text += " (" + string(step.killCount) + "/" + string(step.killTarget) + ")";
-			}
-			
+			text += addCounterText(step)
+			text = string(q.currentStepIndex + 1) + ") " + text;
 			var _stepScale = 0.7;
 			var _scaledMaxWidth = _maxTextWidth / _stepScale; 
 			
@@ -117,6 +113,34 @@ function drawQuests() {
 
 	draw_set_font(fnt_gui_default);
 }
+
+function addCounterText(step) {
+	if (variable_struct_exists(step, "objectives")) {
+		var text = "";
+		
+		for (var i = 0; i < array_length(step.objectives); i++) {
+			var obj = step.objectives[i];
+
+			var _itemData = global.items[obj.type][obj.itemId];
+
+			text += "\n-  " + _itemData.name + " (" 
+				+ string(obj.count) + "/" + string(obj.target) + ")";
+		}
+
+		return text;
+	}
+
+	if (variable_struct_exists(step, "killTarget")) {
+		return " (" + string(step.killCount) + "/" + string(step.killTarget) + ")";
+	}
+	
+	if (variable_struct_exists(step, "collectCount")) {
+		return " (" + string(step.collectCount) + "/" + string(step.collectTarget) + ")";
+	}
+	
+	return "";
+}
+
 quests = [];
 activeQuests = [];
 completedQuests = [];
@@ -164,27 +188,102 @@ notifyEvent = function(_event, _data) {
 	}
 };
 
-var _quest = new Quest("test", "Killing in the name of Love");
+{
+	var _quest = new Quest("test", "Killing in the name of Love");
 
-_quest.onComplete = function () {
-	xpAdd(100);
+	_quest.onComplete = function () {
+		xpAdd(100);
+	}
+
+	var _step = new QuestStep("Matar 5 Zumbis");
+	_step.killCount = 0;
+	_step.killTarget = 5;
+
+	_step.onEvent = function(_event, _data) {
+		if (_event != QuestEvent.EnemyKilled) return;
+
+		self.killCount++;
+
+		if (self.killCount >= self.killTarget) {
+			self.quest.completeCurrentStep();
+		}
+	};
+
+	_quest.addStep(_step); 
+
+	addQuest(_quest);
 }
 
-var _step = new QuestStep("Matar 5 Zumbis");
-_step.killCount = 0;
-_step.killTarget = 5;
+{
+	var _quest = new Quest("craft_axe", "Faça um Machado");
 
-_step.onEvent = function(_event, _data) {
-	if (_event != QuestEvent.EnemyKilled) return;
+	_quest.onComplete = function () {
+		xpAdd(100);
+	};
 
-	self.killCount++;
+	var _step = new QuestStep("Colete os itens necesários");
 
-	if (self.killCount >= self.killTarget) {
+	_step.objectives = [
+		{ itemId: trashItems.twig, type: itemType.trash, count: 0, target: 3 },
+		{ itemId: trashItems.rock, type: itemType.trash, count: 0, target: 2 }
+	];
+
+	_step.onEvent = function(_event, _data) {
+		if (_event != QuestEvent.ItemCollected) return;
+
+		for (var i = 0; i < array_length(self.objectives); i++) {
+			var obj = self.objectives[i];
+
+			if (_data.itemId == obj.itemId) {
+				obj.count += _data.quantity;
+
+				if (obj.count > obj.target) {
+					obj.count = obj.target;
+				}
+			}
+		}
+
+		var allDone = true;
+
+		for (var i = 0; i < array_length(self.objectives); i++) {
+			if (self.objectives[i].count < self.objectives[i].target) {
+				allDone = false;
+				break;
+			}
+		}
+
+		if (allDone) {
+			self.quest.completeCurrentStep();
+		}
+	};
+
+	_quest.addStep(_step);
+	
+	var _secondStep = new QuestStep("Volte para a base");
+	_secondStep.area = rm_player_base;
+	
+	_secondStep.onEvent = function(_event, _data) {
+		if (_event != QuestEvent.AreaEntered) return;
+		if (_data.area != self.area) return;
+
 		self.quest.completeCurrentStep();
+	};
+	
+	_quest.addStep(_secondStep);
+
+	var _thirdStep = new QuestStep("Faça o machado");
+	_thirdStep.itemType = itemType.weapons;
+	_thirdStep.itemId = weaponItems.axe;
+	
+	_thirdStep.onEvent = function (_event, _data) {
+		if (_event != QuestEvent.ItemCrafted && _event != QuestEvent.ItemCollected) return;
+		
+		if (_data.itemType == self.itemType && _data.itemId == self.itemId) {
+			self.quest.completeCurrentStep();
+		}
 	}
-};
-
-_quest.addStep(_step); 
-
-addQuest(_quest);
-startQuest(_quest);
+	
+	_quest.addStep(_thirdStep);
+	addQuest(_quest);
+	startQuest(_quest);
+}
