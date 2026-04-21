@@ -1,20 +1,39 @@
-gui_w = display_get_gui_width();
-gui_h = display_get_gui_height();
+if (isStep) {
+    textScale   = 1;
+    textColor   = c_yellow;
+    waitTime    = 120;
+} else {
+    textScale   = 1.6;
+    textColor   = #4ccf1a;
+    waitTime    = 180;
+}
 
-target_y = gui_h * 0.2; 
-current_y = target_y + 50; 
+guiW = display_get_gui_width();
+guiH = display_get_gui_height();
 
-alpha = 0;
-fade_speed = 0.05;
-state = "fade_in";
+targetY  = guiH * 0.2;
+currentY = targetY + 50;
 
-wait_time = 90;
-timer = 0;
+enum POPUP_STATE {
+    QUEUED,
+    FADE_IN,
+    WAIT,
+    FADE_OUT
+}
+state = POPUP_STATE.QUEUED;
 
-wait_time = 120;
-timer = 0;
+alpha     = 0;
+fadeSpeed = 0.05;
 
-line_progress = 0;      
-line_padding = 40;
+timer        = 0;
+lineProgress = 0;
+linePadding  = 40;
 
-playSwiiimmmSound();
+shakeAmount = 0;
+shook       = false;
+
+if (!variable_global_exists("quest_popup_queue")) {
+    global.quest_popup_queue  = [];
+    global.quest_popup_active = noone;
+}
+array_push(global.quest_popup_queue, id);

@@ -173,6 +173,11 @@ completeQuest = function(_quest) {
 		array_delete(activeQuests, index, 1);
 	}
 	
+	instance_create_layer(0, 0, "Alert", obj_quest_step_completed, {
+		textContent: _quest.name,
+		isStep: false
+	});
+	
 	array_push(completedQuests, _quest);
 };
 
@@ -336,8 +341,8 @@ function getCreateCampfireQuest() {
 
 	_step.objectives = [
 		{ itemId: trashItems.wood_log, type: itemType.trash, count: 0, target: 6 },
-		{ itemId: trashItems.twig, type: itemType.trash, count: 0, target: 4 },
-		{ itemId: trashItems.rock, type: itemType.trash, count: 0, target: 3 },
+		{ itemId: trashItems.twig, type: itemType.trash, count: 0, target: 12 },
+		{ itemId: trashItems.rock, type: itemType.trash, count: 0, target: 8 },
 	];
 
 	_step.onStart = method(_step, function () {

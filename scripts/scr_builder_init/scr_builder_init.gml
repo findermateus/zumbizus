@@ -76,7 +76,7 @@ function initializeFurnitures() {
 		new RequirementBuilder(trashItems.rope, 5, itemType.trash)
 	];
 
-	var _campfireRequirements = [ new RequirementBuilder(trashItems.wood_board, 1) ];
+	var _campfireRequirements = [ new RequirementBuilder(trashItems.wood_log, 6), new RequirementBuilder(trashItems.rock, 8), new RequirementBuilder(trashItems.twig, 12) ];
 	var _simpleCraftingStationRequirements = [ new RequirementBuilder(trashItems.twig, 15, itemType.trash), new RequirementBuilder(trashItems.rock, 5, itemType.trash) ];
 
 	global.furniture = [];

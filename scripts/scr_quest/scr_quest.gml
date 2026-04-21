@@ -43,7 +43,8 @@ function Quest(_id, _name) constructor {
 		step.onComplete();
 
 		instance_create_layer(0, 0, "Alert", obj_quest_step_completed, {
-			questStepDescription: step.description
+			textContent: step.description,
+			isStep: true
 		});
 
 		currentStepIndex++;
