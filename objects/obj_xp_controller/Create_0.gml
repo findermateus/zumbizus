@@ -15,6 +15,7 @@ titlePercent = 0;
 titlePosition = 0;
 isLevelingUp = false;
 levelUpPending = false;
+levelUpBlur = 0;
 
 function handleLevelUp() {
     if (global.activeMenu || instance_exists(obj_quest_step_completed)) {
@@ -149,19 +150,74 @@ function drawXpBar() {
 }
 
 function handleStopLevelingUp() {
-	titlePercent = 0;
-	isLevelingUp = false;
-	array_foreach(options, function (_option) {
-		_option.selectionProgress = 0;
-		_option.animPercent = 0;
-	});
-	audio_stop_sound(snd_level_up_music);
-	unPauseSystems();
+    titlePercent = 0;
+    isLevelingUp = false;
+    levelUpBlur = 0;
+    array_foreach(options, function (_option) {
+        _option.selectionProgress = 0;
+        _option.animPercent = 0;
+    });
+    if (layer_exists("LevelUpBlur")) {
+        layer_set_visible("LevelUpBlur", false);
+    }
+    audio_stop_sound(snd_level_up_music);
+    unPauseSystems();
 }
 
 function drawLevelUpWarning() {
-	drawLevelUpButtonOptions();
-	drawLevelUpTitle();
+    handleLevelUpBlurEffect();
+    drawLevelUpButtonOptions();
+    drawLevelUpTitle();
+}
+
+function handleLevelUpBlurEffect() {
+    static _blur = fx_create("_filter_linear_blur");
+
+    var _gH = display_get_gui_height();
+    var _gW = display_get_gui_width();
+
+    var _color = #FFD700; // dourado
+    var _alpha = draw_get_alpha();
+    draw_set_alpha(.15);
+    draw_rectangle_color(0, 0, _gW, _gH, _color, _color, _color, _color, false);
+    draw_set_alpha(_alpha);
+
+    var _layerId = "LevelUpBlur";
+    var _destinyBlur = 6; // um pouco mais suave que o pause
+    levelUpBlur = lerp(levelUpBlur, _destinyBlur, .3);
+
+    if (!layer_exists(_layerId)) {
+        layer_create(-20000, _layerId);
+    }
+
+    fx_set_parameter(_blur, "g_LinearBlurVector", [levelUpBlur, levelUpBlur]);
+    layer_set_fx(_layerId, _blur);
+    layer_set_visible(_layerId, true);
+}
+
+function handleLevelUpBlurEffect() {
+    static _blur = fx_create("_filter_linear_blur");
+
+    var _gH = display_get_gui_height();
+    var _gW = display_get_gui_width();
+
+    var _color = #1f8e00;
+    var _alpha = draw_get_alpha();
+    draw_set_alpha(.3);
+    draw_rectangle_color(0, 0, _gW, _gH, _color, _color, _color, _color, false);
+    draw_set_alpha(_alpha);
+
+    var _layerId = "LevelUpBlur";
+    var _destinyBlur = 6;
+    levelUpBlur = lerp(levelUpBlur, _destinyBlur, .3);
+
+    if (!layer_exists(_layerId)) {
+        layer_create(-20000, _layerId);
+    }
+
+    fx_set_parameter(_blur, "g_LinearBlurVector", [levelUpBlur, levelUpBlur]);
+    layer_set_fx(_layerId, _blur);
+    layer_set_visible(_layerId, true);
 }
 
 function drawLevelUpTitle() {
