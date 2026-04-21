@@ -1,5 +1,10 @@
 if (global.pause) exit;
 
+if (levelUpPending && !global.activeMenu && !instance_exists(obj_quest_step_completed)) {
+    levelUpPending = false;
+    handleLevelUp();
+}
+
 if (keyboard_check_pressed(ord("H"))) {
 	xpAdd(irandom(12));
 }

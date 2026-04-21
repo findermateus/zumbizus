@@ -9,7 +9,7 @@ xPositionToDrawShadow = x;
 yPositionToDrawShadow = y - 5;
 
 activationMethod = function () {
-	
+	if (instance_exists(obj_map_transition)) return;
 	//sons
 	playClickSound();
 	

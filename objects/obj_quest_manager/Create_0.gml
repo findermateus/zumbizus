@@ -14,7 +14,7 @@ function drawQuests() {
 	var _guiHeight = display_get_gui_height();
 
 	draw_set_font(fnt_gui_title);
-	var _mainTitle = "Missões Ativas";
+	var _mainTitle = "Missões Ativas [J]";
 	var _mainTitleHeight = string_height(_mainTitle);
 	
 	draw_set_font(fnt_gui_long_text);
@@ -40,16 +40,18 @@ function drawQuests() {
 
 	var _totalHeight = _mainTitleHeight + 15 + _totalQuestsHeight;
 
-	var _initialY = (_guiHeight - _totalHeight) / 2;
+	// Margem do topo fixada em 15px
+	var _initialY = 50;
 
-	var _targetOffset = global.activeMenu ? (_maxTextWidth + _margin + _padding * 2 + 50) : 0;
+	// Invertida a direção da animação de sumir (agora vai para a esquerda, usando valor negativo)
+	var _targetOffset = global.activeMenu ? -(_maxTextWidth + _margin + _padding * 2 + 50) : 0;
 	menu_offset_x = lerp(menu_offset_x, _targetOffset, 0.1);
 
 	if (global.activeMenu && abs(menu_offset_x - _targetOffset) < 2) {
 		return;
 	}
 
-	var _baseTextX = _guiWidth - _maxTextWidth - _margin + menu_offset_x; 
+	var _baseTextX = _margin + menu_offset_x; 
 
 	draw_set_valign(fa_top);
 	draw_set_halign(fa_left);
@@ -62,7 +64,8 @@ function drawQuests() {
 	var _isHovering = mouseIsOnRectangle(_rectX1, _rectY1, _rectX2, _rectY2);
 	hover_anim = lerp(hover_anim, _isHovering ? 1 : 0, 0.15);
 
-	var _textX = _baseTextX - (hover_anim * 6);
+	// Invertida a animação de hover para ir para a direita (afastando da borda)
+	var _textX = _baseTextX + (hover_anim * 6);
 
 	var _drawRectX1 = _textX - _padding;
 	var _drawRectX2 = _textX + _maxTextWidth + _padding;
@@ -78,7 +81,7 @@ function drawQuests() {
 	
 	draw_set_font(fnt_gui_title);
 	drawTextExtShadow(_textX, _y, _mainTitle, -1, _maxTextWidth, 1, 3, 1);
-	draw_text(_textX, _y, _mainTitle);
+	draw_text_ext(_textX, _y, _mainTitle, -1, _maxTextWidth);
 	
 	_y += _mainTitleHeight + 15; 
 
@@ -115,7 +118,7 @@ function drawQuests() {
 }
 
 function addCounterText(step) {
-	if (variable_struct_exists(step, "objectives")) {
+	if (array_length(step.objectives) > 0) {
 		var text = "";
 		
 		for (var i = 0; i < array_length(step.objectives); i++) {
@@ -191,15 +194,15 @@ notifyEvent = function(_event, _data) {
 {
 	var _quest = new Quest("test", "Killing in the name of Love");
 
-	_quest.onComplete = function () {
-		xpAdd(100);
-	}
+	_quest.onComplete = method(_quest, function () {
+		self.applyReward();
+	});
 
 	var _step = new QuestStep("Matar 5 Zumbis");
 	_step.killCount = 0;
 	_step.killTarget = 5;
 
-	_step.onEvent = function(_event, _data) {
+	_step.onEvent = method(_step, function(_event, _data) {
 		if (_event != QuestEvent.EnemyKilled) return;
 
 		self.killCount++;
@@ -207,19 +210,25 @@ notifyEvent = function(_event, _data) {
 		if (self.killCount >= self.killTarget) {
 			self.quest.completeCurrentStep();
 		}
-	};
+	});
 
-	_quest.addStep(_step); 
+	_quest.addStep(_step);
 
 	addQuest(_quest);
 }
 
-{
+function getCreateAxeQuest() {
 	var _quest = new Quest("craft_axe", "Faça um Machado");
 
-	_quest.onComplete = function () {
-		xpAdd(100);
-	};
+	_quest.onComplete = method(_quest, function () {
+		self.applyReward();
+		
+		with(obj_quest_manager) {
+			var _nextQuest = getCreateCampfireQuest();
+			addQuest(_nextQuest);
+			startQuest(_nextQuest);
+		}
+	}); 
 
 	var _step = new QuestStep("Colete os itens necesários");
 
@@ -228,7 +237,26 @@ notifyEvent = function(_event, _data) {
 		{ itemId: trashItems.rock, type: itemType.trash, count: 0, target: 2 }
 	];
 
-	_step.onEvent = function(_event, _data) {
+	_step.onStart = method(_step, function () {
+		var _hasAll = true;
+		
+		for (var i = 0; i < array_length(self.objectives); i ++) {
+			var _itemObjective = self.objectives[i];
+			var _currentQuantity = getItemQuantityInInventory(global.inventory, _itemObjective.itemId, _itemObjective.type);
+			
+			self.objectives[i].count = _currentQuantity;
+			
+			if (_currentQuantity < _itemObjective.target) {
+				_hasAll = false;	
+			}
+		}
+		
+		if (_hasAll) {
+			self.quest.completeCurrentStep();
+		}
+	});
+
+	_step.onEvent = method(_step, function(_event, _data) {
 		if (_event != QuestEvent.ItemCollected) return;
 
 		for (var i = 0; i < array_length(self.objectives); i++) {
@@ -255,19 +283,19 @@ notifyEvent = function(_event, _data) {
 		if (allDone) {
 			self.quest.completeCurrentStep();
 		}
-	};
+	});
 
 	_quest.addStep(_step);
 	
 	var _secondStep = new QuestStep("Volte para a base");
 	_secondStep.area = rm_player_base;
 	
-	_secondStep.onEvent = function(_event, _data) {
+	_secondStep.onEvent = method(_secondStep, function(_event, _data) {
 		if (_event != QuestEvent.AreaEntered) return;
 		if (_data.area != self.area) return;
 
 		self.quest.completeCurrentStep();
-	};
+	});
 	
 	_quest.addStep(_secondStep);
 
@@ -275,15 +303,97 @@ notifyEvent = function(_event, _data) {
 	_thirdStep.itemType = itemType.weapons;
 	_thirdStep.itemId = weaponItems.axe;
 	
-	_thirdStep.onEvent = function (_event, _data) {
+	_thirdStep.onEvent = method(_thirdStep, function (_event, _data) {
 		if (_event != QuestEvent.ItemCrafted && _event != QuestEvent.ItemCollected) return;
 		
 		if (_data.itemType == self.itemType && _data.itemId == self.itemId) {
 			self.quest.completeCurrentStep();
 		}
-	}
+	});
 	
 	_quest.addStep(_thirdStep);
+	
+	var _reward = new QuestReward(105);
+	_quest.setReward(_reward);
+	
+	return _quest;
+}
+
+{
+	var _quest = getCreateAxeQuest();
 	addQuest(_quest);
 	startQuest(_quest);
+}
+
+function getCreateCampfireQuest() {
+	var _quest = new Quest("create_campfire", "Crie uma fogueira");
+	
+	_quest.onComplete = method(_quest, function () {
+		self.applyReward();
+	});
+
+	var _step = new QuestStep("Colete os itens necesários");
+
+	_step.objectives = [
+		{ itemId: trashItems.wood_log, type: itemType.trash, count: 0, target: 6 },
+		{ itemId: trashItems.twig, type: itemType.trash, count: 0, target: 4 },
+		{ itemId: trashItems.rock, type: itemType.trash, count: 0, target: 3 },
+	];
+
+	_step.onStart = method(_step, function () {
+		var _hasAll = true;
+		
+		for (var i = 0; i < array_length(self.objectives); i ++) {
+			var _itemObjective = self.objectives[i];
+			var _currentQuantity = getItemQuantityInInventory(global.inventory, _itemObjective.itemId, _itemObjective.type);
+			
+			self.objectives[i].count = _currentQuantity;
+			
+			if (_currentQuantity < _itemObjective.target) {
+				_hasAll = false;	
+			}
+		}
+		
+		if (_hasAll) {
+			self.quest.completeCurrentStep();
+		}
+	});
+
+	_step.onEvent = method(_step, function(_event, _data) {
+		if (_event != QuestEvent.ItemCollected) return;
+
+		for (var i = 0; i < array_length(self.objectives); i++) {
+			var obj = self.objectives[i];
+
+			if (_data.itemId == obj.itemId) {
+				obj.count += _data.quantity;
+
+				if (obj.count > obj.target) {
+					obj.count = obj.target;
+				}
+			}
+		}
+
+		var allDone = true;
+
+		for (var i = 0; i < array_length(self.objectives); i++) {
+			if (self.objectives[i].count < self.objectives[i].target) {
+				allDone = false;
+				break;
+			}
+		}
+
+		if (allDone) {
+			self.quest.completeCurrentStep();
+		}
+	});
+	
+	_quest.addStep(_step);
+	
+	var _reward = new QuestReward(15);
+	array_push(_reward.items, { itemId: consumableItems.watter_bottle, itemType: itemType.consumables}, {itemId: consumableItems.canned_pineapple, itemType: itemType.consumables});
+	
+	_quest.setReward(_reward);
+	
+	return _quest;
 }

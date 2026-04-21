@@ -14,18 +14,24 @@ xpPopList = ds_list_create();
 titlePercent = 0;
 titlePosition = 0;
 isLevelingUp = false;
+levelUpPending = false;
 
 function handleLevelUp() {
-	currentXpBarWidth = 0;
-	currentXpSubBarWidth = 0;
-	
-	audio_play_sound(snd_level_up, 0, false);
-	pauseSystems();
-	isLevelingUp = true;
-	obj_controller.setDefaultCursor();
-	if (!audio_is_playing(snd_level_up_music)) {
-		audio_play_sound(snd_level_up_music, 0, true);
-	}
+    if (global.activeMenu || instance_exists(obj_quest_step_completed)) {
+        levelUpPending = true;
+        return;
+    }
+    
+    currentXpBarWidth = 0;
+    currentXpSubBarWidth = 0;
+    
+    audio_play_sound(snd_level_up, 0, false);
+    pauseSystems();
+    isLevelingUp = true;
+    obj_controller.setDefaultCursor();
+    if (!audio_is_playing(snd_level_up_music)) {
+        audio_play_sound(snd_level_up_music, 0, true);
+    }
 }
 
 function XpPopUp(_x, _y, _text, _direction) constructor {

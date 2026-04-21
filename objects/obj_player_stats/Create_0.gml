@@ -77,7 +77,6 @@ function drawStamina(_x, _y, _width, _bThickness) {
 function drawPlayerStatsList(
 	_color = c_green,
 	_xPosition = 30,
-	_yPosition = 110,
 	_barWidth = 250,
 	_borderThickness = 3
 ) {
@@ -89,8 +88,12 @@ function drawPlayerStatsList(
 		_x = lerp(_x, _xPosition, .1);
 	}
 
-	var _currentY = _yPosition;
 	var _vMargin = 15;
+
+	var _yPosition = display_get_gui_height() - 100 - _vMargin * 2;
+
+	var _currentY = _yPosition;
+	
 	var _barHeight = drawStamina(_x, _currentY, _barWidth, _borderThickness);
 	_currentY -= _barHeight;
 	_currentY -= _vMargin;

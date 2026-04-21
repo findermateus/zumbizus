@@ -350,6 +350,7 @@
     {"id":{"name":"obj_player_stats","path":"objects/obj_player_stats/obj_player_stats.yy",},},
     {"id":{"name":"obj_player","path":"objects/obj_player/obj_player.yy",},},
     {"id":{"name":"obj_quest_manager","path":"objects/obj_quest_manager/obj_quest_manager.yy",},},
+    {"id":{"name":"obj_quest_step_completed","path":"objects/obj_quest_step_completed/obj_quest_step_completed.yy",},},
     {"id":{"name":"obj_resident_gui_controller","path":"objects/obj_resident_gui_controller/obj_resident_gui_controller.yy",},},
     {"id":{"name":"obj_slope","path":"objects/obj_slope/obj_slope.yy",},},
     {"id":{"name":"obj_spitter_enemy_entity","path":"objects/obj_spitter_enemy_entity/obj_spitter_enemy_entity.yy",},},
