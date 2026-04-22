@@ -2,7 +2,8 @@ enum QuestEvent {
 	EnemyKilled,
 	ItemCollected,
 	AreaEntered,
-	ItemCrafted
+	ItemCrafted,
+	FurnitureCrafted
 }
 
 function Quest(_id, _name) constructor {
@@ -86,7 +87,7 @@ function Quest(_id, _name) constructor {
 			var _result = addItemToGrid(global.inventory, _buildedItem);
 			
 			if (_result == true) {
-				createIndicatorModal(_buildedItem, _quantity);
+				createIndicatorForQuestItem(_buildedItem, _quantity);
 				
 				continue;
 			}

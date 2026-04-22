@@ -1,5 +1,7 @@
 draw_sprite_ext(spriteToDrawShadow, currentSpriteFrame, x, y, image_xscale, image_yscale, 0, c_white, 1);
 
+drawHitFlash(spriteToDrawShadow, currentSpriteFrame, x, y, image_xscale, image_yscale, image_angle, c_white)
+
 var _color = #32CD32;
 
 gpu_set_blendmode(bm_add);

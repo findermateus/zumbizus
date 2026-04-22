@@ -223,7 +223,7 @@ notifyEvent = function(_event, _data) {
 }
 
 function getCreateAxeQuest() {
-	var _quest = new Quest("craft_axe", "Faça um Machado");
+	var _quest = new Quest("craft_axe", "Se torne um Lenhador");
 
 	_quest.onComplete = method(_quest, function () {
 		self.applyReward();
@@ -331,7 +331,7 @@ function getCreateAxeQuest() {
 }
 
 function getCreateCampfireQuest() {
-	var _quest = new Quest("create_campfire", "Crie uma fogueira");
+	var _quest = new Quest("create_campfire", "Descubra o Fogo");
 	
 	_quest.onComplete = method(_quest, function () {
 		self.applyReward();
@@ -394,6 +394,18 @@ function getCreateCampfireQuest() {
 	});
 	
 	_quest.addStep(_step);
+	
+	var _craftCampfireStep = new QuestStep("Construa a fogueira");
+	
+	_craftCampfireStep.onEvent = method(_craftCampfireStep, function (_event, _data) {
+		if (_event != QuestEvent.FurnitureCrafted) return;
+		
+		if (_data.furnitureId == global.furnitureIds.campfire) {
+			self.quest.completeCurrentStep();
+		}
+	});
+	
+	_quest.addStep(_craftCampfireStep);
 	
 	var _reward = new QuestReward(15);
 	array_push(_reward.items, { itemId: consumableItems.watter_bottle, itemType: itemType.consumables}, {itemId: consumableItems.canned_pineapple, itemType: itemType.consumables});
