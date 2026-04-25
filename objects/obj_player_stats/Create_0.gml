@@ -120,6 +120,7 @@ function equipedItemUi() {
 }
 
 //função responsável por desenhar a tool bar in game
+//drawToolbarInGame
 function drawEquipedItems() {
 	static _y = equipedItemsY;
 	_y = lerp(_y, equipedItemsY, .1);
@@ -144,30 +145,14 @@ function drawEquipedItems() {
 	
 	if (equipedItemsY > gui_height) return;
 	
-	var _sprite = spr_base_resident_grid;
-	var _bgSprite = spr_equiped_items;
-	//drawSpriteShadowStretched(
-	//	round(_initialX - _padding/2),
-	//	round(_y - _padding / 2),
-	//	_bgSprite,
-	//	0,
-	//	0,
-	//	round(_totalWidth + _padding),
-	//	round(_totalHeight + _padding),
-	//);
-	
-	draw_sprite_stretched_ext(
-		_bgSprite,
-		0,
-		round(_initialX - _padding/2),
-		round(_y - _padding / 2),
-		round(_totalWidth + _padding),
-		round(_totalHeight + _padding),
-		c_white,
-		1
-	);
+	var _x1 = round(_initialX - _padding/2);
+	var _y1 = round(_y - _padding / 2);
+	var _width = round(_totalWidth + _padding);
+	var _height = round(_totalHeight + _padding);
 	
 	equipedItemsX2 = round(_initialX - _padding/2) + _totalWidth + _padding;
+
+	var _sprite = spr_toolbar_grid;
 
 	for (var i = 0; i < _toolBarSize; i++) {
 		var _item = global.equipedItems[| i];
@@ -186,7 +171,22 @@ function drawEquipedItems() {
 		_ui.size = lerp(_ui.size, _ui.dsize, _lerpEffect);
 
 		var _offset = (EQUIPED_ITEM_GRID_SIZE - _ui.size) / 2;
+		
+		if (_item != global.blankInventorySpace) {
+			var _gridX = _ui.x + _offset;
+			var _gridY = _ui.y + _offset;
+		
+			var _itemHasDurability = itemHasDurability(_item);
+		
+			if (_itemHasDurability) {
+				var _minusSize = 8;
+				var _size = _ui.size - _minusSize;
+			
+				drawItemDurability(_item, _gridX + _minusSize / 2, _gridY + _minusSize / 2, _size, _size);
+			}
+		}
 
+		
 		draw_sprite_stretched(
 			_sprite,
 			_active,
@@ -215,22 +215,8 @@ function drawEquipedItems() {
 
 		var _scale = getItemScaleInGrid(_item, _ui.size);
 		
-		var _gridX = _ui.x + _offset;
-		var _gridY = _ui.y + _offset;
-		
-		var _itemHasDurability = itemHasDurability(_item);
-		
-		if (_itemHasDurability) {
-			var _minusSize = 14;
-			var _size = _ui.size - _minusSize;
-			
-			drawItemDurability(_item, _gridX + _minusSize / 2, _gridY + _minusSize / 2, _size, _size);
-		}
-		
 		var _ix = _gridX + (_ui.size / 2);
 		var _iy = _gridY + (_ui.size / 2);
-
-		drawSpriteShadow(_ix, _iy, _item.sprite, 0, 0, _scale, _scale);
 
 		draw_sprite_ext(
 			_item.sprite,

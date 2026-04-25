@@ -392,7 +392,7 @@ function drawDismantlePanel(_y, _modal) {
 }
 
 function drawDismantleOption(_x, _y, _size, _item, _isHovering, _i) {
-	var _gridSprite = spr_base_resident_grid;
+	var _gridSprite = spr_selectable_grid;
 	drawSpriteShadow(_x, _y, _gridSprite, 2, 0, getScale(_size, sprite_get_width(_gridSprite)), getScale(_size, sprite_get_height(_gridSprite)), 8, 8);
 	draw_sprite_stretched_ext(_gridSprite, _isHovering, _x, _y, _size, _size, c_white, 1);
 	
@@ -569,7 +569,7 @@ function drawRepairRequirements(_requirements, _title) {
 }
 
 function drawRepairItem(_x, _y, _size, _data, _i){
-	var _gridSprite = spr_base_resident_grid;
+	var _gridSprite = spr_selectable_grid;
 	var _scale = 1;
 	var _item = _data.item;
 	var _border = 16;
@@ -765,7 +765,7 @@ function getRequirementsUiValues() {
 }
 
 function drawPagination(_modal, _y, _actionUp = function () {}, _actionDown = function () {}) {
-	var _buttonSprite = spr_base_resident_grid;
+	var _buttonSprite = spr_selectable_grid;
 	var _buttonWidth = 40;
 	var _spriteIndex = 0;
 	var _buttonHeight = _modal.heightWithoutBorder / 2 - 40;
@@ -782,7 +782,7 @@ function drawPagination(_modal, _y, _actionUp = function () {}, _actionDown = fu
 }
 
 function drawCraftingItem(_x, _y, _size, _item, _requirementItem, _modal, _i){
-	var _gridSprite = spr_base_resident_grid;
+	var _gridSprite = spr_selectable_grid;
 	var _scale = 1;
 	
 	if (_item.fitInGrid == fitInGridType.horizontaly){
