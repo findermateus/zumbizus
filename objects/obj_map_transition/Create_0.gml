@@ -17,6 +17,10 @@ function finishTransition() {
 	closeMenu();
 	instance_destroy();
 	
+	obj_quest_manager.notifyEvent(QuestEvent.AreaEntered, {
+		area: destination
+	});
+	
 	if (mapName != "") {
 		instance_create_layer(0, 0, "Controllers", obj_map_title, {
 		 title: mapName

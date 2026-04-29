@@ -197,8 +197,10 @@ function fadeOutOfExistence() {
 }
 
 function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weaponId = noone){
+	hitFlash = 1;
 	if (state == states.dying || currentState == getKilledState) return;
 	audio_play_sound(snd_enemy_hit, 0, false);
+	
 	enemyHealth -= _damage;
 	
 	if(_attackType) playWeaponEffectSound(_attackType);	

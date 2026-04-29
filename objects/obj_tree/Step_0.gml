@@ -10,7 +10,6 @@ tree_scale_y = lerp(tree_scale_y, 1, 0.15);
 
 // Reduz tremor e flash
 shake_power = max(0, shake_power - shake_decay);
-hit_flash = max(0, hit_flash - 0.1);
 
 // Lógica de Queda
 if (isDying) {

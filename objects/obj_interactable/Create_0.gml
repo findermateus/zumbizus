@@ -42,6 +42,8 @@ checkDistance = function(_player){
 verifyConditions = function(){
 	var _player = checkPlayerExistence();
 	if(!_player) return false;
+	if(global.pause) return false;
+	if(global.activeMenu) return false;
 	if(global.activeInventory) return false;
 	if(global.stopInteractions) return false;
 	if(global.playerStopInteractions) return false;

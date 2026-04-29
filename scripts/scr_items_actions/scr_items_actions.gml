@@ -75,12 +75,17 @@ function isItemStackable(_firstItem, _lastItem){
         _firstItem.quantity -= _remainingSpace ; 
 		return {
 			firstItem: _firstItem,
-			lastItem: _lastItem
+			lastItem: _lastItem,
+			movedAmount: _remainingSpace
 		};
     }
+	
+	var _moved = _firstItem.quantity;
     _lastItem.quantity += _firstItem.quantity;
-    return {
-		lastItem: _lastItem
+    
+	return {
+		lastItem: _lastItem,
+		movedAmount: _moved
 	};
 }
 

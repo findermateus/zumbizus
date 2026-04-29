@@ -7,6 +7,7 @@ destinyXPosition = guiWidth * .98;
 destinyYPosition = yPosition;
 totalHeight = 0;
 shouldFadeOut = false;
+
 box = {
 	width: 0,
 	height: 0,
@@ -14,7 +15,8 @@ box = {
 	quantity: -1,
 	sprite: spr_item_default,
 	itemId: -1,
-	collecting: true
+	collecting: true,
+	isQuestReward: false
 };
 
 alarm[0] = 60 * 2;
@@ -59,29 +61,53 @@ function drawItemIndicator(){
 	var _targetHeight = _textHeight;
 	_scale = _targetHeight / _spriteHeight;
 	_spriteWidth *= _scale;
+	
 	var _rectWidth = _spriteWidth + _textWidth + _border * 2;
 	var _rectHeight = _textHeight + _border * 2;
 	var _xPosition = xPosition - _rectWidth;
 
+	var _index = 0;
+	var _boxColor = c_white;
+	var _spriteColor = c_white;
+	var _textColor = c_white;
+	
+
+	if (box.isQuestReward) {
+		_index = 1; 
+		_boxColor = #1e8449;
+		_textColor = c_white;
+	} else if (box.collecting) {
+		_index = 0;
+		_boxColor = c_white;
+	} else {
+		_index = 1;
+		_boxColor = #660707;
+	}
+
 	draw_set_alpha(image_alpha);
-	var _index = box.collecting ? 0 : 1;
-	var _color = box.collecting ? c_white : #660707;
-	draw_sprite_stretched_ext(spr_item_collected_indicator, _index, _xPosition - _border, yPosition - _border, _rectWidth, _rectHeight, _color, 1);
+	
+	draw_sprite_stretched_ext(spr_item_collected_indicator, _index, _xPosition - _border, yPosition - _border, _rectWidth, _rectHeight, _boxColor, 1);
 
 	if (box.sprite != noone) {
 		draw_sprite_ext(
-	        box.sprite, 0,
-	        _xPosition + _spriteWidth/2,
+			box.sprite, 0,
+			_xPosition + _spriteWidth/2,
 			yPosition + _targetHeight/2, 
-	        _scale, _scale, 0, c_white, 1
-	    );
+			_scale, _scale, 0, _spriteColor, 1
+		);
 	}
 
-	draw_text_scribble(_xPosition + _spriteWidth + _border / 2, yPosition, "[fa_left, fa_top]" + _textContent);
+	draw_set_color(_textColor);
+
+	var _textScribble = "[fa_left, fa_top]" + _textContent;
+
+	drawTextShadowScribble(_xPosition + _spriteWidth + _border / 2, yPosition, _textScribble, image_alpha);
+	draw_text_scribble(_xPosition + _spriteWidth + _border / 2, yPosition, _textScribble);
+	
+	draw_set_color(c_white);
 
 	draw_set_alpha(1);
 	fadeOut();
-
 }
 
 function fadeOut(){

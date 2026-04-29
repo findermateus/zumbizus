@@ -18,13 +18,18 @@ function dismantleItem(_j, _i, _toolBar) {
 			createIndicatorForDroppedItems(_buildedItem, _buildedItem.quantity);
 			return;
 		}
+		
 		if (_result == true) {
+			obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, { itemId: _buildedItem.itemId, itemType: _buildedItem.type, quantity: _buildedItem.quantity});
 			createIndicatorModal(_buildedItem, _buildedItem.quantity);
+			
 			return;
 		}
+		
 		createIndicatorModal(_buildedItem, _result);
 		var _droppedItems = variable_clone(_buildedItem);
 		_droppedItems.quantity = _buildedItem.quantity - _result;
+		
 		createItem(_droppedItems, true);
 	});
 	

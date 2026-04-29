@@ -62,8 +62,17 @@ function createIndicatorForDroppedItems(_item, _quantity = 1){
 }
 
 function createIndicatorModal(_item, _quantity = 1){
-	var _indicatorModal = instance_create_layer(x, y, "Alert", obj_collected_item_indicator);
+	var _indicatorModal = instance_create_layer(0, 0, "Alert", obj_collected_item_indicator);
 	_indicatorModal.box.textContent = _item.name;
+	_indicatorModal.box.sprite = _item.sprite;
+	_indicatorModal.box.itemId = _item.itemId;
+	_indicatorModal.box.quantity = _quantity;
+}
+
+function createIndicatorForQuestItem(_item, _quantity = 1){
+	var _indicatorModal = instance_create_layer(0, 0, "Alert", obj_collected_item_indicator);
+	_indicatorModal.box.isQuestReward = true; 
+	_indicatorModal.box.textContent = "Missão: " + _item.name; 
 	_indicatorModal.box.sprite = _item.sprite;
 	_indicatorModal.box.itemId = _item.itemId;
 	_indicatorModal.box.quantity = _quantity;

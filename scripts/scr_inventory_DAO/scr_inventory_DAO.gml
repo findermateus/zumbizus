@@ -16,32 +16,43 @@ function getItemById(_inventory, _type, _id, _ignoreFull = false) {
 
 function addItemToGrid(_inventory, _item) {
 	var _stackable = _item.stackable;
+	
 	if (_stackable) {
 		var _alreadyPlacedItem = getItemById(_inventory, _item.type, _item.itemId, true);
+		
 		if (_alreadyPlacedItem != false) {
 			var _remainingSpace = _alreadyPlacedItem.limit - _alreadyPlacedItem.quantity;
 			var _totalSpace = _item.quantity;
+			
 			if (_remainingSpace >= _item.quantity) {
 				_alreadyPlacedItem.quantity += _item.quantity;
 				return true;
 			}
+			
 			if (_remainingSpace > 0) {
 				_alreadyPlacedItem.quantity = _alreadyPlacedItem.limit;
 				_item.quantity -= _remainingSpace;
 				var _result = addItemToGrid(_inventory, _item);
 				if (_result == true){
 					_item.quantity += _remainingSpace;
+		
 					return true;
 				}
+				
 				if (_result == false) {
+					
 					return _remainingSpace;
 				}
 			}
 		}
 	}
+	
 	var _blankSpace = getBlankSpaceInInventory(_inventory);
+	
 	if (_blankSpace == false) return false;
+	
 	_inventory[# _blankSpace[0], _blankSpace[1]] = _item;
+	
 	return true;
 }
 

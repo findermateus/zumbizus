@@ -205,7 +205,7 @@ function getKilled(_force, _direction, _damage) {
 }
 
 function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weaponId = noone){
-	
+	hitFlash = 1;
 	audio_play_sound(snd_enemy_hit, 0, false);
 	currentHealth -= _damage;
 	

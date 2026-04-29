@@ -59,21 +59,32 @@ function active(){
 	if(!verifyConditions()) currentState = innactive;
 	if(!mouse_check_button_pressed(mb_left)) return;
 	playClickSound();
-	var _result = getCollected();
-	if(_result != false){
-		if (_result == true) instance_destroy(id);
-		var _quantity = variable_struct_exists(item, "quantity") ? item.quantity : 1;
-		createIndicatorModal(item, _result != true ? _result : _quantity);
-		audio_play_sound(item.sound, 0, false);
+	
+	var _result = addItemToGrid(global.inventory, item);
+	
+	if(_result == false){
+		var _alert = instance_create_layer(x, y, "Alert", obj_alert, {
+			y: (y - sprite_get_height(item.sprite) - 32)
+		});
+		_alert.textAlert = "Inventário cheio!";
+		playFailSound();
+		curveAnimationIndex = 0;
+		currentState = inventoryFull;	
+		
 		return;
 	}
-	var _alert = instance_create_layer(x, y, "Alert", obj_alert, {
-		y: (y - sprite_get_height(item.sprite) - 32)
-	});
-	_alert.textAlert = "Inventário cheio!";
-	playFailSound();
-	curveAnimationIndex = 0;
-	currentState = inventoryFull;
+	
+	if (_result == true)  {
+		instance_destroy(id);
+	}
+		
+	var _quantity = variable_struct_exists(item, "quantity") ? item.quantity : 1;
+	var _quantityAdded = _result != true ? _result : _quantity;
+	
+	obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, { itemId: item.itemId, itemType: item.type, quantity: _quantityAdded});
+	
+	createIndicatorModal(item, _quantityAdded);
+	audio_play_sound(item.sound, 0, false);
 }
 
 
@@ -85,10 +96,6 @@ function inventoryFull(){
 	}
 	curveAnimationIndex += (delta_time/1000000);
 	x += animcurve_channel_evaluate(animationCurveInventoryFull, curveAnimationIndex) * 2;
-}
-
-function getCollected(){
-	return addItemToGrid(global.inventory, item);
 }
 
 bounceAnimation = animcurve_get_channel(ac_item, "bounce");

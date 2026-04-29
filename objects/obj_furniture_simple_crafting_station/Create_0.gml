@@ -266,7 +266,6 @@ function drawSimpleCraftingStationUI() {
     draw_set_alpha(1);
 }
 
-// --- CLÁUSULAS DE GUARDA (EARLY RETURNS) ---
 function handleClick(_items, _hoverIndex, _xMouse, _yMouse) {
     if (_hoverIndex == -1 || !arrayKeyExists(_items, _hoverIndex)) return;
     
@@ -303,7 +302,7 @@ function handleClick(_items, _hoverIndex, _xMouse, _yMouse) {
         return;
     }
 
-    createIndicatorModal(_bld, 1);
+	createIndicatorModal(_bld, 1);
     audio_play_sound(snd_builded_item, 0, false);
     audio_play_sound(snd_equip_item, 0, false);
     
@@ -311,4 +310,6 @@ function handleClick(_items, _hoverIndex, _xMouse, _yMouse) {
         var _req = _craft.requirements[k];
         cleanItemInInventoryById(global.inventory, _req.itemId, _req.type, _req.quantity);
     }
+	
+	obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, { itemId: _bld.itemId, itemType: _bld.type, quantity: 1});
 }

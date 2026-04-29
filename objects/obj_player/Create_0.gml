@@ -30,6 +30,7 @@ currentSpeed = global.player.walkingSpeed;
 playerAngleOffset = 0;
 playerAngleTimer = 0;
 closestObjectToCatch = noone;
+hitFlash = 0;
 
 inputs = {
 	up: keyboard_check(ord("W")),
@@ -197,6 +198,7 @@ damageSpeed = 10;
 
 function playerGetHit(_direction, _damage, _force = 5, _type = damageType.blunt, _shouldRecoverOrGetPushed = true) {
 	screenShake(10);
+	hitFlash = 1;
 	decreaseHealth(_damage);
 	createBloodEffect(_force, invertDirection(_direction), getMiddlePoint(bbox_left, bbox_right), getMiddlePoint(bbox_top, bbox_bottom), _damage);
 	var _velh = lengthdir_x(_force, _direction);
@@ -273,6 +275,31 @@ function drawPlayer() {
 		spriteXscale,
 		_drawState
 	);
+	
+	hitFlash = max(0, hitFlash - 0.1);
+	
+	if (hitFlash <= 0) return;
+	
+    gpu_set_fog(true, #e5383b, 0, 0);
+    
+	drawPersonBody(
+		x,
+		y,
+		global.player.gender,
+		currentSpriteFrame,
+		_scale,
+		playerAngleOffset,
+		hitFlash,
+		_skinColor,
+		_hair,
+		_armorId,
+		_helmetId,
+		_bagId,
+		spriteXscale,
+		_drawState
+	);
+	
+    gpu_set_fog(false, c_white, 0, 0);
 }
 
 setClosestObjectToCatch = function () {
@@ -431,10 +458,12 @@ function handleOtherEffects(_otherEffects) {
 
 
 function handleCleanInventoryAfterConsuming(_item, _data, _j, _i, _inventory) {
+	var _isPlayerInventory = _inventory == global.inventory;
 	var _itemToDrop = _data.itemToDrop;
 	
 	if (_itemToDrop == noone && !_item.stackable){
 		cleanInventoryGrid(_inventory, _j, _i);
+		
 		return true;
 	}
 		
@@ -443,11 +472,13 @@ function handleCleanInventoryAfterConsuming(_item, _data, _j, _i, _inventory) {
 		if (_item.quantity < 1) {
 			cleanInventoryGrid(_inventory, _j, _i);
 		}
+		
 		return true;
 	}
 		
 	if (_itemToDrop == noone) {
 		cleanInventoryGrid(_inventory, _j, _i);
+		
 		return true;
 	}
 		
@@ -461,7 +492,13 @@ function handleCleanInventoryAfterConsuming(_item, _data, _j, _i, _inventory) {
 	var _consumedItem = getConsumedItem(_itemToDrop);
 	
 	var _added = addItemToGrid(_inventory, _consumedItem);
-	if (_added != false) return true;
+	if (_added != false) {
+		if (_isPlayerInventory) {
+			obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, {itemId: _consumedItem.itemId, itemType: _consumedItem.type, quantity: 1});
+		}
+		
+		return true;	
+	}
 	createIndicatorForDroppedItems(_consumedItem, 1); 
 	createItem(_consumedItem, true);
 	return true;
