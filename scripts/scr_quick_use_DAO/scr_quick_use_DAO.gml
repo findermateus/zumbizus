@@ -68,6 +68,7 @@ function useItemFromQuickUseBar(_index) {
 			createItem(_consumedItem, true);
 		} else {
 			createIndicatorModal(_consumedItem, 1);
+			obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, { itemId: _consumedItem.itemId, itemType: _consumedItem.type, quantity: 1});
 		}
 	}
 	
@@ -81,20 +82,30 @@ function useItemFromQuickUseBar(_index) {
 function addQuickUseItemToInventory(_index){
 	var _item = getItemFromQuickUse(_index);
 	if (_item == false) return;
+	
 	var _removeItem = function (_i, _item) {
 		audio_play_sound(_item.sound, 0, false);
 		global.quickUse[| _i] = global.blankInventorySpace;
 	}
+	
 	var _result = addItemToGrid(global.inventory, _item);
+	
 	if (_result) {
 		_removeItem(_index, _item);
+		obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, { itemId: _item.itemId, itemType: _item.type, quantity: _item.quantity});	
+		
 		return true;
 	}
+	
 	if (obj_inventory.secundaryInventory == false) return false;
+	
 	var _secundaryInventoryResult = addItemToGrid(obj_inventory.secundaryInventory, _item);
+	
 	if (_secundaryInventoryResult) {
 		_removeItem(_index, _item);
+	
 		return true;
 	}
+	
 	return false;
 }

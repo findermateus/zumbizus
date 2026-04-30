@@ -10,7 +10,6 @@ shake_decay = 0.2;
 // --- JUICE DE IMPACTO ---
 shake_power = 0;
 shake_decay = 0.25;
-hit_flash = 0; 
 tree_scale_x = 1;
 tree_scale_y = 1;
 
@@ -46,7 +45,7 @@ function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weapo
 	}
 	
 	if (_isHittingWithAnAxe) {
-		hit_flash = 1;
+		hitFlash = 1;
 	}
 	shake_power = 5;
 	tree_scale_x = 1.2;

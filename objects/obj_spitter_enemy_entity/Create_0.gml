@@ -186,6 +186,8 @@ function switchToAttack(){
 }
 
 function getKilled(_force, _direction, _damage) {
+	obj_quest_manager.notifyEvent(QuestEvent.EnemyKilled, {enemyId: "spitter"})
+	
 	createBloodEffect(_force, _direction, getMiddlePoint(bbox_left, bbox_right), getMiddlePoint(bbox_top, bbox_bottom), 50);
 	
 	if (instance_exists(obj_player_sound_controller)) {
@@ -203,7 +205,7 @@ function getKilled(_force, _direction, _damage) {
 }
 
 function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weaponId = noone){
-	
+	hitFlash = 1;
 	audio_play_sound(snd_enemy_hit, 0, false);
 	currentHealth -= _damage;
 	

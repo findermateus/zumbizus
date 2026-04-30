@@ -14,20 +14,13 @@ draw_sprite_ext(
     image_alpha
 );
 
-if (hit_flash > 0) {
-    gpu_set_fog(true, c_white, 0, 0);
-    
-    draw_sprite_ext(
-        sprite_index, 
-        image_index, 
-        x + _shakeX, 
-        y, 
-        image_xscale * tree_scale_x, 
-        image_yscale * tree_scale_y, 
-        fall_angle, 
-        c_white, 
-        hit_flash * 0.5 
-    );
-    
-    gpu_set_fog(false, c_white, 0, 0);
-}
+drawHitFlash(
+	sprite_index,
+	image_index,
+	x + _shakeX,
+	y,
+	image_xscale * tree_scale_x,
+	image_yscale * tree_scale_y,
+	fall_angle, 
+    c_white
+);

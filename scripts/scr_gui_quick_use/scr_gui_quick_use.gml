@@ -48,7 +48,7 @@ function getQuickUseUiValues() {
 
 function drawQuickUseItemsInGame(_x1, _x2, _y, _size) {
 	static uiValues = getQuickUseUiValues();
-	var _sprite = spr_base_resident_grid;
+	var _sprite = spr_selectable_grid;
 	var _spaceBetweenBoxes = 12;
 	var _numItems = ds_list_size(global.quickUse);
 

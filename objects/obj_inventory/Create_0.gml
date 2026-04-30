@@ -351,9 +351,11 @@ function setInventoryUiValue(_isHover, _value, _x, _y, _force, _verifyConditionT
 		_value.destinyX = _x;
 		return;
 	}
-	_value.destinyY = _isHover ? _y - _force : _y;
+	//_value.destinyY = _isHover ? _y - _force : _y;
+	_value.destinyY = _y;
 	_value.destinyX = _x;
-	_value.y = lerp(_value.y, _value.destinyY, .1);
+	//_value.y = lerp(_value.y, _value.destinyY, .1);
+	_value.y = _value.destinyY;
 	_value.x = lerp(_value.x, _value.destinyX, .1);
 }
 
@@ -631,25 +633,88 @@ function handleSingleInventoryItemSwitching(_holdingItem, _hoverItem) {
 }
 
 function handleInventoryItemSwitching(_holdingItem, _hoverItem){
+	var _from = global.activeInventoryAction;
+	var _auxiliarInventory = (_from == primaryInventory) ? secundaryInventory : primaryInventory;
+	var _to = _auxiliarInventory;
+
 	var _stackResult = checkIfItemsAreStackable(_holdingItem, _hoverItem);
+	
 	if (_stackResult != global.blankInventorySpace){
+		var _movedItem = _holdingItem;
+		var _amount = _holdingItem.quantity;
+
+		if (variable_struct_exists(_stackResult, "movedAmount")) {
+			_amount = _stackResult.movedAmount;
+		}
+		
 		_holdingItem = global.blankInventorySpace;
-		if(variable_struct_exists(_stackResult, "firstItem")) _holdingItem = _stackResult.firstItem;
-        _hoverItem = _stackResult.lastItem;
+		
+		if (variable_struct_exists(_stackResult, "firstItem")) {
+			_holdingItem = _stackResult.firstItem;
+		}
+        
+		_hoverItem = _stackResult.lastItem;
+		
 		global.activeInventoryAction[# holdingItem.j, holdingItem.i] = _holdingItem;
-		var _auxiliarInventory = global.activeInventoryAction == primaryInventory ? secundaryInventory : primaryInventory;
 		_auxiliarInventory[# hoverItem.j, hoverItem.i] = _hoverItem;
+		
+		if (_from == secundaryInventory && _to == primaryInventory) {
+			if (_movedItem != global.blankInventorySpace) {
+				obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, {
+					itemId: _movedItem.itemId,
+					itemType: _movedItem.type,
+					quantity: _amount
+				});
+			}
+		}
+		
 		return;
 	}
+	
 	global.activeInventoryAction[# holdingItem.j, holdingItem.i] = _hoverItem;
-	var _auxiliarInventory = global.activeInventoryAction == primaryInventory ? secundaryInventory : primaryInventory;
 	_auxiliarInventory[# hoverItem.j, hoverItem.i] = _holdingItem;
+	
+	if (_from == secundaryInventory && _to == primaryInventory) {
+		if (_holdingItem != global.blankInventorySpace) {
+			obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, {
+				itemId: _holdingItem.itemId,
+				itemType: _holdingItem.type,
+				quantity: _holdingItem.quantity
+			});
+		}
+	}
 }
 
 function checkIfItemsAreStackable(_droppingItem, _receivingItem){
 	if (_droppingItem == global.blankInventorySpace || _receivingItem == global.blankInventorySpace) return global.blankInventorySpace;
-	var _items = isItemStackable(_droppingItem, _receivingItem);
-	return _items;
+	
+	var _firstItem = _droppingItem;
+	var _lastItem = _receivingItem;
+	
+	if (_firstItem.itemId != _lastItem.itemId || _firstItem.type != _lastItem.type) return global.blankInventorySpace;
+	
+	if(!variable_struct_exists(_firstItem, "limit")) return global.blankInventorySpace;
+	if(_lastItem.quantity >= _lastItem.limit) return global.blankInventorySpace;
+	
+	var _remainingSpace = _lastItem.limit - _lastItem.quantity;
+
+    if (_firstItem.quantity > _remainingSpace ) {
+        _lastItem.quantity += _remainingSpace ;
+        _firstItem.quantity -= _remainingSpace ; 
+		return {
+			firstItem: _firstItem,
+			lastItem: _lastItem,
+			movedAmount: _remainingSpace
+		};
+    }
+	
+	var _moved = _firstItem.quantity;
+    _lastItem.quantity += _firstItem.quantity;
+    
+	return {
+		lastItem: _lastItem,
+		movedAmount: _moved
+	};
 }
 
 #endregion

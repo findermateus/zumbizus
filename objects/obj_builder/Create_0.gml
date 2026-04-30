@@ -625,6 +625,7 @@ function handleAlreadyPlacedHoverFurniture(_hoverFurniture){
 
 function handleBuildable(){
 	if(!mouse_check_button_released(mb_left)) return;
+	
 	if (alreadyPlacedSelectedFurniture != noone){
 		alreadyPlacedSelectedFurniture.x = furnitureDisplayInfo.xPosition;
 		alreadyPlacedSelectedFurniture.y = furnitureDisplayInfo.yPosition;
@@ -636,20 +637,31 @@ function handleBuildable(){
 		menuNotActiveSelectingFurnatureMenuButOnBuildMode();
 		return;
 	}
+	
 	var _alert = instance_create_layer(furnitureDisplayInfo.xPosition, furnitureDisplayInfo.yPosition, "Alert", obj_alert);
 	_alert.textAlert = "Mobília construída";
 	_alert.alertColor = c_lime;
+	
+	var _furnitureId = selectedFurniture.furnitureId;
+	
 	var _furnitureConversor = global.furnitureObjectConversor[? selectedFurniture.furnitureId];
 	var _object = _furnitureConversor.object;
+	
 	var _furniture = instance_create_layer(furnitureDisplayInfo.xPosition, furnitureDisplayInfo.yPosition, "Instances", _object, {
 		image_angle: furnitureDisplayInfo.angle,
 		sprite_index: selectedFurniture.sprite
 	});
+	
 	_furniture.setFurniture(selectedFurniture, _furnitureConversor.info);
+	
 	setFurnitureBaseId(_furniture);
+	
 	_furniture.loadSavedData(false);
+	
 	cleanInventoryWhenBuild(selectedFurniture.requirements);
 	checkRequirements(selectedFurniture);
+	
+	obj_quest_manager.notifyEvent(QuestEvent.FurnitureCrafted, { furnitureId: _furnitureId });
 }
 
 function handleNonBuildable(){

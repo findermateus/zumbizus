@@ -383,12 +383,18 @@ function drawCloseButton(_x2, _yPos, _width, _height) {
 function handleClickOnItemThatIsBeingCooked(_slot){
 	var _item = _slot.getCurrentItem();
 	var _result = addItemToGrid(global.inventory, _item);
+	
 	if (_result == true) {
 		_slot.removeItem();
+		
+		obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, { itemId: _item.itemId, itemType: _item.type, quantity: _item.quantity});
+		
 		createIndicatorModal(_item, _item.quantity);
 		audio_play_sound(_item.sound, 0, false);
+	
 		return;
 	}
+	
 	setFailEffect();
 }
 

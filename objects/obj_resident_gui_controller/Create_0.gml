@@ -454,20 +454,20 @@ function drawPaginationButton(_gui, _button1Y, _button2Y, _actionUp, _actionDown
 	var _hUp = mouseIsOnRectangle(_gui.x, _button1Y - MARGIN_WHEN_HOVER, _gui.x + _buttonWidth, _button1Y + _buttonHeight);
 	if (_hUp) {
 		_isHovering.up = true;
-		drawSpriteShadowStretched(_gui.x, _button1Y, spr_base_resident_grid, 0, 0, _buttonWidth, _buttonHeight, 0);
+		drawSpriteShadowStretched(_gui.x, _button1Y, spr_selectable_grid, 0, 0, _buttonWidth, _buttonHeight, 0);
 		if (mouse_check_button_released(mb_left)) { playClickSound(); _actionUp(); }
 	}
-	draw_sprite_stretched(spr_base_resident_grid, _hUp, _gui.x, _button1Y, _buttonWidth, _buttonHeight);
+	draw_sprite_stretched(spr_selectable_grid, _hUp, _gui.x, _button1Y, _buttonWidth, _buttonHeight);
 	draw_sprite_ext(spr_builder_arrow_indicator, 0, _gui.x + _buttonWidth/2, _button1Y + _buttonHeight/2, _hUp ? 1.4 : 1.2, _hUp ? 1.4 : 1.2, 0, c_white, 1);
 	
 	// Botão Down
 	var _hDown = mouseIsOnRectangle(_gui.x, _button2Y, _gui.x + _buttonWidth, _button2Y + _buttonHeight + MARGIN_WHEN_HOVER);
 	if (_hDown) {
 		_isHovering.down = true;
-		drawSpriteShadowStretched(_gui.x, _button2Y, spr_base_resident_grid, 0, 0, _buttonWidth, _buttonHeight, 0, -4);
+		drawSpriteShadowStretched(_gui.x, _button2Y, spr_selectable_grid, 0, 0, _buttonWidth, _buttonHeight, 0, -4);
 		if (mouse_check_button_released(mb_left)) { playClickSound(); _actionDown(); }
 	}
-	draw_sprite_stretched(spr_base_resident_grid, _hDown, _gui.x, _button2Y, _buttonWidth, _buttonHeight);
+	draw_sprite_stretched(spr_selectable_grid, _hDown, _gui.x, _button2Y, _buttonWidth, _buttonHeight);
 	draw_sprite_ext(spr_builder_arrow_indicator, 0, _gui.x + _buttonWidth/2, _button2Y + _buttonHeight/2, _hDown ? 1.4 : 1.2, _hDown ? -1.4 : -1.2, 0, c_white, 1);
 	
 	_gui.x += _buttonWidth + 30;
@@ -756,7 +756,7 @@ function getNpcGridUIValues(){
 
 function drawNpcBox(_x, _y, _size, _npc, _mouseOn, i){
 	draw_set_alpha(!_mouseOn ? .6 : .8);
-	draw_sprite_stretched(spr_base_resident_grid, !_mouseOn ? 0 : 1, _x, _y, _size, _size);
+	draw_sprite_stretched(spr_selectable_grid, !_mouseOn ? 0 : 1, _x, _y, _size, _size);
 	draw_set_alpha(1);
 	if (_npc != undefined) drawNpcInsideBox(_x + 6, _y + 6, _npc, _size - 12, i);
 }

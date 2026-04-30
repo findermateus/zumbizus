@@ -197,8 +197,10 @@ function fadeOutOfExistence() {
 }
 
 function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weaponId = noone){
+	hitFlash = 1;
 	if (state == states.dying || currentState == getKilledState) return;
 	audio_play_sound(snd_enemy_hit, 0, false);
+	
 	enemyHealth -= _damage;
 	
 	if(_attackType) playWeaponEffectSound(_attackType);	
@@ -227,7 +229,11 @@ function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weapo
 
 function getKilled() {
 	currentState = getKilledState;
+	
+	obj_quest_manager.notifyEvent(QuestEvent.EnemyKilled, {enemyId: "horde"});
+	
 	xpAdd(choose(1, 2, 3));
+	
 	var _shouldDropItem = choose(false, true);
 	
 	if (!_shouldDropItem) return false;
