@@ -47,13 +47,15 @@ function drawPlayerInsideInfoBox(_box) {
 	var _boxWidth = _playerHorizontalSize + (_padding * 2);
 	var _boxHeight = _playerVerticalSize + (_padding * 2);
 
-	draw_sprite_stretched(
-		spr_map_button,
+	draw_sprite_stretched_ext(
+		spr_bar_white,
 		0,
 		_boxX,
 		_boxY,
 		_boxWidth,
-		_boxHeight
+		_boxHeight,
+		c_gray,
+		1
 	);
 
 	drawSpriteShadow(

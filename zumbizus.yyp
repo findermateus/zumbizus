@@ -685,6 +685,7 @@
     {"id":{"name":"spr_attribute_supply","path":"sprites/spr_attribute_supply/spr_attribute_supply.yy",},},
     {"id":{"name":"spr_axe","path":"sprites/spr_axe/spr_axe.yy",},},
     {"id":{"name":"spr_bandage","path":"sprites/spr_bandage/spr_bandage.yy",},},
+    {"id":{"name":"spr_bar_white","path":"sprites/spr_bar_white/spr_bar_white.yy",},},
     {"id":{"name":"spr_bar","path":"sprites/spr_bar/spr_bar.yy",},},
     {"id":{"name":"spr_base_resident_box","path":"sprites/spr_base_resident_box/spr_base_resident_box.yy",},},
     {"id":{"name":"spr_base_resident_button","path":"sprites/spr_base_resident_button/spr_base_resident_button.yy",},},

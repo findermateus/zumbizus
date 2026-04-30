@@ -332,9 +332,12 @@ function drawQuickUse() {
 }
 
 function drawQuickUseGrid(_x, _y, _item, _active = false, _slotSize = QUICK_USE_SLOT_SIZE) {
-	var _gridSprite = spr_quick_use_grid;
+	var _gridSprite = spr_bar_white;
 	_y -= _active * 5;
-	draw_sprite_stretched(_gridSprite, _active, _x, _y, _slotSize, _slotSize);
+	
+	var _color = _active ? c_white : c_gray;
+	
+	draw_sprite_stretched_ext(_gridSprite, _active, _x, _y, _slotSize, _slotSize, _color, draw_get_alpha());
 	
 	if (_item == global.blankInventorySpace) return;
 	

@@ -3,59 +3,32 @@ menu_offset_x = 0;
 
 function drawQuests() {
 	var _questsCount = array_length(activeQuests);
-
 	if (_questsCount == 0) return;
 
 	var _maxTextWidth = 350;
 	var _margin = 30;
 	var _padding = 12;
+	var _initialY = 50;
 
-	var _guiWidth = display_get_gui_width();
-	var _guiHeight = display_get_gui_height();
-
-	draw_set_font(fnt_gui_title);
-	var _mainTitle = "Missões Ativas [J]";
-	var _mainTitleHeight = string_height(_mainTitle);
+	var _totalHeight = drawMainTitle(0, 0, _maxTextWidth, false);
+	_totalHeight += 15;
 	
-	draw_set_font(fnt_gui_long_text);
-	var _totalQuestsHeight = 0;
-
 	for (var i = 0; i < _questsCount; i++) {
 		var q = activeQuests[i];
+		_totalHeight += drawQuestTitle(0, 0, _maxTextWidth, q, false);
+		
 		var step = q.getCurrentStep();
-	
-		_totalQuestsHeight += string_height_ext(q.name, -1, _maxTextWidth) + 5;
-	
 		if (!is_undefined(step)) {
-			var text = step.description;
-			
-			text += addCounterText(step); 
-		
-			var _stepScale = 0.7;
-			var _scaledMaxWidth = _maxTextWidth / _stepScale; 
-		
-			_totalQuestsHeight += (string_height_ext(text, -1, _scaledMaxWidth) * _stepScale) + 15;
+			_totalHeight += drawQuestStep(0, 0, _maxTextWidth, step, q.currentStepIndex, false);
 		}
 	}
 
-	var _totalHeight = _mainTitleHeight + 15 + _totalQuestsHeight;
-
-	// Margem do topo fixada em 15px
-	var _initialY = 50;
-
-	// Invertida a direção da animação de sumir (agora vai para a esquerda, usando valor negativo)
 	var _targetOffset = global.activeMenu ? -(_maxTextWidth + _margin + _padding * 2 + 50) : 0;
 	menu_offset_x = lerp(menu_offset_x, _targetOffset, 0.1);
 
-	if (global.activeMenu && abs(menu_offset_x - _targetOffset) < 2) {
-		return;
-	}
+	if (global.activeMenu && abs(menu_offset_x - _targetOffset) < 2) return;
 
 	var _baseTextX = _margin + menu_offset_x; 
-
-	draw_set_valign(fa_top);
-	draw_set_halign(fa_left);
-
 	var _rectX1 = _baseTextX - _padding;
 	var _rectY1 = _initialY - _padding;
 	var _rectX2 = _baseTextX + _maxTextWidth + _padding;
@@ -63,8 +36,6 @@ function drawQuests() {
 
 	var _isHovering = mouseIsOnRectangle(_rectX1, _rectY1, _rectX2, _rectY2);
 	hover_anim = lerp(hover_anim, _isHovering ? 1 : 0, 0.15);
-
-	// Invertida a animação de hover para ir para a direita (afastando da borda)
 	var _textX = _baseTextX + (hover_anim * 6);
 
 	var _drawRectX1 = _textX - _padding;
@@ -73,75 +44,119 @@ function drawQuests() {
 	draw_set_alpha(1);
 	draw_set_color(c_black);
 	draw_sprite_stretched(spr_bar, 0, _drawRectX1, _rectY1, _drawRectX2 - _drawRectX1, _rectY2 - _rectY1);
-	
+
 	draw_set_alpha(1);
 	draw_set_color(c_white);
+	draw_set_valign(fa_top);
+	draw_set_halign(fa_left);
 
 	var _y = _initialY;
-	
-	draw_set_font(fnt_gui_title);
-	drawTextExtShadow(_textX, _y, _mainTitle, -1, _maxTextWidth, 1, 3, 1);
-	draw_text_ext(_textX, _y, _mainTitle, -1, _maxTextWidth);
-	
-	_y += _mainTitleHeight + 15; 
-
-	draw_set_font(fnt_gui_long_text);
+	_y += drawMainTitle(_textX, _y, _maxTextWidth, true);
+	_y += 15; 
 	
 	for (var i = 0; i < _questsCount; i++) {
 		var q = activeQuests[i];
+		_y += drawQuestTitle(_textX, _y, _maxTextWidth, q, true);
+		
 		var step = q.getCurrentStep();
-		
-		drawTextExtShadow(_textX, _y, q.name, -1, _maxTextWidth, 1, 3, 1);
-		draw_set_color(#FFB86C);
-		draw_text_ext(_textX, _y, q.name, -1, _maxTextWidth);
-		draw_set_color(c_white);
-		_y += string_height_ext(q.name, -1, _maxTextWidth) + 5;
-		
 		if (!is_undefined(step)) {
-			var text = step.description;
-			
-			text += addCounterText(step)
-			text = string(q.currentStepIndex + 1) + ") " + text;
-			var _stepScale = 0.7;
-			var _scaledMaxWidth = _maxTextWidth / _stepScale; 
-			
-			drawTextExtShadow(_textX, _y, text, -1, _scaledMaxWidth, 1, 2, _stepScale);
-			draw_set_color(#FFDC64);
-			draw_text_ext_transformed(_textX, _y, text, -1, _scaledMaxWidth, _stepScale, _stepScale, 0);
-			draw_set_color(c_white);
-			
-			_y += (string_height_ext(text, -1, _scaledMaxWidth) * _stepScale) + 15;
+			_y += drawQuestStep(_textX, _y, _maxTextWidth, step, q.currentStepIndex, true);
 		}
 	}
 
 	draw_set_font(fnt_gui_default);
 }
 
-function addCounterText(step) {
-	if (array_length(step.objectives) > 0) {
-		var text = "";
-		
-		for (var i = 0; i < array_length(step.objectives); i++) {
-			var obj = step.objectives[i];
+function drawMainTitle(_x, _y, _maxWidth, _isDraw) {
+	draw_set_font(fnt_gui_title);
+	var _text = "Missões Ativas [J]";
+	var _h = string_height(_text);
+	
+	if (_isDraw) {
+		drawTextExtShadow(_x, _y, _text, -1, _maxWidth, 1, 3, 1);
+		draw_text_ext(_x, _y, _text, -1, _maxWidth);
+	}
+	
+	return _h;
+}
 
+function drawQuestTitle(_x, _y, _maxWidth, _quest, _isDraw) {
+	draw_set_font(fnt_gui_long_text);
+	var _h = string_height_ext(_quest.name, -1, _maxWidth);
+	
+	if (_isDraw) {
+		drawTextExtShadow(_x, _y, _quest.name, -1, _maxWidth, 1, 3, 1);
+		draw_set_color(#FFB86C);
+		draw_text_ext(_x, _y, _quest.name, -1, _maxWidth);
+		draw_set_color(c_white);
+	}
+	
+	return _h + 5;
+}
+
+function drawQuestStep(_x, _y, _maxWidth, _step, _stepIndex, _isDraw) {
+	var _stepScale = 0.7;
+	var _scaledMaxWidth = _maxWidth / _stepScale; 
+	var _consumedHeight = 0;
+	
+	var _text = string(_stepIndex + 1) + ") " + _step.description;
+	var _h = (string_height_ext(_text, -1, _scaledMaxWidth) * _stepScale);
+	
+	if (_isDraw) {
+		drawTextExtShadow(_x, _y, _text, -1, _scaledMaxWidth, 1, 2, _stepScale);
+		draw_set_color(#FFDC64);
+		draw_text_ext_transformed(_x, _y, _text, -1, _scaledMaxWidth, _stepScale, _stepScale, 0);
+		draw_set_color(c_white);
+	}
+	_consumedHeight += _h;
+	
+	_consumedHeight += drawStepObjectives(_x, _y + _consumedHeight, _scaledMaxWidth, _stepScale, _step, _isDraw);
+	
+	return _consumedHeight + 15;
+}
+
+function drawStepObjectives(_x, _y, _scaledMaxWidth, _scale, _step, _isDraw) {
+	var _h = 0;
+	
+	if (array_length(_step.objectives) > 0) {
+		for (var i = 0; i < array_length(_step.objectives); i++) {
+			var obj = _step.objectives[i];
 			var _itemData = global.items[obj.type][obj.itemId];
-
-			text += "\n-  " + _itemData.name + " (" 
-				+ string(obj.count) + "/" + string(obj.target) + ")";
+			
+			var _text = "-  " + _itemData.name + " (" + string(obj.count) + "/" + string(obj.target) + ")";
+			var _itemH = (string_height_ext(_text, -1, _scaledMaxWidth) * _scale);
+			
+			if (_isDraw) {
+				drawTextExtShadow(_x, _y + _h, _text, -1, _scaledMaxWidth, 1, 2, _scale);
+				draw_set_color(#FFDC64);
+				draw_text_ext_transformed(_x, _y + _h, _text, -1, _scaledMaxWidth, _scale, _scale, 0);
+				draw_set_color(c_white);
+			}
+			_h += _itemH;
 		}
-
-		return text;
+		return _h;
 	}
 
-	if (variable_struct_exists(step, "killTarget")) {
-		return " (" + string(step.killCount) + "/" + string(step.killTarget) + ")";
+	var _counterText = "";
+
+	if (variable_struct_exists(_step, "killTarget")) {
+		_counterText = " (" + string(_step.killCount) + "/" + string(_step.killTarget) + ")";
+	} else if (variable_struct_exists(_step, "collectCount")) {
+		_counterText = " (" + string(_step.collectCount) + "/" + string(_step.collectTarget) + ")";
 	}
 	
-	if (variable_struct_exists(step, "collectCount")) {
-		return " (" + string(step.collectCount) + "/" + string(step.collectTarget) + ")";
+	if (_counterText != "") {
+		var _itemH = (string_height_ext(_counterText, -1, _scaledMaxWidth) * _scale);
+		if (_isDraw) {
+			drawTextExtShadow(_x, _y + _h, _counterText, -1, _scaledMaxWidth, 1, 2, _scale);
+			draw_set_color(#FFDC64);
+			draw_text_ext_transformed(_x, _y + _h, _counterText, -1, _scaledMaxWidth, _scale, _scale, 0);
+			draw_set_color(c_white);
+		}
+		_h += _itemH;
 	}
 	
-	return "";
+	return _h;
 }
 
 quests = [];

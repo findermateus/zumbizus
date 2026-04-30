@@ -176,34 +176,9 @@ function handleLevelUpBlurEffect() {
     var _gH = display_get_gui_height();
     var _gW = display_get_gui_width();
 
-    var _color = #FFD700; // dourado
+    var _color = c_black;
     var _alpha = draw_get_alpha();
-    draw_set_alpha(.15);
-    draw_rectangle_color(0, 0, _gW, _gH, _color, _color, _color, _color, false);
-    draw_set_alpha(_alpha);
-
-    var _layerId = "LevelUpBlur";
-    var _destinyBlur = 6; // um pouco mais suave que o pause
-    levelUpBlur = lerp(levelUpBlur, _destinyBlur, .3);
-
-    if (!layer_exists(_layerId)) {
-        layer_create(-20000, _layerId);
-    }
-
-    fx_set_parameter(_blur, "g_LinearBlurVector", [levelUpBlur, levelUpBlur]);
-    layer_set_fx(_layerId, _blur);
-    layer_set_visible(_layerId, true);
-}
-
-function handleLevelUpBlurEffect() {
-    static _blur = fx_create("_filter_linear_blur");
-
-    var _gH = display_get_gui_height();
-    var _gW = display_get_gui_width();
-
-    var _color = #1f8e00;
-    var _alpha = draw_get_alpha();
-    draw_set_alpha(.3);
+    draw_set_alpha(.6);
     draw_rectangle_color(0, 0, _gW, _gH, _color, _color, _color, _color, false);
     draw_set_alpha(_alpha);
 

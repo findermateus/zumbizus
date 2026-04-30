@@ -351,9 +351,11 @@ function setInventoryUiValue(_isHover, _value, _x, _y, _force, _verifyConditionT
 		_value.destinyX = _x;
 		return;
 	}
-	_value.destinyY = _isHover ? _y - _force : _y;
+	//_value.destinyY = _isHover ? _y - _force : _y;
+	_value.destinyY = _y;
 	_value.destinyX = _x;
-	_value.y = lerp(_value.y, _value.destinyY, .1);
+	//_value.y = lerp(_value.y, _value.destinyY, .1);
+	_value.y = _value.destinyY;
 	_value.x = lerp(_value.x, _value.destinyX, .1);
 }
 
