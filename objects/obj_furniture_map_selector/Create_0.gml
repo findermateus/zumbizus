@@ -9,6 +9,8 @@ titleAlpha = 0;
 loadFurnitureByDefaultId();
 setShadow(sprite_index, image_index, 1);
 
+menuId = "mapSelector";
+
 activationMethod = function () {
 	
 	//sons
@@ -16,7 +18,7 @@ activationMethod = function () {
 	audio_play_sound(snd_open_crafting_station, 0, false);
 	
 	//padrão e obrigatório
-	openMenu();
+	openMenu(menuId);
 	setVariablesOpenFurniture();
 	
 	//do objeto
@@ -32,7 +34,10 @@ function hide(){
 	isUsing = false;
 	
 	setVariablesCloseFurniture();
-	closeMenu();
+	
+	if (global.activeMenu == menuId) {
+		closeMenu();
+	}
 }
 
 map_hover_scales = [];

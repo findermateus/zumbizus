@@ -23,10 +23,10 @@ function drawQuests() {
 		}
 	}
 
-	var _targetOffset = global.activeMenu ? -(_maxTextWidth + _margin + _padding * 2 + 50) : 0;
+	var _targetOffset = isMenuOpen() ? -(_maxTextWidth + _margin + _padding * 2 + 50) : 0;
 	menu_offset_x = lerp(menu_offset_x, _targetOffset, 0.1);
 
-	if (global.activeMenu && abs(menu_offset_x - _targetOffset) < 2) return;
+	if (isMenuOpen() && abs(menu_offset_x - _targetOffset) < 2) return;
 
 	var _baseTextX = _margin + menu_offset_x; 
 	var _rectX1 = _baseTextX - _padding;

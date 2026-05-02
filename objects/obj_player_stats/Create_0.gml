@@ -81,7 +81,7 @@ function drawPlayerStatsList(
 	_borderThickness = 3
 ) {
 	static _x = _xPosition;
-	if (global.activeMenu) {
+	if (isMenuOpen()) {
 		_x = lerp(_x, -_barWidth - 10, .1);
 		if (_x < -_barWidth) return;
 	} else {
@@ -125,7 +125,7 @@ function drawEquipedItems() {
 	static _y = equipedItemsY;
 	_y = lerp(_y, equipedItemsY, .1);
 	
-	if (global.activeInventory || global.activeMenu) { 
+	if (global.activeInventory || isMenuOpen()) { 
 		equipedItemsY = gui_height + EQUIPED_ITEM_GRID_SIZE;
 		return;
 	}

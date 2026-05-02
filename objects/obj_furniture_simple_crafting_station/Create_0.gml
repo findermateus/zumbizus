@@ -56,8 +56,10 @@ function setUpLight(){
 
 setUpLight();
 
+menuId = "simpleCrafting";
+
 function activateFurniture() {
-	openMenu();
+	openMenu(menuId);
 	obj_camera.setTargetWithZoom(id);
 	isUsing = true;
 	setVariablesOpenFurniture();
@@ -96,7 +98,10 @@ function hide(){
     inputTimer = 0;
     
     setVariablesCloseFurniture();
-    closeMenu();
+    
+	if (global.activeMenu == menuId) {
+		closeMenu();
+	}
 }
 
 function drawSimpleCraftingStationUI() {

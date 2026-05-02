@@ -126,18 +126,24 @@ activationMethod = function () {
 function activateFurniture() {
 	obj_camera.setTargetWithZoom(id);
 	setVariablesOpenFurniture();
-	openMenu();
+	openMenu("campfire");
 	defineModalValues(guiModalOpen);
 	isUsing = true;
     
     modal_scale = 0.8; 
 }
 
+menuId = "campfire";
+
 function hideModal(){
 	isUsing = false;
 	currentState = innactive;
 	playSwiiimmmSound();
-	closeMenu();
+	
+	if (global.activeMenu == menuId) {
+		closeMenu();
+	}
+	
 	if (!global.activeInventory) {
 		obj_camera.setDefaultScale();
 		obj_camera.target = obj_player;
@@ -163,7 +169,10 @@ function checkConditionsToClose(){
 	var _player = checkPlayerExistence();
 	if (!_player) return true;
 	if(checkObstacules(_player) && checkDistance(_player)) return false;
-	closeMenu();
+	if (global.activeMenu == menuId) {
+		closeMenu();
+	}
+	
 	return true;
 }
 

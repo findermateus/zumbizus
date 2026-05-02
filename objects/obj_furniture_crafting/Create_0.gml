@@ -84,8 +84,10 @@ function loadSavedData(_data = false) {
 	}
 }
 
+menuId = "furnitureCrafting";
+
 function activateFurniture() {
-	openMenu();
+	openMenu(menuId);
 	obj_camera.setTargetWithZoom(id);
 	isUsing = true;
 	setVariablesOpenFurniture();
@@ -108,7 +110,11 @@ function hide(){
 	destinyXposition = - modalXSize - 10;
 	isUsing = false;
 	setVariablesCloseFurniture();
-	closeMenu();
+	
+	if (global.activeMenu == menuId) {
+		closeMenu();
+	}
+	
 	itemsThatCanBeDismantled = [];
 	itemsThatCanBeRepaired = [];
 	itemsThatCanBeCrafted = [];

@@ -9,6 +9,8 @@ animationIndex = 0;
 currentDirection = 1;
 activeInteraction = false;
 interactOptions = [];
+alpha = 0;
+animProgress = 0;
 
 greetingOptions = [
 	"Olá"
@@ -45,10 +47,11 @@ function handleHover() {
 			action: "trade"
 		});
 	}
-	
+
 	handleInteract(_options);
 }
 
+menuId = "npcInteraction";
 
 function handleInteract(_options) {
 	if (!array_length(_options)) {
@@ -57,14 +60,15 @@ function handleInteract(_options) {
 		return;
 	}
 	
-	openMenu();
+	openMenu(menuId);
 	interactOptions = _options;
 	obj_camera.setTargetWithZoom(id);
 	activeInteraction = true;
 }
 
 function closeInteractOptions() {
-	closeMenu();
+	activeInteraction = false;
+	if (global.activeMenu == menuId) closeMenu();
 	
 	if (!global.activeInventory) {
         obj_camera.setDefaultScale();
