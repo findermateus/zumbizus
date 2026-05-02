@@ -81,7 +81,7 @@ function drawPlayerStatsList(
 	_borderThickness = 3
 ) {
 	static _x = _xPosition;
-	if (global.activeInventory || global.stopInteractions) {
+	if (global.activeMenu) {
 		_x = lerp(_x, -_barWidth - 10, .1);
 		if (_x < -_barWidth) return;
 	} else {

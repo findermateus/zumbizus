@@ -30,6 +30,8 @@ global.player = {
 	level: 1,
 	xp: 0,
 	
+	currency: 0,
+	
 	walkingAceleration: .3,
 	walkingSpeed: 5,
 	
