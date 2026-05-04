@@ -9,7 +9,7 @@ titleAlpha = 0;
 loadFurnitureByDefaultId();
 setShadow(sprite_index, image_index, 1);
 
-menuId = "mapSelector";
+menuId = Menus.MapSelector;
 
 activationMethod = function () {
 	

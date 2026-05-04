@@ -24,12 +24,8 @@ if (keyboard_check_pressed(ord("B"))){
 }
 
 
-if (keyboard_check_released(vk_space)){
-	getNpcListFromDatabase();
-}
-
-//if (mouse_check_button_released(mb_left)) {
-//	instance_create_layer(mouse_x, mouse_y, "Particles", obj_fire_weapon_light);
+//if (keyboard_check_released(vk_space)){
+//	getNpcListFromDatabase();
 //}
 
 if (global.debug && keyboard_check_released(ord("Z"))) {
@@ -42,4 +38,10 @@ if (keyboard_check_pressed(vk_escape)) {
 		return
 	}
 	unPauseGame();
+}
+
+if (keyboard_check_pressed(vk_space)) {
+	if (!instance_exists(obj_dialogue)) {
+		instance_create_layer(0, 0, "Controllers", obj_dialogue);
+	}
 }

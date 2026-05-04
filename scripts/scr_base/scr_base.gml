@@ -45,7 +45,7 @@ function selectLateralMenuOption(_option){
 		}
 		
 		with (obj_builder) {
-			openMenu("builder");
+			openMenu(Menus.Builder);
 			setUpModal();
 		}
 		
@@ -53,7 +53,7 @@ function selectLateralMenuOption(_option){
 	}
 	if (_option == menu.resident) {
 		with obj_resident_gui_controller {
-			openMenu("residentController");
+			openMenu(Menus.ResidentController);
 			setUpModal();
 		}
 	}
@@ -68,14 +68,14 @@ function deactivateLateralMenuOption(_option) {
 	
 	if (_option == menu.builder) {
 		with obj_builder {
-			if (global.activeMenu == "builder") closeMenu();
+			if (global.activeMenu == Menus.Builder) closeMenu();
 			hideMenu();
 		}
 	}
 	
 	if (_option == menu.resident) {
 		with obj_resident_gui_controller {
-			if (global.activeMenu == "residentController") closeMenu();
+			if (global.activeMenu == Menus.ResidentController) closeMenu();
 			hideMenu();
 		}
 	}

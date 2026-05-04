@@ -6,7 +6,7 @@ function openInventory(_sound = snd_open_inventory) {
 	obj_camera.setInventoryZoom();
 	audio_play_sound(_sound, 0, false);
 	global.activeInventory = true;
-	openMenu("inventory");
+	openMenu(Menus.Inventory);
 }
 
 function openInventoryWithContainer(_target, _sound, _containerData){
@@ -19,7 +19,7 @@ function openInventoryWithContainer(_target, _sound, _containerData){
 
 function closeInventory(){
 	if (!global.activeInventory) return;
-	if (global.activeMenu == "inventory") closeMenu();
+	if (global.activeMenu == Menus.Inventory) closeMenu();
 	
 	obj_camera.setDefaultScale();
 	obj_camera.target = obj_player;

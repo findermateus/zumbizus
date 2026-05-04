@@ -84,7 +84,7 @@ function loadSavedData(_data = false) {
 	}
 }
 
-menuId = "furnitureCrafting";
+menuId = Menus.FurnitureCrafting;
 
 function activateFurniture() {
 	openMenu(menuId);

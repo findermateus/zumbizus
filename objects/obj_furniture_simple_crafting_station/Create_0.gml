@@ -56,7 +56,7 @@ function setUpLight(){
 
 setUpLight();
 
-menuId = "simpleCrafting";
+menuId = Menus.SimpleCrafting;
 
 function activateFurniture() {
 	openMenu(menuId);

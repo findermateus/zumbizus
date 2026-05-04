@@ -58,7 +58,7 @@ function handleHover() {
 	handleInteract(_options);
 }
 
-menuId = "npcInteraction";
+menuId = Menus.NpcInteraction;
 
 function handleInteract(_options) {
 	if (!array_length(_options)) {
@@ -75,20 +75,17 @@ function handleInteract(_options) {
 function closeInteractOptions() {
 	activeInteraction = false;
 	if (global.activeMenu == menuId) closeMenu();
-	
-	if (!global.activeInventory) {
-        obj_camera.setDefaultScale();
-        obj_camera.target = obj_player;
-    }
 }
 
 function handleNPCOption(option) {
-
 	switch (option) {
 
 		case "talk":
-			show_message("Conversando");
-			//startDialog(npc.dialog);
+			closeInteractOptions();
+			instance_create_layer(0, 0, "Controllers", obj_dialogue, {
+				target: id,
+				dialogue: dialogue
+			});
 		break;
 
 		case "trade":

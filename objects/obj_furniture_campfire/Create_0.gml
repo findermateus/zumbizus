@@ -126,14 +126,14 @@ activationMethod = function () {
 function activateFurniture() {
 	obj_camera.setTargetWithZoom(id);
 	setVariablesOpenFurniture();
-	openMenu("campfire");
+	openMenu(Menus.Campfire);
 	defineModalValues(guiModalOpen);
 	isUsing = true;
     
     modal_scale = 0.8; 
 }
 
-menuId = "campfire";
+menuId = Menus.Campfire;
 
 function hideModal(){
 	isUsing = false;

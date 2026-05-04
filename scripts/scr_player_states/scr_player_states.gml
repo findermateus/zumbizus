@@ -182,3 +182,12 @@ function playerGetGrabbedState() {
         currentState = playerIddleState;
     }
 }
+
+function playerDialogueState() {
+	handleAngleOffset(true, .2, 0);
+	adjustPlayerInteractions(false);
+	updateSpriteWithState(sprites.iddle);
+	
+	velh = 0;
+	velv = 0;
+}

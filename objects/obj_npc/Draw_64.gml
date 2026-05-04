@@ -60,7 +60,9 @@ var _firstOptionY = lerp(_originY, _targetFirstY, animProgress);
 var _secondOptionX = lerp(_originX, _targetSecondX, animProgress);
 var _secondOptionY = lerp(_originY, _targetSecondY, animProgress);
 
-var _str1 = interactOptions[0].label;
+var _option1 = interactOptions[0];
+
+var _str1 = _option1.label;
 var _w1 = string_width(_str1);
 var _h1 = string_height(_str1);
 
@@ -84,7 +86,13 @@ draw_interaction_button(
     _str1, fa_right, alpha
 );
 
-var _str2 = interactOptions[1].label;
+if (_hover1 && mouse_check_button_released(mb_left)) {
+	handleNPCOption(_option1.action);
+}
+
+var _option2 = interactOptions[1];
+
+var _str2 = _option2.label;
 var _w2 = string_width(_str2);
 var _h2 = string_height(_str2);
 
@@ -107,6 +115,10 @@ draw_interaction_button(
     _secondOptionX, _secondOptionY + hover_offset2, 
     _str2, fa_left, alpha
 );
+
+if (_hover2 && mouse_check_button_released(mb_left)) {
+	handleNPCOption(_option2.action);
+}
 
 if (_optionCount == 3) {
     var _targetThirdX = roomToGuiX(getMiddlePoint(bbox_left, bbox_right));
