@@ -23,6 +23,7 @@ global.initialHealth = 100;
 global.initialStamina = 100;
 
 global.player = {
+	name: "Player Name",
 	skinColor: #D39B6A,
 	gender: genders.male,
 	hair: new PersonHair(hairIds.buzzCut, #593708),

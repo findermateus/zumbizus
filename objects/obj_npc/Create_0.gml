@@ -67,6 +67,7 @@ function handleInteract(_options) {
 		return;
 	}
 	
+	playSwiiimmmSound();
 	openMenu(menuId);
 	interactOptions = _options;
 	activeInteraction = true;
@@ -78,6 +79,8 @@ function closeInteractOptions() {
 }
 
 function handleNPCOption(option) {
+	playClickSound();	
+	
 	switch (option) {
 
 		case "talk":

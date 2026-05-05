@@ -144,5 +144,6 @@ function drawUI() {
         draw_text_ext(_descX + 40, _contentY + 60 + _imgH + 40, hoverMap.description, -1, _descW - 80);
     }
     
+	draw_set_font(fnt_gui_default);
     draw_set_alpha(1);
 }
