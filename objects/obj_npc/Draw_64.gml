@@ -37,6 +37,9 @@ alpha = lerp(alpha, 1, 0.1);
 var _oldAlpha = draw_get_alpha();
 draw_set_alpha(alpha);
 draw_set_font(fnt_gui_default);
+
+var _canInteract = animProgress >= .9;
+
 var _dspr = spr_bar;
 var _hdspr = spr_bar_white;
 var _pad = 12;
@@ -86,7 +89,7 @@ draw_interaction_button(
     _str1, fa_right, alpha
 );
 
-if (_hover1 && mouse_check_button_released(mb_left)) {
+if (_canInteract && _hover1 && mouse_check_button_released(mb_left)) {
 	handleNPCOption(_option1.action);
 }
 
@@ -116,7 +119,7 @@ draw_interaction_button(
     _str2, fa_left, alpha
 );
 
-if (_hover2 && mouse_check_button_released(mb_left)) {
+if (_canInteract && _hover2 && mouse_check_button_released(mb_left)) {
 	handleNPCOption(_option2.action);
 }
 

@@ -96,11 +96,11 @@
     {"$GMFolder":"","%Name":"Cooking","folderPath":"folders/Scripts/Crafting/Recipes/Cooking.yy","name":"Cooking","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Trash","folderPath":"folders/Scripts/Crafting/Recipes/Trash.yy","name":"Trash","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Weapons","folderPath":"folders/Scripts/Crafting/Recipes/Weapons.yy","name":"Weapons","resourceType":"GMFolder","resourceVersion":"2.0",},
+    {"$GMFolder":"","%Name":"Dialogue","folderPath":"folders/Scripts/Dialogue.yy","name":"Dialogue","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Effects","folderPath":"folders/Scripts/Effects.yy","name":"Effects","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Enemy","folderPath":"folders/Scripts/Enemy.yy","name":"Enemy","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Equipment","folderPath":"folders/Scripts/Equipment.yy","name":"Equipment","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Clothes","folderPath":"folders/Scripts/Equipment/Clothes.yy","name":"Clothes","resourceType":"GMFolder","resourceVersion":"2.0",},
-    {"$GMFolder":"","%Name":"Dialogue","folderPath":"folders/Scripts/Dialogue.yy","name":"Dialogue","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Inventory","folderPath":"folders/Scripts/Inventory.yy","name":"Inventory","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Items","folderPath":"folders/Scripts/Items.yy","name":"Items","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"IndividualItems","folderPath":"folders/Scripts/Items/IndividualItems.yy","name":"IndividualItems","resourceType":"GMFolder","resourceVersion":"2.0",},
@@ -263,7 +263,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.6.1.160",
+    "IDEVersion":"2024.6.0.157",
   },
   "name":"zumbizus",
   "resources":[
