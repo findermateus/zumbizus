@@ -95,9 +95,11 @@ function drawDialogueBox() {
         }
     }
     
+	var _alpha = draw_get_alpha();
+	
     var _currentTextPart = string_copy(_text, 1, textIndex);
     draw_set_font(fnt_gui_default);
-    drawTextExtShadow(_textX1, _textY1, _currentTextPart, -1, _reservedSpaceForText, draw_get_alpha());
+    drawTextExtShadow(_textX1, _textY1, _currentTextPart, -1, _reservedSpaceForText, _alpha);
     draw_text_ext(_textX1, _textY1, _currentTextPart, -1, _reservedSpaceForText);
     
     var _personCentralPoint = getMiddlePoint(_avatarBoxX, _avatarBoxX + _avatarBoxW);
@@ -139,10 +141,10 @@ function drawDialogueBox() {
 	
     if (_txtW >= _availableNameWidth) {
         var _tscale = getScale(_availableNameWidth, _txtW);
-		drawTextShadow(_nameX, _nameY, _name, draw_get_alpha(), 4, _tscale);
+		drawTextShadow(_nameX, _nameY, _name, _alpha, 4, _tscale);
         draw_text_transformed(_nameX, _nameY, _name, _tscale, _tscale, 0);
     } else {
-        drawTextShadow(_nameX, _nameY, _name, draw_get_alpha());
+        drawTextShadow(_nameX, _nameY, _name, _alpha);
         draw_text(_nameX, _nameY, _name);
     }
     
