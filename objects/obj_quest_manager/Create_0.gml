@@ -339,12 +339,6 @@ function getCreateAxeQuest() {
 	return _quest;
 }
 
-{
-	var _quest = getCreateAxeQuest();
-	addQuest(_quest);
-	startQuest(_quest);
-}
-
 function getCreateCampfireQuest() {
 	var _quest = new Quest("create_campfire", "Descubra o Fogo");
 	

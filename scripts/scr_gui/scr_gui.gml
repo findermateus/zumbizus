@@ -45,14 +45,18 @@ function drawTextExtShadow(_x, _y, _text, _sep, _w, _alpha, _offset = 3, _scale 
     );
 }
 
-function drawTextShadowScribble(_x, _y, _text, _alpha, _offset = 3) {
+function drawTextShadowScribble(_x, _y, _text, _alpha, _offset = 3, _width = undefined) {
 	var _oldColor = draw_get_color();
 	var _oldAlpha = draw_get_alpha();
 	
 	draw_set_alpha(_alpha);
 	draw_set_color(c_black);
 	
-	draw_text_scribble(_x + _offset, _y + _offset, _text);
+	if (_width == undefined) {
+		draw_text_scribble(_x + _offset, _y + _offset, _text);
+	} else {
+		draw_text_scribble_ext(_x + _offset, _y + _offset, _text, _width);
+	}
 	
 	draw_set_color(_oldColor);
 	draw_set_alpha(_oldAlpha);
