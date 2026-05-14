@@ -23,12 +23,15 @@ global.initialHealth = 100;
 global.initialStamina = 100;
 
 global.player = {
+	name: "Player Name",
 	skinColor: #D39B6A,
 	gender: genders.male,
 	hair: new PersonHair(hairIds.buzzCut, #593708),
 	
 	level: 1,
 	xp: 0,
+	
+	currency: 0,
 	
 	walkingAceleration: .3,
 	walkingSpeed: 5,

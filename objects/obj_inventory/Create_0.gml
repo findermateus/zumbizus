@@ -317,6 +317,7 @@ function drawInventoryGrid(_inventory, _inventoryBox){
 				var _yMargin = 2 * _gridYScale;
 				drawItemDurability(_item, _x + _xMargin, _y + _yMargin, _grid.gridHeight - _yMargin * 2, _grid.gridWidth - _xMargin * 2);
 			}
+			
 			drawItem(_item, _x + _grid.gridWidth/2,  _y + _grid.gridHeight/2, _grid, 25);
 			
 			draw_sprite_stretched_ext(
@@ -333,9 +334,12 @@ function drawInventoryGrid(_inventory, _inventoryBox){
 			if(_item != global.blankInventorySpace && _item.stackable && _item.quantity > 1 ){
 				drawQuantity(_item, _grid, _x, _y);
 			}
-			if (_inventory != primaryInventory) continue;
 		}
 	}
+	
+	if (activeHoverItem == global.blankInventorySpace) return;
+		
+	draw_text(xMouseToGui, yMouseToGui, activeHoverItem.value);
 }
 
 function verifyConditionToApplyHoverEffect() {

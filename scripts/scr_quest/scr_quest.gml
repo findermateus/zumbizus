@@ -3,7 +3,9 @@ enum QuestEvent {
 	ItemCollected,
 	AreaEntered,
 	ItemCrafted,
-	FurnitureCrafted
+	FurnitureCrafted,
+	DialogueEnded,
+	DialogueStarted
 }
 
 function Quest(_id, _name) constructor {

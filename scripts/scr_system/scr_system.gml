@@ -3,13 +3,12 @@ function initSystem() {
 	global.inventoryWidth = 2;
 	global.inventoryHeight = 5;
 	global.inventory = ds_grid_create(global.inventoryWidth, global.inventoryHeight);
-	window_set_cursor(cr_none);
 	global.stopInteractions = false;
 	global.debug = false;
 	ds_grid_clear(global.inventory, global.blankInventorySpace);
 	global.activeInventory = false;
 	global.activeInventoryAction = global.inventory;
-	global.activeMenu = false;
+	global.activeMenu = undefined;
 	global.motionPlanningGrid = 0;
 	draw_set_font(fnt_gui_default);
 	
@@ -103,12 +102,16 @@ function playTickSound() {
 	audio_play_sound(snd_tick, 0, false);
 }
 
-function openMenu() {
-	global.activeMenu = true;
+function isMenuOpen() {
+	return global.activeMenu != undefined;
+}
+
+function openMenu(_menu = "") {
+	global.activeMenu = _menu;
 }
 
 function closeMenu() {
-	global.activeMenu = false;
+	global.activeMenu = undefined;
 }
 
 function getHexFromString(_hexcodeString){

@@ -100,7 +100,7 @@ function playerAttackState(){
 }
 
 function switchToAimState(){
-	if(global.activeMenu) return;
+	if(isMenuOpen()) return;
 	
 	if(mouse_check_button(mb_right) && global.activeEquipedItem != global.blankInventorySpace){
 		obj_weapon.weaponAim();
@@ -109,7 +109,7 @@ function switchToAimState(){
 }
 
 function aimWeaponState(){
-	if (!mouse_check_button(mb_right) || global.activeEquipedItem == global.blankInventorySpace || global.activeMenu){
+	if (!mouse_check_button(mb_right) || global.activeEquipedItem == global.blankInventorySpace || isMenuOpen()){
 		obj_weapon.setStateIdle();
 		currentState = playerIddleState;
 		return;
@@ -181,4 +181,13 @@ function playerGetGrabbedState() {
     if (!instance_exists(obj_grabbing_controller)) {
         currentState = playerIddleState;
     }
+}
+
+function playerDialogueState() {
+	handleAngleOffset(true, .2, 0);
+	adjustPlayerInteractions(false);
+	updateSpriteWithState(sprites.iddle);
+	
+	velh = 0;
+	velv = 0;
 }

@@ -46,7 +46,7 @@ function draw() {
 	var _drawY = (_y - _boxH - 10) + _yOffset;
 
 	var _oldAlpha = draw_get_alpha();
-	var _destinyAlpha = global.activeMenu ? 0 : alpha;
+	var _destinyAlpha = isMenuOpen() ? 0 : alpha;
 	draw_set_alpha(_destinyAlpha);
 
 	draw_sprite_stretched(_sprite, 0, _drawX, _drawY, _boxW, _boxH);

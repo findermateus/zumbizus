@@ -13,21 +13,8 @@ enum trashItems {
 	empty_canned_pineapple
 }
 
-function MaterialItem(_limit, _name, _description, _sprite, _id, _quantity, _sound, _fitInGrid): Item(_name, _description, _sprite, _id, _sound, _fitInGrid, true) constructor{
+function MaterialItem(_limit, _name, _description, _sprite, _id, _quantity, _sound): Item(_name, _description, _sprite, _id, _sound, true) constructor{
 	type = itemType.trash;
 	limit = _limit;
 	quantity = _quantity;
-}
-
-function trashConstructor(_item = {
-	itemId: undefined,
-	name: undefined,
-	description: undefined,
-	sprite: undefined,
-	limit: undefined,
-	quantity: 0,
-	sound: undefined,
-	fitInGrid: fitInGridType.verticaly
-}){
-	return new MaterialItem(_item.limit, _item.name, _item.description, _item.sprite, _item.itemId, _item.quantity, _item.sound, _item.fitInGrid);
 }

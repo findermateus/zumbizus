@@ -1,15 +1,14 @@
 event_inherited();
 
+canTalk = false;
+canTrade = false;
+
 enum npcStates {
 	iddle,
 	walkingWithoutDestiny,
 	goingToWork,
 	working
 }
-
-drawState = drawStates.iddle;
-currentImageIndex = 0;
-currentDialogue = noone;
 
 function iddle() {
 	state = npcStates.iddle;
@@ -29,24 +28,42 @@ function iddle() {
 
 currentState = iddle;
 state = npcStates.iddle;
-currentSprite = spr_human_male_walking;
-animationIndex = 0;
-currentDirection = 1;
+
 workerData = undefined;
 furniture = false;
 walkSpeed = irandom_range(3,5);
 wanderSpeed = irandom_range(1, 2);
 angleOffset = 0;
+
 pathHandler = instance_create_layer(
 	x, y,
 	layer,
 	obj_path_handler,
 	{ father: id }
 );
+
 wanderTargetX = x;
 wanderTargetY = y;
 wanderTimer = 0;
 wanderCooldown = irandom_range(60, 180);
+
+greetingOptions = [
+	"Olá!",
+	"Opa, tudo certo?",
+	"Aoba",
+	"BÃO?",
+	"Oi!",
+	"E aí!",
+	"Salve!",
+	"Fala!",
+	"Tá tudo em ordem?",
+	"Mais um dia por aqui...",
+	"Ainda estamos vivos!",
+	"Nada explodiu hoje.",
+	"Fica atento aí fora.",
+	"Não vacila lá fora.",
+	"Se ouvir barulho, corre."
+];
 
 function updateWorkerData() {
 	workerData = workerId != -1 ? getWorkerData(workerId) : false;
@@ -232,101 +249,6 @@ function walkingWithoutDestiny() {
 		var _velh = currentDirection * wanderSpeed;
 		createWalkingParticles(x, y, _velh, 0, 1);
 	}
-}
-
-animationCurveItemDescription = animcurve_get_channel(ac_inventory,"item_description");
-playedItemDescription = false;
-curveAnimationIndex = 0;
-isHovering = false;
-
-function handleHover() {
-	if(!verifyConditions()) {
-		isHovering = false;
-		return;
-	}
-	
-	if (!isHovering) {
-		curveAnimationIndex = 0;
-		playHoverSound();
-		isHovering = true;
-		
-		return;
-	}
-	
-	if (!mouse_check_button_pressed(mb_left)) return;
-	
-	var _greetingOptions = [
-	    "Olá!",
-	    "Opa, tudo certo?",
-	    "Aoba",
-	    "BÃO?",
-	    "Oi!",
-	    "E aí!",
-	    "Salve!",
-	    "Fala!",
-	    "Tá tudo em ordem?",
-	    "Mais um dia por aqui...",
-	    "Ainda estamos vivos!",
-	    "Nada explodiu hoje.",
-	    "Fica atento aí fora.",
-	    "Não vacila lá fora.",
-	    "Se ouvir barulho, corre."
-	];
-
-	var _greeting = pickRandomItemFromArray(_greetingOptions);
-
-	if (!instance_exists(currentDialogue)) {
-		currentDialogue = speakSimple(_greeting, id);
-	}
-}
-
-drawInterface = function(){
-	if(!isHovering) return;
-	
-	if(curveAnimationIndex>=1){
-		curveAnimationIndex = 0;
-		playedItemDescription = true;
-	}
-	
-	curveAnimationIndex += (delta_time/1000000);
-	
-	var _curveLength = 25;
-	var _textMarginFromSprite = 20;
-	var _positionTransition = !playedItemDescription ? animcurve_channel_evaluate(animationCurveItemDescription, curveAnimationIndex) * _curveLength : 0;
-	var _yPosition = (bbox_bottom + _textMarginFromSprite + string_height(name)) - _positionTransition;
-	var _guiXPosition = roomToGuiX(bbox_left + (bbox_right - bbox_left) /2);
-	var _guiYPosition = roomToGuiY(_yPosition);
-	
-	drawActionText(name, _guiXPosition, _guiYPosition);
-}
-
-function draw() {
-	currentSprite = genderId == genders.female ? spr_human_female_walking : currentSprite;
-	spriteToDrawShadow = currentSprite;
-	
-	var spriteLength = sprite_get_number(currentSprite);
-	var spriteSpeed = sprite_get_speed(currentSprite) / 60;
-	currentImageIndex  += spriteSpeed;
-	currentImageIndex %= spriteLength;
-	
-	var _imageIndex = drawState == drawStates.iddle ? 0 : currentImageIndex;
-	
-	drawPersonBody(
-		x,
-		y,
-		genderId,
-		_imageIndex,
-		1,
-		angleOffset,
-		image_alpha,
-		skinColor,
-		new PersonHair(hairOption, hairColor),
-		outfitId,
-		helmetId,
-		backpack,
-		currentDirection,
-		drawState
-	);
 }
 
 updateWorkerData();

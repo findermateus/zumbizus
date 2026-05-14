@@ -20,21 +20,10 @@ enum consumableTypes {
 	health
 }
 
-function ConsumableItem(_name, _description, _sprite, _id, _sound, _fitInGrid, _data): Item(_name, _description, _sprite, _id, _sound, _fitInGrid) constructor{
+function ConsumableItem(_name, _description, _sprite, _id, _sound, _data): Item(_name, _description, _sprite, _id, _sound) constructor{
 	type = itemType.consumables;
 	stackable = _data.stackable;
 	limit = _data.limit;
 	consumableType = _data.consumableType;
 	quantity = variable_struct_exists(_data, "quantity") ? _data.quantity : 1;
-}
-
-function consumableConstructor(_item = {
-	itemId: 0,
-	name: undefined,
-	description: undefined,
-	sprite: undefined,
-	sound: undefined,
-	fitInGrid: fitInGridType.verticaly
-}){
-	return new ConsumableItem(_item.name, _item.description, _item.sprite, _item.itemId, _item.sound, _item.fitInGrid, _item);
 }

@@ -9,6 +9,8 @@ titleAlpha = 0;
 loadFurnitureByDefaultId();
 setShadow(sprite_index, image_index, 1);
 
+menuId = Menus.MapSelector;
+
 activationMethod = function () {
 	
 	//sons
@@ -16,7 +18,7 @@ activationMethod = function () {
 	audio_play_sound(snd_open_crafting_station, 0, false);
 	
 	//padrão e obrigatório
-	openMenu();
+	openMenu(menuId);
 	setVariablesOpenFurniture();
 	
 	//do objeto
@@ -32,7 +34,10 @@ function hide(){
 	isUsing = false;
 	
 	setVariablesCloseFurniture();
-	closeMenu();
+	
+	if (global.activeMenu == menuId) {
+		closeMenu();
+	}
 }
 
 map_hover_scales = [];
@@ -139,5 +144,6 @@ function drawUI() {
         draw_text_ext(_descX + 40, _contentY + 60 + _imgH + 40, hoverMap.description, -1, _descW - 80);
     }
     
+	draw_set_font(fnt_gui_default);
     draw_set_alpha(1);
 }

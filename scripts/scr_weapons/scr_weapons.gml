@@ -1,4 +1,4 @@
-function meleeWeaponItem(_name, _sprite, _description, _id, _sound, _fitInGrid, _data = {}): Item(_name, _description, _sprite, _id, _sound, _fitInGrid) constructor
+function WeaponItem(_name, _sprite, _description, _id, _sound, _data = {}): Item(_name, _description, _sprite, _id, _sound) constructor
 {
 	actionSound = variable_struct_exists(_data, "actionSound") ? _data.actionSound : undefined;
 	bullets = _data.bullets;
@@ -9,15 +9,4 @@ function meleeWeaponItem(_name, _sprite, _description, _id, _sound, _fitInGrid, 
 	type = itemType.weapons;
 	usableSound = true;
 	soundRadius = _data.soundRadius;
-}
-
-function weaponContructor(_item = {
-	itemId: undefined,
-	name: undefined,
-	description: undefined,
-	sprite: undefined,
-	sound: undefined,
-	fitInGrid: fitInGridType.verticaly
-}){
-	return new meleeWeaponItem(_item.name, _item.sprite, _item.description, _item.itemId, _item.sound, _item.fitInGrid, _item);
 }
