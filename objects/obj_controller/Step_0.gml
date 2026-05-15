@@ -39,9 +39,3 @@ if (keyboard_check_pressed(vk_escape)) {
 	}
 	unPauseGame();
 }
-
-if (keyboard_check_pressed(vk_space)) {
-	if (!instance_exists(obj_dialogue)) {
-		instance_create_layer(0, 0, "Controllers", obj_dialogue);
-	}
-}

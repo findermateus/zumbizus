@@ -117,3 +117,9 @@ function QuestReward(_xp) constructor {
 	xp = _xp;
 	items = []; // {itemId, itemType, quantity}
 }
+
+enum Quests {
+	BecomeALumberjack,
+	CraftACampfire,
+	KillingInTheNameOfLove
+}

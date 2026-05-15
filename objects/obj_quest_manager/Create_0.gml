@@ -193,7 +193,7 @@ completeQuest = function(_quest) {
 		isStep: false
 	});
 	
-	array_push(completedQuests, _quest);
+	array_push(completedQuests, _quest.id);
 };
 
 notifyEvent = function(_event, _data) {
@@ -212,7 +212,7 @@ notifyEvent = function(_event, _data) {
 };
 
 {
-	var _quest = new Quest("test", "Killing in the name of Love");
+	var _quest = new Quest(Quests.KillingInTheNameOfLove, "Killing in the name of Love");
 
 	_quest.onComplete = method(_quest, function () {
 		self.applyReward();
@@ -238,7 +238,7 @@ notifyEvent = function(_event, _data) {
 }
 
 function getCreateAxeQuest() {
-	var _quest = new Quest("craft_axe", "Se torne um Lenhador");
+	var _quest = new Quest(Quests.BecomeALumberjack, "Se torne um Lenhador");
 
 	_quest.onComplete = method(_quest, function () {
 		self.applyReward();
@@ -340,7 +340,7 @@ function getCreateAxeQuest() {
 }
 
 function getCreateCampfireQuest() {
-	var _quest = new Quest("create_campfire", "Descubra o Fogo");
+	var _quest = new Quest(Quests.CraftACampfire, "Descubra o Fogo");
 	
 	_quest.onComplete = method(_quest, function () {
 		self.applyReward();
@@ -422,4 +422,27 @@ function getCreateCampfireQuest() {
 	_quest.setReward(_reward);
 	
 	return _quest;
+}
+
+function hasActiveQuest(_questId) {
+	for (var i = 0; i < array_length(activeQuests); i++) {
+		var _quest = activeQuests[i];
+		if (_quest.id == _questId) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+function hasCompletedQuest(_questId) {
+	for (var i = 0; i < array_length(completedQuests); i++) {
+		var _quest = completedQuests[i];
+		
+		if (_questId == _quest) {
+			return true;
+		}
+	}
+	
+	return false;
 }

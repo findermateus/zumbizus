@@ -19,9 +19,14 @@ hover_offset1 = 0;
 hover_offset2 = 0;
 hover_offset3 = 0;
 
-greetingOptions = [
+defaultGreetingOptions = [
 	"Olá"
 ];
+
+greetingOptions = defaultGreetingOptions;
+
+canTrade = false;
+canTalk = false;
 
 function handleHover() {
 	if(!verifyConditions()) {
@@ -89,6 +94,9 @@ function handleNPCOption(option) {
 				target: id,
 				dialogue: dialogue
 			});
+			
+			dialogue = undefined;
+			canTalk = false;
 		break;
 
 		case "trade":
