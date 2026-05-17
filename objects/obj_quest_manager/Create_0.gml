@@ -170,6 +170,11 @@ addQuest = function(_quest) {
 startQuest = function(_quest) {
 	_quest.start();
 	array_push(activeQuests, _quest);
+	
+	instance_create_layer(0, 0, "Alert", obj_quest_popup, {
+		textContent: _quest.name,
+		popupType: QUEST_POPUP_TYPE.QUEST_ADDED
+	});
 };
 
 completeQuest = function(_quest) {
@@ -188,9 +193,9 @@ completeQuest = function(_quest) {
 		array_delete(activeQuests, index, 1);
 	}
 	
-	instance_create_layer(0, 0, "Alert", obj_quest_step_completed, {
+	instance_create_layer(0, 0, "Alert", obj_quest_popup, {
 		textContent: _quest.name,
-		isStep: false
+		popupType: QUEST_POPUP_TYPE.QUEST_COMPLETED
 	});
 	
 	array_push(completedQuests, _quest.id);

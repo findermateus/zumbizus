@@ -45,9 +45,9 @@ function Quest(_id, _name) constructor {
 		step.isCompleted = true;
 		step.onComplete();
 
-		instance_create_layer(0, 0, "Alert", obj_quest_step_completed, {
+		instance_create_layer(0, 0, "Alert", obj_quest_popup, {
 			textContent: step.description,
-			isStep: true
+			popupType: QUEST_POPUP_TYPE.STEP_COMPLETED
 		});
 
 		currentStepIndex++;
@@ -122,4 +122,17 @@ enum Quests {
 	BecomeALumberjack,
 	CraftACampfire,
 	KillingInTheNameOfLove
+}
+
+enum QUEST_POPUP_TYPE {
+    STEP_COMPLETED,
+    QUEST_COMPLETED,
+    QUEST_ADDED
+}
+
+enum POPUP_STATE {
+    QUEUED,
+    FADE_IN,
+    WAIT,
+    FADE_OUT
 }
