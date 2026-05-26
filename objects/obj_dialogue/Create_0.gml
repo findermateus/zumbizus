@@ -48,7 +48,6 @@ function drawDialogueBox() {
 
     var _marginSide   = 60;
     var _marginBottom = 20;
-    var _gap          = 8;
 
     var _dialogBoxH = _guiHeight * 0.25;
     var _dialogBoxW = _guiWidth - (_marginSide * 2);
@@ -56,13 +55,12 @@ function drawDialogueBox() {
     var _finalDialogTopY = _guiHeight - _dialogBoxH - _marginBottom;
 
     var _avatarBoxW = _dialogBoxW * 0.14;
-    var _avatarBoxH = _dialogBoxH * 0.9;
-    var _avatarBoxY = _finalDialogTopY - (_avatarBoxH * 0.9) - _gap;
+    var _avatarBoxH = _dialogBoxH * 1.2;
 
     var _currentText = dialogue.texts[currentPage];
     var _isPlayer    = _currentText.isPlayer;
 
-    var _avatarMargin = 60;
+    var _avatarMargin = 120;
     var _avatarBoxX;
     if (_isPlayer) {
         _avatarBoxX = _dialogBoxX + _avatarMargin;
@@ -72,12 +70,11 @@ function drawDialogueBox() {
 
     var _yOffset           = (_dialogBoxH + _marginBottom) * (1 - _normProg);
     var _currentDialogTopY = _finalDialogTopY + _yOffset;
-    var _currentAvatarTopY = _avatarBoxY      + _yOffset;
+    var _currentAvatarTopY = _finalDialogTopY - (_avatarBoxH * 0.9) + _yOffset;
 
-    draw_sprite_stretched(spr_inventory_box, 0, _avatarBoxX,  _currentAvatarTopY, _avatarBoxW, _avatarBoxH);
-    draw_sprite_stretched(spr_inventory_box, 0, _dialogBoxX, _currentDialogTopY,  _dialogBoxW, _dialogBoxH);
+    draw_sprite_stretched(spr_dialogue, 0, _dialogBoxX, _currentDialogTopY, _dialogBoxW, _dialogBoxH);
 
-    var _padding             = 20;
+    var _padding              = 20;
     var _reservedSpaceForText = _dialogBoxW - _padding * 2;
     var _textX1 = _dialogBoxX + _padding;
     var _textY1 = _currentDialogTopY + _padding;
@@ -109,7 +106,7 @@ function drawDialogueBox() {
     var _personCentralPoint = getMiddlePoint(_avatarBoxX, _avatarBoxX + _avatarBoxW);
     var _expectedBodySize   = _avatarBoxH * 0.65;
     var _scale              = getScale(_expectedBodySize, sprite_get_height(spr_human_male_iddle));
-    var _participantY       = getMiddlePoint(_currentAvatarTopY, _currentAvatarTopY + _avatarBoxH) + _expectedBodySize / 2;
+    var _participantY       = _currentDialogTopY;
 
     var _name = "";
     if (_isPlayer) {
@@ -119,9 +116,9 @@ function drawDialogueBox() {
             global.player.gender, 0, _scale, 0, 1,
             global.player.skinColor,
             global.player.hair,
-            is_struct(global.equipments.armor)  ? global.equipments.armor.itemId : -1,
-            is_struct(global.equipments.head)   ? global.equipments.head.itemId  : -1,
-            is_struct(global.equipments.bag)    ? global.equipments.bag.itemId   : -1
+            is_struct(global.equipments.armor) ? global.equipments.armor.itemId : -1,
+            is_struct(global.equipments.head)  ? global.equipments.head.itemId  : -1,
+            is_struct(global.equipments.bag)   ? global.equipments.bag.itemId   : -1
         );
     } else {
         var _npc = dialogue.npc;
@@ -138,7 +135,7 @@ function drawDialogueBox() {
     draw_set_font(fnt_gui_title);
 
     var _nameX              = _avatarBoxX + _padding;
-    var _nameY              = _currentAvatarTopY + _avatarBoxH - _padding;
+    var _nameY              = _currentAvatarTopY + _avatarBoxH - _padding - 10;
     var _availableNameWidth = _avatarBoxW - _padding * 2;
     var _txtW               = string_width(_name);
 
@@ -151,6 +148,23 @@ function drawDialogueBox() {
     } else {
         drawTextShadow(_nameX, _nameY, _name, _alpha);
         draw_text(_nameX, _nameY, _name);
+    }
+
+    if (textIndex >= _textSize) {
+        var _hintText  = "Pressione Espaço para avançar";
+        var _hintAlpha = (sin(current_time * 0.003) + 1) / 2;
+
+        draw_set_font(fnt_gui_default);
+        draw_set_halign(fa_right);
+        draw_set_valign(fa_bottom);
+
+        var _hintX = _dialogBoxX + _dialogBoxW - _padding;
+        var _hintY = _currentDialogTopY + _dialogBoxH - _padding;
+
+        draw_set_alpha(_hintAlpha * _alpha);
+        drawTextShadow(_hintX, _hintY, _hintText, _hintAlpha * _alpha, 4);
+        draw_text(_hintX, _hintY, _hintText);
+        draw_set_alpha(_alpha);
     }
 
     draw_set_valign(fa_top);

@@ -1,9 +1,9 @@
 #macro GRID_WIDTH 92
 #macro GRID_MB 10
 #macro INVENTORY_TITLE_SPACE 75
-activeHoldingItem = global.blankInventorySpace;
-activeHoverItem = global.blankInventorySpace;
-activeSelectedItem = global.blankInventorySpace;
+activeHoldingItem = BLANK_INVENTORY_SPACE;
+activeHoverItem = BLANK_INVENTORY_SPACE;
+activeSelectedItem = BLANK_INVENTORY_SPACE;
 personalizedInventory = false;
 hoverIndicatorUIData = {
 	x: display_get_gui_width()/2,
@@ -25,15 +25,15 @@ mouseIsOnQuickUseBar = false;
 holdingItemPositions = { x: 0, y: 0}
 defaultToolBarAlpha = .80;
 descriptionItemAlpha = 0;
-toolbarIndex = global.blankInventorySpace;
-hoverToolbarIndex = global.blankInventorySpace;
+toolbarIndex = BLANK_INVENTORY_SPACE;
+hoverToolbarIndex = BLANK_INVENTORY_SPACE;
 toolBarAlpha = [];
 toolBarGridScale = 1.7;
 holdingItemFromToolBar = false;
 holdingItemFromEquipments = false;
 secundaryInventory = false;
 primaryInventory = global.inventory
-indicatorToWhereItemShouldBePut = global.blankInventorySpace;
+indicatorToWhereItemShouldBePut = BLANK_INVENTORY_SPACE;
 global.activeInventoryAction = global.inventory;
 for(var _i = 0; _i < global.toolBarSize; _i ++){
 	toolBarAlpha[_i] = defaultToolBarAlpha;
@@ -43,19 +43,19 @@ gui_width = display_get_gui_width();
 xMouseToGui = device_mouse_x_to_gui(0);
 yMouseToGui = device_mouse_y_to_gui(0);
 holdingItem = {
-	j: global.blankInventorySpace,
-	i: global.blankInventorySpace,
+	j: BLANK_INVENTORY_SPACE,
+	i: BLANK_INVENTORY_SPACE,
 	scale: 1,
 	x: 0,
 	y: 0
 };
 hoverItem = {
-	j: global.blankInventorySpace,
-	i: global.blankInventorySpace
+	j: BLANK_INVENTORY_SPACE,
+	i: BLANK_INVENTORY_SPACE
 };
 selectedItem = {
-	j: global.blankInventorySpace,
-	i: global.blankInventorySpace,
+	j: BLANK_INVENTORY_SPACE,
+	i: BLANK_INVENTORY_SPACE,
 	xPosition: 0,
 	yPosition: 0
 };
@@ -76,18 +76,18 @@ function hide(){
 }
 
 function handleIndicator(){
-	indicatorToWhereItemShouldBePut = global.blankInventorySpace;
-	var _item = global.blankInventorySpace;
+	indicatorToWhereItemShouldBePut = BLANK_INVENTORY_SPACE;
+	var _item = BLANK_INVENTORY_SPACE;
 	
-	if (activeHoldingItem == global.blankInventorySpace && activeHoverItem != global.blankInventorySpace){
+	if (activeHoldingItem == BLANK_INVENTORY_SPACE && activeHoverItem != BLANK_INVENTORY_SPACE){
 		_item = activeHoverItem;
 	}
 	
-	if (activeHoldingItem != global.blankInventorySpace){
+	if (activeHoldingItem != BLANK_INVENTORY_SPACE){
 		_item = activeHoldingItem;
 	}
 	
-	if (_item == global.blankInventorySpace) return;
+	if (_item == BLANK_INVENTORY_SPACE) return;
 	
 	if (_item.type == itemType.equipment){
 		switch (_item.equipType) {
@@ -109,8 +109,8 @@ function drawInventory(){
 	mouseIsOnInventory = false;
 	mouseIsOnInventoryGrid = false;
 	mouseIsOnEquipments = false;
-	activeHoverItem = global.blankInventorySpace;
-	hoverToolbarIndex = global.blankInventorySpace;
+	activeHoverItem = BLANK_INVENTORY_SPACE;
+	hoverToolbarIndex = BLANK_INVENTORY_SPACE;
 	mouseIsOnOtherMenu = false;
 	var _animationSpeed = (delta_time/1000000);
 	
@@ -310,7 +310,7 @@ function drawInventoryGrid(_inventory, _inventoryBox){
 				_alpha
 			);
 
-			if (_item != global.blankInventorySpace && itemHasDurability(_item)){
+			if (_item != BLANK_INVENTORY_SPACE && itemHasDurability(_item)){
 				var _gridXScale = _grid.gridWidth / sprite_get_width(_grid.sprite);
 				var _gridYScale = _grid.gridHeight / sprite_get_height(_grid.sprite);
 				var _xMargin = 2 * _gridXScale;
@@ -331,13 +331,13 @@ function drawInventoryGrid(_inventory, _inventoryBox){
 				_alpha
 			);
 			
-			if(_item != global.blankInventorySpace && _item.stackable && _item.quantity > 1 ){
+			if(_item != BLANK_INVENTORY_SPACE && _item.stackable && _item.quantity > 1 ){
 				drawQuantity(_item, _grid, _x, _y);
 			}
 		}
 	}
 	
-	if (activeHoverItem == global.blankInventorySpace) return;
+	if (activeHoverItem == BLANK_INVENTORY_SPACE) return;
 		
 	draw_text(xMouseToGui, yMouseToGui, activeHoverItem.value);
 }
@@ -387,7 +387,7 @@ function getInventoryHoverUiEffects(_inventory) {
 
 
 function drawHoverIndicator(){
-	var _size = (mouseIsOnToolBar && activeHoldingItem != global.blankInventorySpace && activeHoldingItem.type == itemType.weapons) ? global.toolBarGridSize : GRID_WIDTH
+	var _size = (mouseIsOnToolBar && activeHoldingItem != BLANK_INVENTORY_SPACE && activeHoldingItem.type == itemType.weapons) ? global.toolBarGridSize : GRID_WIDTH
 	hoverIndicatorUIData.destinyAlpha = mouseIsOnInventoryGrid || mouseIsOnToolBar || mouseIsOnEquipments;	
 	var _lerpEffect = .15;
 	hoverIndicatorUIData .x = lerp(hoverIndicatorUIData .x, hoverIndicatorUIData.destinyX, _lerpEffect);
@@ -406,7 +406,7 @@ function drawInventoryName(_inititalYPosition, _yPosition, _xPosition, _inventor
 }
 
 function drawItem(_item, _x, _y, _grid, _minusScale){
-	if(_item == global.blankInventorySpace) return;
+	if(_item == BLANK_INVENTORY_SPACE) return;
 	var _itemWidth = sprite_get_width(_item.sprite);
 	var _itemHeight = sprite_get_height(_item.sprite);
 	var _scale = getItemScale(_grid.gridHeight - _minusScale, _itemHeight);
@@ -441,11 +441,11 @@ function gridOnHover(_item, _j, _i){
 		if(currentState != holdItem && !audio_is_playing(snd_hover)) playHoverSound();
 		return;
 	}
-	if(activeHoldingItem != global.blankInventorySpace) return;
+	if(activeHoldingItem != BLANK_INVENTORY_SPACE) return;
 }
 
 function gridOnHold(_item, _j, _i, _grid, _inventory){
-	if(activeHoldingItem == global.blankInventorySpace && _item != global.blankInventorySpace && currentState != drawOptionsMenu){
+	if(activeHoldingItem == BLANK_INVENTORY_SPACE && _item != BLANK_INVENTORY_SPACE && currentState != drawOptionsMenu){
 		global.activeInventoryAction = _inventory;
 		activeHoldingItem = _item;
 		holdingItem.j = _j;
@@ -466,26 +466,26 @@ function holdItem(){
 	holdingItemPositions.y = lerp(holdingItemPositions.y, yMouseToGui, .2
 	);
 	
-	if(mouse_check_button_released(mb_left) && activeHoldingItem != global.blankInventorySpace){
+	if(mouse_check_button_released(mb_left) && activeHoldingItem != BLANK_INVENTORY_SPACE){
 		dropInventoryItem();
 		currentState = nothing;
 		return;
 	}
 	
 	var _isHolding = mouse_check_button(mb_left);
-	if(_isHolding && activeHoldingItem != global.blankInventorySpace){
+	if(_isHolding && activeHoldingItem != BLANK_INVENTORY_SPACE){
 		drawSpriteShadow(holdingItemPositions.x, holdingItemPositions.y, activeHoldingItem.sprite, 0, 0, holdingItem.scale, holdingItem.scale);
 		draw_sprite_ext(activeHoldingItem.sprite, 0, holdingItemPositions.x, holdingItemPositions.y, holdingItem.scale, holdingItem.scale, 0, image_blend, 1);
 		return;
 	}
-	holdingItem.i = global.blankInventorySpace;
-	holdingItem.j = global.blankInventorySpace;
-	activeHoldingItem = global.blankInventorySpace;
+	holdingItem.i = BLANK_INVENTORY_SPACE;
+	holdingItem.j = BLANK_INVENTORY_SPACE;
+	activeHoldingItem = BLANK_INVENTORY_SPACE;
 }
 
 function gridOnClick(_inventory, _item, _j, _i, _xPosition, _yPosition){
 	if(mouse_check_button_released(mb_right)){
-		if (_item == global.blankInventorySpace) {
+		if (_item == BLANK_INVENTORY_SPACE) {
 			return;
 		}
 		selectingItemWhileOtherItemIsSelected(_j, _i);
@@ -499,7 +499,7 @@ function selectingItemWhileOtherItemIsSelected(_j, _i){
 	}
 }
 function preparingToDrawOptionMenu(_inventory, _item, _j, _i, _xPosition, _yPosition){
-	if(_item != global.blankInventorySpace){	
+	if(_item != BLANK_INVENTORY_SPACE){	
 		global.activeInventoryAction = _inventory
 		activeSelectedItem = _item;
 		selectedItem.j = _j;
@@ -592,7 +592,7 @@ function addItemToToolBar(_index = undefined, _inventory = global.inventory, _it
 	var _auxiliarItem = _inventory[# _item.j, _item.i];
 	if (_auxiliarItem.type != itemType.weapons) return;
 	_index = _index == undefined ? getCleanIndexFromToolBar() : _index;
-	if (_index != global.blankInventorySpace){
+	if (_index != BLANK_INVENTORY_SPACE){
 		_inventory[# _item.j, _item.i] = global.equipedItems[| _index];
 		global.equipedItems[| _index] = _auxiliarItem;
 		return;
@@ -624,8 +624,8 @@ function whatInventoryIsTheItemBeingDropped(_holdingItem, _hoverItem){
 
 function handleSingleInventoryItemSwitching(_holdingItem, _hoverItem) {
     var _stackResult = checkIfItemsAreStackable(_holdingItem, _hoverItem);
-    if (_stackResult != global.blankInventorySpace) {
-		_holdingItem = global.blankInventorySpace;
+    if (_stackResult != BLANK_INVENTORY_SPACE) {
+		_holdingItem = BLANK_INVENTORY_SPACE;
 		if(variable_struct_exists(_stackResult, "firstItem")) _holdingItem = _stackResult.firstItem;
         _hoverItem = _stackResult.lastItem;
 		global.activeInventoryAction[# holdingItem.j, holdingItem.i] = _holdingItem;
@@ -643,7 +643,7 @@ function handleInventoryItemSwitching(_holdingItem, _hoverItem){
 
 	var _stackResult = checkIfItemsAreStackable(_holdingItem, _hoverItem);
 	
-	if (_stackResult != global.blankInventorySpace){
+	if (_stackResult != BLANK_INVENTORY_SPACE){
 		var _movedItem = _holdingItem;
 		var _amount = _holdingItem.quantity;
 
@@ -651,7 +651,7 @@ function handleInventoryItemSwitching(_holdingItem, _hoverItem){
 			_amount = _stackResult.movedAmount;
 		}
 		
-		_holdingItem = global.blankInventorySpace;
+		_holdingItem = BLANK_INVENTORY_SPACE;
 		
 		if (variable_struct_exists(_stackResult, "firstItem")) {
 			_holdingItem = _stackResult.firstItem;
@@ -663,7 +663,7 @@ function handleInventoryItemSwitching(_holdingItem, _hoverItem){
 		_auxiliarInventory[# hoverItem.j, hoverItem.i] = _hoverItem;
 		
 		if (_from == secundaryInventory && _to == primaryInventory) {
-			if (_movedItem != global.blankInventorySpace) {
+			if (_movedItem != BLANK_INVENTORY_SPACE) {
 				obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, {
 					itemId: _movedItem.itemId,
 					itemType: _movedItem.type,
@@ -679,7 +679,7 @@ function handleInventoryItemSwitching(_holdingItem, _hoverItem){
 	_auxiliarInventory[# hoverItem.j, hoverItem.i] = _holdingItem;
 	
 	if (_from == secundaryInventory && _to == primaryInventory) {
-		if (_holdingItem != global.blankInventorySpace) {
+		if (_holdingItem != BLANK_INVENTORY_SPACE) {
 			obj_quest_manager.notifyEvent(QuestEvent.ItemCollected, {
 				itemId: _holdingItem.itemId,
 				itemType: _holdingItem.type,
@@ -690,15 +690,15 @@ function handleInventoryItemSwitching(_holdingItem, _hoverItem){
 }
 
 function checkIfItemsAreStackable(_droppingItem, _receivingItem){
-	if (_droppingItem == global.blankInventorySpace || _receivingItem == global.blankInventorySpace) return global.blankInventorySpace;
+	if (_droppingItem == BLANK_INVENTORY_SPACE || _receivingItem == BLANK_INVENTORY_SPACE) return BLANK_INVENTORY_SPACE;
 	
 	var _firstItem = _droppingItem;
 	var _lastItem = _receivingItem;
 	
-	if (_firstItem.itemId != _lastItem.itemId || _firstItem.type != _lastItem.type) return global.blankInventorySpace;
+	if (_firstItem.itemId != _lastItem.itemId || _firstItem.type != _lastItem.type) return BLANK_INVENTORY_SPACE;
 	
-	if(!variable_struct_exists(_firstItem, "limit")) return global.blankInventorySpace;
-	if(_lastItem.quantity >= _lastItem.limit) return global.blankInventorySpace;
+	if(!variable_struct_exists(_firstItem, "limit")) return BLANK_INVENTORY_SPACE;
+	if(_lastItem.quantity >= _lastItem.limit) return BLANK_INVENTORY_SPACE;
 	
 	var _remainingSpace = _lastItem.limit - _lastItem.quantity;
 
@@ -732,9 +732,9 @@ function checkIfItemsAreStackable(_droppingItem, _receivingItem){
 #endregion
 
 function nothing(){
-	activeHoldingItem = global.blankInventorySpace;
-	holdingItem.j = global.blankInventorySpace;
-	holdingItem.i = global.blankInventorySpace;
+	activeHoldingItem = BLANK_INVENTORY_SPACE;
+	holdingItem.j = BLANK_INVENTORY_SPACE;
+	holdingItem.i = BLANK_INVENTORY_SPACE;
 	return false;
 }
 	

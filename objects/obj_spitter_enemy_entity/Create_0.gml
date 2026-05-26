@@ -8,7 +8,6 @@ if (!variable_global_exists("partSystem")) {
 
 global.partTypeSlimeSplatter = part_type_create();
 
-// USA O SEU SPRITE DE PIXEL AQUI!
 part_type_sprite(global.partTypeSlimeSplatter, spr_pixel, false, false, false);
 
 part_type_scale(global.partTypeSlimeSplatter, 6, 6);

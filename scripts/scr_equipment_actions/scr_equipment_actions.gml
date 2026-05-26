@@ -10,7 +10,7 @@ function handleEquipmentSwitch(){
 }
 
 function handleBagSwitch(){
-	if (global.equipments.bag == global.blankInventorySpace){
+	if (global.equipments.bag == BLANK_INVENTORY_SPACE){
 		setInventorySize(global.inventoryWidth, global.inventoryHeight);
 		return;
 	}
@@ -31,13 +31,13 @@ function setInventorySize(_width, _height){
 	for (var i = 0; i < _inventoryHeight; i++){
 		for (var j = 0; j < _inventoryWidth; j ++){
 			var _item = global.inventory[# j, i];
-			if (_item == global.blankInventorySpace) continue;
+			if (_item == BLANK_INVENTORY_SPACE) continue;
 			array_push(_auxiliarInventory, _item);
 		}
 	}
 	ds_grid_destroy(global.inventory);
 	global.inventory = ds_grid_create(_width, _height);
-	ds_grid_clear(global.inventory, global.blankInventorySpace);
+	ds_grid_clear(global.inventory, BLANK_INVENTORY_SPACE);
 	for (var i = 0; i < _height; i++){
 		for (var j = 0; j < _width; j ++){
 			if (!array_length(_auxiliarInventory)) continue;

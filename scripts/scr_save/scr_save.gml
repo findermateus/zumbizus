@@ -61,7 +61,7 @@ function loadArrayToDsGrid(_data, _destiny){
 		for(var j = 0; j < ds_grid_width(_destiny); j ++){
 			var _item = _data[i][j];
 			_destiny[# j, i] = _data[i][j];
-			if (_data[i][j] == global.blankInventorySpace) continue;
+			if (_data[i][j] == BLANK_INVENTORY_SPACE) continue;
 		}
 	}
 }
@@ -96,7 +96,7 @@ function loadPlayerBase(){
 	}
 	var _playerBaseSaveFile = file_text_open_read("player_base_save.json");
 	var _baseSaveJson = file_text_read_string(_playerBaseSaveFile);
-	if (_baseSaveJson == global.blankInventorySpace){
+	if (_baseSaveJson == BLANK_INVENTORY_SPACE){
 		loadDefaultBaseData();
 		file_text_close(_playerBaseSaveFile);
 		return;

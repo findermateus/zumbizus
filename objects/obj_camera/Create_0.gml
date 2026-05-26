@@ -8,10 +8,8 @@ setGuiSize(1920, 1080);
 cameraScale = 1;
 destinyCameraScale = 1;
 cameraScaleVelocity = .01;
-defaultCameraWidth = 2048;
-defaultCameraHeight = 1152;
-cameraHeight = defaultCameraHeight;
-cameraWIdth = defaultCameraWidth;
+cameraHeight = DEFAULT_CAM_H;
+cameraWIdth = DEFAULT_CAM_W;
 followMouse = true;
 
 guiHeight = display_get_gui_height();
@@ -37,8 +35,8 @@ function setDefaultScale(){
 
 function setCameraScale(){
 	cameraScale = lerp(cameraScale, destinyCameraScale, cameraScaleVelocity);
-	var _cameraWidth = defaultCameraWidth * cameraScale;
-	var _cameraHeight = defaultCameraHeight * cameraScale;
+	var _cameraWidth = DEFAULT_CAM_W * cameraScale;
+	var _cameraHeight = DEFAULT_CAM_H * cameraScale;
 	camera_set_view_size(view_camera[0], _cameraWidth, _cameraHeight);
 }
 

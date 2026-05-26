@@ -10,7 +10,7 @@ function addItemToQuickUse(_item, _quantity, _index = undefined) {
 function getItemFromQuickUse(_index) {
 	if (_index >= ds_list_size(global.quickUse)) return false; 
 	 
-	return global.quickUse[| _index] == global.blankInventorySpace ? false : global.quickUse[| _index];
+	return global.quickUse[| _index] == BLANK_INVENTORY_SPACE ? false : global.quickUse[| _index];
 }
 
 function addToQuickUseWithIndex(_index, _item, _quantity) {
@@ -36,12 +36,12 @@ function addToQuickUseWithIndex(_index, _item, _quantity) {
 }
 
 function increaseQuickUseBarSize() {
-	global.quickUse[| global.quickUseBarSize] = global.blankInventorySpace;
+	global.quickUse[| global.quickUseBarSize] = BLANK_INVENTORY_SPACE;
 	global.quickUseBarSize ++;
 }
 
 function itemCanBeAddedToQuickBarUse(_item) {
-	if (_item == global.blankInventorySpace) return false;
+	if (_item == BLANK_INVENTORY_SPACE) return false;
 	return _item.type == itemType.consumables;
 }
 
@@ -75,7 +75,7 @@ function useItemFromQuickUseBar(_index) {
 	global.quickUse[| _index].quantity --;
 	
 	if (global.quickUse[| _index].quantity <= 0) {
-		global.quickUse[| _index] = global.blankInventorySpace;
+		global.quickUse[| _index] = BLANK_INVENTORY_SPACE;
 	}
 }
 
@@ -85,7 +85,7 @@ function addQuickUseItemToInventory(_index){
 	
 	var _removeItem = function (_i, _item) {
 		audio_play_sound(_item.sound, 0, false);
-		global.quickUse[| _i] = global.blankInventorySpace;
+		global.quickUse[| _i] = BLANK_INVENTORY_SPACE;
 	}
 	
 	var _result = addItemToGrid(global.inventory, _item);

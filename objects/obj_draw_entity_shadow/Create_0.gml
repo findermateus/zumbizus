@@ -1,4 +1,4 @@
-shadowSurface = surface_create(camera_get_view_width(view_camera[0]), camera_get_view_height(view_camera[0]));
+shadowSurface = surface_create(DEFAULT_CAM_W, DEFAULT_CAM_H);
 
 function drawShadow(_sprite, _frame, _x, _y, _direction = 1, _alpha = 1, _xScale = 1) {
 	// 1. Aplicamos a escala na largura base do sprite

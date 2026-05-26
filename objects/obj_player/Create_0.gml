@@ -21,7 +21,7 @@ spriteLength = sprite_get_number(playerSprite);
 spriteXscale = 1;
 faceDirection = 3;
 switchSprite = false;
-equipedItem = global.blankInventorySpace;
+equipedItem = BLANK_INVENTORY_SPACE;
 currentState = playerIddleState;
 shouldRecoverStamina = true;
 staminaDestiny = global.player.maxStamina;
@@ -165,7 +165,7 @@ function drawGUIEquipedItem(){
 	var _screenWidth = display_get_gui_width();
 	var _screenHeight = display_get_gui_height();
 	var _item = global.activeEquipedItem;
-	if (_item == global.blankInventorySpace) return;
+	if (_item == BLANK_INVENTORY_SPACE) return;
 	if (!itemWorksWithAmmo(_item)) return;
 	var _xPosition = _screenWidth;
 	draw_text_scribble(_xPosition, _screenHeight/2, "[fa_right]" + string(_item.bullets) + "/" + string(_item.maxAmmo));
@@ -519,7 +519,7 @@ function unload(_item, _inventory, _j, _i) {
 
 	_ammoItem.quantity = _totalAmmo;
 
-	var _inventoryPosition = findCleanIndexFromInventory(_inventory, global.blankInventorySpace);
+	var _inventoryPosition = findCleanIndexFromInventory(_inventory, BLANK_INVENTORY_SPACE);
 	audio_play_sound(_ammoItem.sound, 0, false);
 
 	if (_inventoryPosition[0] == -1 || _inventoryPosition[1] == -1) {
