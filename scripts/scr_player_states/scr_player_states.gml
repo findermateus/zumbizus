@@ -89,7 +89,7 @@ function playerAttackState(){
 	}
 	
 	// Se o botão direito ainda estiver segurado, volta a mirar
-	if (mouse_check_button(mb_right) && global.activeEquipedItem != global.blankInventorySpace) {
+	if (mouse_check_button(mb_right) && global.activeEquipedItem != BLANK_INVENTORY_SPACE) {
 		currentState = aimWeaponState;
 		
 		return;
@@ -102,14 +102,14 @@ function playerAttackState(){
 function switchToAimState(){
 	if(isMenuOpen()) return;
 	
-	if(mouse_check_button(mb_right) && global.activeEquipedItem != global.blankInventorySpace){
+	if(mouse_check_button(mb_right) && global.activeEquipedItem != BLANK_INVENTORY_SPACE){
 		obj_weapon.weaponAim();
 		currentState = aimWeaponState;
 	}
 }
 
 function aimWeaponState(){
-	if (!mouse_check_button(mb_right) || global.activeEquipedItem == global.blankInventorySpace || isMenuOpen()){
+	if (!mouse_check_button(mb_right) || global.activeEquipedItem == BLANK_INVENTORY_SPACE || isMenuOpen()){
 		obj_weapon.setStateIdle();
 		currentState = playerIddleState;
 		return;

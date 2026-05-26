@@ -1,3 +1,7 @@
+#macro DEFAULT_CAM_W 2048
+#macro DEFAULT_CAM_H 1152
+#macro BLANK_INVENTORY_SPACE ""
+
 function initSystem() {
 	display_set_gui_size(1920, 1080);
 	global.inventoryWidth = 2;
@@ -5,7 +9,7 @@ function initSystem() {
 	global.inventory = ds_grid_create(global.inventoryWidth, global.inventoryHeight);
 	global.stopInteractions = false;
 	global.debug = false;
-	ds_grid_clear(global.inventory, global.blankInventorySpace);
+	ds_grid_clear(global.inventory, BLANK_INVENTORY_SPACE);
 	global.activeInventory = false;
 	global.activeInventoryAction = global.inventory;
 	global.activeMenu = undefined;
@@ -14,9 +18,6 @@ function initSystem() {
 	
 	global.pause = false;
 	global.timeStopped = false;
-	
-	global.defaultCameraWidth = 2048;
-	global.defaultCameraHeight = 1152;
 }
 
 initSystem();

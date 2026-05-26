@@ -1,6 +1,6 @@
 #region POSICIONAMENTO E DIREÇÃO
 function defineWeaponPosition(){
-	if (weaponAction.item == global.blankInventorySpace) return;
+	if (weaponAction.item == BLANK_INVENTORY_SPACE) return;
 	if (!variable_struct_exists(weaponAction.item, "type")) return;
 	
 	if (weaponAction.item.type == weaponTypes.shoot){
@@ -43,7 +43,7 @@ function defineFireWeaponPosition(){
 
 #region LÓGICA DE ATAQUE (HITBOXES E TIROS)
 function handleWeaponAnimation(){
-	if (global.activeEquipedItem == global.blankInventorySpace) return;
+	if (global.activeEquipedItem == BLANK_INVENTORY_SPACE) return;
 	if(variable_struct_exists(weaponAction.item, "animation")){
 		handleAnimatedWeaponAttack();
 	}
@@ -218,7 +218,7 @@ function insertAmmo(_ammoType, _quantity){
 
 #region DESENHO (DRAW STATES)
 function handleAttackAnimation(){
-	if (weaponAction.item == global.blankInventorySpace) return;
+	if (weaponAction.item == BLANK_INVENTORY_SPACE) return;
 	
 	if(variable_struct_exists(weaponAction.item, "animation")){
 		drawWeaponAttackingWithAnimation();
@@ -230,7 +230,7 @@ function handleAttackAnimation(){
 }
 
 function drawWeaponAiming(){
-	if(global.activeEquipedItem == global.blankInventorySpace) return;
+	if(global.activeEquipedItem == BLANK_INVENTORY_SPACE) return;
 	
 	if(currentState == reloadingState && weaponAction.item.reloadingSprite != spr_item_default){
 		drawReloadAnimation();
@@ -281,7 +281,7 @@ function drawWeaponShooting(_recoilForce, _delay){
 
 #region UTILITÁRIOS (SONS, PARTÍCULAS E COLISÃO)
 function playAttackSound(){
-	if (global.activeEquipedItem == global.blankInventorySpace) return;
+	if (global.activeEquipedItem == BLANK_INVENTORY_SPACE) return;
 	if (variable_struct_exists(weaponAction.item, "attackingSound")){
 		var _soundsCount = array_length(weaponAction.item.attackingSound);
 		if (_soundsCount > 0){

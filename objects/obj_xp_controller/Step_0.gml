@@ -1,6 +1,6 @@
 if (global.pause) exit;
 
-if (levelUpPending && !isMenuOpen() && !instance_exists(obj_quest_step_completed)) {
+if (levelUpPending && !isMenuOpen() && !instance_exists(obj_quest_popup)) {
     levelUpPending = false;
     handleLevelUp();
 }

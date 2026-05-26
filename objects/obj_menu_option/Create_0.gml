@@ -1,6 +1,6 @@
 inventoryItem = {
-	j: global.blankInventorySpace,
-	i: global.blankInventorySpace
+	j: BLANK_INVENTORY_SPACE,
+	i: BLANK_INVENTORY_SPACE
 };
 option = {
 	text: "",

@@ -7,8 +7,8 @@ isUsing = false;
 allowedRecipees = ds_map_create();
 cookingSlots = 6;
 furnitureData = new CampfireData(cookingSlots, objectId);
-holdingItem = global.blankInventorySpace;
-hoverItem = global.blankInventorySpace;
+holdingItem = BLANK_INVENTORY_SPACE;
+hoverItem = BLANK_INVENTORY_SPACE;
 recipe = undefined;
 audioEmitter = audio_emitter_create();
 playingSound = -1;
@@ -183,7 +183,7 @@ function loadModalValues() {
 }
 
 function getRecipe(_itemId, _itemType) {
-    if (_itemId == global.blankInventorySpace) return undefined;
+    if (_itemId == BLANK_INVENTORY_SPACE) return undefined;
 
     var _key = string(_itemType) + "_" + string(_itemId);
     
@@ -209,7 +209,7 @@ function drawFurnitureGUI() {
 		holdingItem = _object.activeHoldingItem;
 		hoverItem = _object.activeHoverItem;
 		
-		if (holdingItem == global.blankInventorySpace) {
+		if (holdingItem == BLANK_INVENTORY_SPACE) {
 			resetInventoryValues();
 			return;
 		}
@@ -224,7 +224,7 @@ function drawFurnitureGUI() {
 
 function resetInventoryValues() {
 	recipe = undefined;
-	holdingItem = global.blankInventorySpace;
+	holdingItem = BLANK_INVENTORY_SPACE;
 }
 
 function drawCookingModal() {
@@ -272,21 +272,21 @@ function drawContentsInsideModal() {
 		_ui.desY = _y;
 
 		var _mouseOver = mouseIsOnRectangle(_x, _y, _x + slotSize, _y + slotSize);
-		var _holdingItem = (holdingItem != global.blankInventorySpace);
+		var _holdingItem = (holdingItem != BLANK_INVENTORY_SPACE);
 		var _mouseIsOnSlotAndHoldingItem = _mouseOver && _holdingItem;
 		var _validRecipe = (recipe != undefined);
 		
 		handleUiValues(_ui);
 		drawSlot(_ui.x, _ui.y, slotSize, _item, _slot, _mouseIsOnSlotAndHoldingItem, _validRecipe);
 		
-		var _itemToTakeConsideration = holdingItem != global.blankInventorySpace ? holdingItem : hoverItem;
+		var _itemToTakeConsideration = holdingItem != BLANK_INVENTORY_SPACE ? holdingItem : hoverItem;
 		
-		if (_itemToTakeConsideration != global.blankInventorySpace) {
+		if (_itemToTakeConsideration != BLANK_INVENTORY_SPACE) {
 			drawCompatibleItemIndicator(_itemToTakeConsideration, _item, _ui.x, _ui.y, slotSize);
 		}
 		
 		if (_mouseIsOnSlotAndHoldingItem) {
-			var _valid = _validRecipe && (_item == global.blankInventorySpace || _item.itemId == holdingItem.itemId);
+			var _valid = _validRecipe && (_item == BLANK_INVENTORY_SPACE || _item.itemId == holdingItem.itemId);
 			if (_valid) {
 				hoverUiValues.desAlpha = 1;
 				hoverUiValues.desX = _ui.x;
@@ -295,7 +295,7 @@ function drawContentsInsideModal() {
 			_ui.desY += _valid ? -20 : 10;
 		}
 		
-		if (_mouseOver && !_holdingItem && _item != global.blankInventorySpace) {
+		if (_mouseOver && !_holdingItem && _item != BLANK_INVENTORY_SPACE) {
 			hoverUiValues.desAlpha = 1;
 			hoverUiValues.desX = _ui.x;
 			hoverUiValues.desY = _ui.y;
@@ -318,7 +318,7 @@ function drawContentsInsideModal() {
 
 
 function drawCompatibleItemIndicator(_selectedItem, _itemInGrid, _x, _y, _size) {
-	if (_itemInGrid != global.blankInventorySpace){ 
+	if (_itemInGrid != BLANK_INVENTORY_SPACE){ 
 		if (_selectedItem.itemId != _itemInGrid.itemId || _selectedItem.type != _itemInGrid.type) {
 			return;
 		}
@@ -493,10 +493,10 @@ function drawSlot(_x, _y, _size, _item, _slot, _mouseIsOnSlot = false, _validRec
     var _color = _isReady ? c_lime : c_white;
 	draw_sprite_stretched_ext(_sprite, 0, _x + _off + _jx, _y + _off + _jy, _drawSize, _drawSize, _color, _alpha);
 	
-	if (_item == global.blankInventorySpace) return;
+	if (_item == BLANK_INVENTORY_SPACE) return;
 	
-	var _result = _slot.resultQuantity > 0 ? constructItem(_slot.resultType, global.items[_slot.resultType][_slot.resultId]) : global.blankInventorySpace;
-	var _itemSprite = _result == global.blankInventorySpace ? _item.sprite : _result.sprite;
+	var _result = _slot.resultQuantity > 0 ? constructItem(_slot.resultType, global.items[_slot.resultType][_slot.resultId]) : BLANK_INVENTORY_SPACE;
+	var _itemSprite = _result == BLANK_INVENTORY_SPACE ? _item.sprite : _result.sprite;
 	
 	var _expectedSize = (_size - BORDER_THICKNESS * 2) * _s;
 	

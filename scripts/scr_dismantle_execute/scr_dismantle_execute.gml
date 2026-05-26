@@ -34,7 +34,7 @@ function dismantleItem(_j, _i, _toolBar) {
 	});
 	
 	if (_toolBar != -1) {
-		global.equipedItems[| _toolBar] = global.blankInventorySpace;
+		global.equipedItems[| _toolBar] = BLANK_INVENTORY_SPACE;
 	} else {
 		cleanInventoryGrid(global.inventory, _j, _i);
 	}

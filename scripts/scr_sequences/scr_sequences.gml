@@ -21,8 +21,8 @@ function transitionPlaceSequence(_transitionType ) {
 	
 	var _sequence = layer_sequence_create(_layer, _camX, _camY, _transitionType);
 	
-	var _xScale = getScale(global.defaultCameraWidth, 1920);
-	var _yScale = getScale(global.defaultCameraHeight, 1080);
+	var _xScale = getScale(DEFAULT_CAM_W, 1920);
+	var _yScale = getScale(DEFAULT_CAM_H, 1080);
 	
 	layer_sequence_xscale(_sequence, _xScale);
 	layer_sequence_yscale(_sequence, _yScale);

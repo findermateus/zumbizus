@@ -1,8 +1,7 @@
 global.currentOptionMenu = noone;
-global.blankInventorySpace = "";
 global.currentItemPlayingTheAction = {
-	j: global.blankInventorySpace,
-	i: global.blankInventorySpace
+	j: BLANK_INVENTORY_SPACE,
+	i: BLANK_INVENTORY_SPACE
 };
 global.toolBarSize = 3;
 global.quickUseBarSize = 3;
@@ -10,18 +9,18 @@ global.equipedItems = ds_list_create();
 global.quickUse = ds_list_create();
 global.activeQuickUseIndex = 0;
 global.equipments = {
-	head: global.blankInventorySpace,
-	armor: global.blankInventorySpace,
-	bag: global.blankInventorySpace
+	head: BLANK_INVENTORY_SPACE,
+	armor: BLANK_INVENTORY_SPACE,
+	bag: BLANK_INVENTORY_SPACE
 };
 
 ds_list_clear(global.equipedItems);
 for (var _i = 0; _i < global.toolBarSize; _i++) {
-    global.equipedItems[| _i] = global.blankInventorySpace;
+    global.equipedItems[| _i] = BLANK_INVENTORY_SPACE;
 }
 
 for (var _i = 0; _i < global.quickUseBarSize; _i++) {
-    global.quickUse[| _i] = global.blankInventorySpace;
+    global.quickUse[| _i] = BLANK_INVENTORY_SPACE;
 }
 
 enum itemType {

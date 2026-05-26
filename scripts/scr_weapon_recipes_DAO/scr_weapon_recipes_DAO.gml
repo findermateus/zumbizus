@@ -4,7 +4,7 @@ function getItemsThatCanBeRepaired(_intentory){
 	var _items = [];
 	for (var i = 0; i < ds_list_size(global.equipedItems); i ++){
 		var _item = global.equipedItems[| i];
-		if (_item == global.blankInventorySpace) continue;
+		if (_item == BLANK_INVENTORY_SPACE) continue;
 		if (itemHasDurability(_item)) {
 			array_push(_items, {
 				item: _item,
@@ -15,7 +15,7 @@ function getItemsThatCanBeRepaired(_intentory){
     for (var i = 0; i < height; i++) {
         for (var j = 0; j < width; j++) {
 			var _item = _intentory[# j, i];
-			if (_item == global.blankInventorySpace) continue;
+			if (_item == BLANK_INVENTORY_SPACE) continue;
             if (itemHasDurability(_item)) {
 				array_push(_items, {
 					item: _item,

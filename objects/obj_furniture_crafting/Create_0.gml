@@ -21,14 +21,14 @@ modalXSize = 0;
 modalYSize = 0;
 
 requirementModalAlpha = 0;
-currentHoverItem = global.blankInventorySpace;
+currentHoverItem = BLANK_INVENTORY_SPACE;
 
 itemsThatCanBeRepaired = [];
 itemsThatCanBeCrafted = [];
 itemsThatCanBeDismantled = [];
 
 currentHoverItemRequirements = {
-	item: global.blankInventorySpace,
+	item: BLANK_INVENTORY_SPACE,
 	requirement: []
 }
 
@@ -54,7 +54,7 @@ hoverCraftingForUI = { x: 0, y: 0, desX: 0, desY: 0, gridSize: 0 };
 
 
 mouseIsOnItem = false;
-lastHoveredItem = global.blankInventorySpace;
+lastHoveredItem = BLANK_INVENTORY_SPACE;
 furnitureIluminator = noone;
 furnitureCategory = furnitureCategories.creation;
 furnitureId = global.furnitureIds.meeleCraftingStation;
@@ -129,7 +129,7 @@ function drawCraftingModal(){
 	}
 
 	var _modal = getModal(display_get_gui_width() * .9);
-	currentHoverItem = global.blankInventorySpace;
+	currentHoverItem = BLANK_INVENTORY_SPACE;
 	mouseIsOnItem = false;
 	
 	if (checkConditionsToClose() && isUsing){
@@ -170,7 +170,7 @@ function drawCraftingModal(){
 	drawCraftingItems(_yPosition + _margin, _modal);
 	if (!mouseIsOnItem) {
 		requirementModalAlpha = lerp(requirementModalAlpha, 0, .2);
-		lastHoveredItem = global.blankInventorySpace;
+		lastHoveredItem = BLANK_INVENTORY_SPACE;
 	}
 	drawHoverUiIndicator();
 }

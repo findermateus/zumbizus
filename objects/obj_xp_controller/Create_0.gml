@@ -18,7 +18,7 @@ levelUpPending = false;
 levelUpBlur = 0;
 
 function handleLevelUp() {
-    if (isMenuOpen() || instance_exists(obj_quest_step_completed)) {
+    if (isMenuOpen() || instance_exists(obj_quest_popup)) {
         levelUpPending = true;
         return;
     }
