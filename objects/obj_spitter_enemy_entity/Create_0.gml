@@ -38,6 +38,10 @@ targetY = y;
 spriteSpeed = 0
 currentHealth = 15;
 
+drawScaleX = 1;
+drawScaleY = 1;
+chargeAmount = 0;
+
 sprites = {
 	iddle: spr_spitter_iddle,
 	running: spr_spitter_running
@@ -61,33 +65,58 @@ function attackPlayer() {
         currentState = spitterIddle;
         return;
     }
-	handlePositionWithPathHandler(true);
+    
+    handlePositionWithPathHandler(true);
     image_xscale = (obj_player.x > x) ? 1 : -1;
-	shadowDirection = image_xscale;
-	var _dist = point_distance(x, y, obj_player.x, obj_player.y);
+    shadowDirection = image_xscale;
+    
+    var _dist = point_distance(x, y, obj_player.x, obj_player.y);
 
-	if (_dist < fleeDistance) {
-		updateSprite(sprites.running);
-		chooseFleeDestination();
-		currentState = runAway;
-		
-		return;
-	}
+    if (_dist < fleeDistance) {
+        updateSprite(sprites.running);
+        chooseFleeDestination();
+        currentState = runAway;
+        chargeAmount = 0; // Cancela o efeito se fugir
+        return;
+    }
 
     if (attackTimer > 0) {
         attackTimer--;
-		
-		return;
+        
+        // --- EFEITO DE ANTECIPAÇÃO (Últimos 35 frames) ---
+        var _chargeTime = 35;
+        if (attackTimer <= _chargeTime) {
+            // Calcula uma porcentagem de 0 a 1
+            chargeAmount = 1 - (attackTimer / _chargeTime); 
+            
+            // O inimigo "incha" antes de cuspir
+            drawScaleX = 1 + (0.3 * chargeAmount); 
+            drawScaleY = 1 - (0.2 * chargeAmount); // Fica mais "gordinho" e baixo
+            
+            // "Babe" umas partículas verdes enquanto carrega
+            if (attackTimer % 8 == 0 && variable_global_exists("partSystem")) {
+                var _x = getMiddlePoint(bbox_left, bbox_right) + (10 * image_xscale); // Um pouco para frente
+                var _y = bbox_top + 10; // Perto de onde seria a cabeça/boca
+                part_particles_create(global.partSystem, _x, _y, global.partTypeSlimeSplatter, 1);
+            }
+        } else {
+            chargeAmount = 0;
+        }
+        return;
     }
     
-	var _dir = point_direction(x, y, obj_player.x, obj_player.y);
+    drawScaleX = 0.5;
+    drawScaleY = 1.4;
+    chargeAmount = 0; 
+    
+    var _dir = point_direction(x, y, obj_player.x, obj_player.y);
         
-	var _x = getMiddlePoint(bbox_left, bbox_right);
-	var _y = getMiddlePoint(bbox_top, bbox_bottom);
-		
+    var _x = getMiddlePoint(bbox_left, bbox_right);
+    var _y = getMiddlePoint(bbox_top, bbox_bottom);
+        
     var _slime = instance_create_layer(_x, _y, "Instances", obj_spitter_spit, {
-		direction: _dir
-	});
+        direction: _dir
+    });
 
     if (instance_exists(obj_player_sound_controller)) {
         obj_player_sound_controller.addSound(120, _x, _y, soundIntensity.standard, id);
