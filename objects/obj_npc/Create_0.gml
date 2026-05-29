@@ -11,7 +11,7 @@ activeInteraction = false;
 interactOptions = [];
 alpha = 0;
 animProgress = 0;
-
+isInteracting = false;
 alpha = 0;
 animProgress = 0;
 
@@ -26,7 +26,11 @@ defaultGreetingOptions = [
 greetingOptions = defaultGreetingOptions;
 
 canTrade = false;
-canTalk = false;
+isInteracting = false;
+
+function canPlayerTalk() {
+	return is_struct(getCurrentDialogue());
+}
 
 function handleHover() {
 	if(!verifyConditions()) {
@@ -46,7 +50,7 @@ function handleHover() {
 	
 	var _options = [];
 	
-	if (canTalk) {
+	if (canPlayerTalk()) {
 		array_push(_options, {
 			label: "Conversar",
 			action: "talk"	
@@ -64,6 +68,10 @@ function handleHover() {
 }
 
 menuId = Menus.NpcInteraction;
+
+function getCurrentDialogue() {
+	return noone;
+}
 
 function handleInteract(_options) {
 	if (!array_length(_options)) {
@@ -85,18 +93,16 @@ function closeInteractOptions() {
 
 function handleNPCOption(option) {
 	playClickSound();	
-	
+	isInteracting = true;
 	switch (option) {
 
 		case "talk":
 			closeInteractOptions();
+
 			instance_create_layer(0, 0, "Controllers", obj_dialogue, {
 				target: id,
-				dialogue: dialogue
+				dialogue: getCurrentDialogue()
 			});
-			
-			dialogue = undefined;
-			canTalk = false;
 		break;
 
 		case "trade":

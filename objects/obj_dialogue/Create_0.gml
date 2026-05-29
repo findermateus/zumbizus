@@ -23,19 +23,20 @@ function endDialogue() {
 	closeMenu();
 	unBlockPlayerMenus();
 	
-	obj_quest_manager.notifyEvent(QuestEvent.DialogueEnded, {});
-	
 	obj_camera.setDefaultScale();
 	obj_camera.target = obj_player;
 	
 	obj_player.currentState = playerIddleState;
 	
-	obj_quest_manager.notifyEvent(QuestEvent.DialogueEnded, { dialogue: dialogue});
+	obj_quest_manager.notifyEvent(QuestEvent.DialogueEnded, { dialogue: dialogue, npc: target});
 	
 	if (is_callable(dialogue.onEnd)) {
 		dialogue.onEnd();
 	}
 	
+	if (instance_exists(target)) {
+		target.isInteracting = false;
+	}
 	instance_destroy(id);
 }
 

@@ -24,6 +24,12 @@ function Quest(_id, _name) constructor {
 	};
 	
 	getCurrentStep = function() {
+		if (currentStepIndex < 0) return undefined;
+
+		if (currentStepIndex >= array_length(steps)) {
+			return undefined;
+		}
+
 		return steps[currentStepIndex];
 	};
 	
@@ -38,11 +44,17 @@ function Quest(_id, _name) constructor {
 	onComplete = function () {};
 	
 	completeCurrentStep = function() {
+
+		if (isCompleted) return;
+
 		var step = getCurrentStep();
-	
+
+		if (is_undefined(step)) return;
+
 		if (step.isCompleted) return;
 
 		step.isCompleted = true;
+
 		step.onComplete();
 
 		instance_create_layer(0, 0, "Alert", obj_quest_popup, {
@@ -54,6 +66,7 @@ function Quest(_id, _name) constructor {
 
 		if (currentStepIndex >= array_length(steps)) {
 			isCompleted = true;
+
 			onComplete();
 
 			var _data = self;
@@ -61,10 +74,10 @@ function Quest(_id, _name) constructor {
 			with (obj_quest_manager) {
 				completeQuest(_data);
 			}
-			
+
 			return;
 		}
-	
+
 		getCurrentStep().onStart();
 	};
 	
@@ -103,7 +116,8 @@ function Quest(_id, _name) constructor {
 	}
 }
 
-function QuestStep(_description) constructor {
+function QuestStep(_id, _description) constructor {
+	id = _id;
 	quest = undefined;
 	description = _description;
 	isCompleted = false;
