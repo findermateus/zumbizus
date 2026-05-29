@@ -26,7 +26,7 @@ getCurrentDialogue = function() {
 		);
 
 		_dialogue.onEnd = function () {
-			var _quest = obj_quest_manager.getCreateAxeQuest(id);
+			var _quest = getCreateAxeQuest(id);
 
 			obj_quest_manager.addQuest(_quest);
 			obj_quest_manager.startQuest(_quest);
