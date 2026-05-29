@@ -263,7 +263,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.6.0.157",
+    "IDEVersion":"2024.6.1.160",
   },
   "name":"zumbizus",
   "resources":[
@@ -487,6 +487,7 @@
     {"id":{"name":"scr_player_weapons","path":"scripts/scr_player_weapons/scr_player_weapons.yy",},},
     {"id":{"name":"scr_player","path":"scripts/scr_player/scr_player.yy",},},
     {"id":{"name":"scr_quest_list","path":"scripts/scr_quest_list/scr_quest_list.yy",},},
+    {"id":{"name":"scr_quest_utils","path":"scripts/scr_quest_utils/scr_quest_utils.yy",},},
     {"id":{"name":"scr_quest","path":"scripts/scr_quest/scr_quest.yy",},},
     {"id":{"name":"scr_quick_use_DAO","path":"scripts/scr_quick_use_DAO/scr_quick_use_DAO.yy",},},
     {"id":{"name":"scr_save","path":"scripts/scr_save/scr_save.yy",},},

@@ -5,66 +5,11 @@ function getCreateCampfireQuest() {
 		self.applyReward();
 	});
 
-	var _step = new QuestStep("gather_resources", "Colete os itens necesários");
-
-	_step.objectives = [
+	var _step = createCollectItemsStep("gather_resources", "Colete os itens necesários", [
 		{ itemId: trashItems.wood_log, type: itemType.trash, count: 0, target: 6 },
 		{ itemId: trashItems.twig, type: itemType.trash, count: 0, target: 12 },
 		{ itemId: trashItems.rock, type: itemType.trash, count: 0, target: 8 },
-	];
-
-	_step.onStart = method(_step, function () {
-		var _hasAll = true;
-
-		for (var i = 0; i < array_length(self.objectives); i++) {
-			var _itemObjective = self.objectives[i];
-
-			var _currentQuantity = getItemQuantityInInventory(
-				global.inventory,
-				_itemObjective.itemId,
-				_itemObjective.type
-			);
-
-			self.objectives[i].count = _currentQuantity;
-
-			if (_currentQuantity < _itemObjective.target) {
-				_hasAll = false;
-			}
-		}
-
-		if (_hasAll) {
-			self.quest.completeCurrentStep();
-		}
-	});
-
-	_step.onEvent = method(_step, function(_event, _data) {
-		if (_event != QuestEvent.ItemCollected) return;
-
-		for (var i = 0; i < array_length(self.objectives); i++) {
-			var obj = self.objectives[i];
-
-			if (_data.itemId == obj.itemId) {
-				obj.count += _data.quantity;
-
-				if (obj.count > obj.target) {
-					obj.count = obj.target;
-				}
-			}
-		}
-
-		var allDone = true;
-
-		for (var i = 0; i < array_length(self.objectives); i++) {
-			if (self.objectives[i].count < self.objectives[i].target) {
-				allDone = false;
-				break;
-			}
-		}
-
-		if (allDone) {
-			self.quest.completeCurrentStep();
-		}
-	});
+	]);
 
 	_quest.addStep(_step);
 
@@ -113,65 +58,14 @@ function getCreateAxeQuest(_npc) {
 		}
 	}); 
 
-	var _step = new QuestStep("gather_resources", "Colete os itens necesários");
-
-	_step.objectives = [
-		{ itemId: trashItems.twig, type: itemType.trash, count: 0, target: 3 },
-		{ itemId: trashItems.rock, type: itemType.trash, count: 0, target: 2 }
-	];
-
-	_step.onStart = method(_step, function () {
-		var _hasAll = true;
-		
-		for (var i = 0; i < array_length(self.objectives); i ++) {
-			var _itemObjective = self.objectives[i];
-
-			var _currentQuantity = getItemQuantityInInventory(
-				global.inventory,
-				_itemObjective.itemId,
-				_itemObjective.type
-			);
-			
-			self.objectives[i].count = _currentQuantity;
-			
-			if (_currentQuantity < _itemObjective.target) {
-				_hasAll = false;	
-			}
-		}
-		
-		if (_hasAll) {
-			self.quest.completeCurrentStep();
-		}
-	});
-
-	_step.onEvent = method(_step, function(_event, _data) {
-		if (_event != QuestEvent.ItemCollected) return;
-
-		for (var i = 0; i < array_length(self.objectives); i++) {
-			var obj = self.objectives[i];
-
-			if (_data.itemId == obj.itemId && _data.itemType == obj.type) {
-				obj.count += _data.quantity;
-
-				if (obj.count > obj.target) {
-					obj.count = obj.target;
-				}
-			}
-		}
-
-		var allDone = true;
-
-		for (var i = 0; i < array_length(self.objectives); i++) {
-			if (self.objectives[i].count < self.objectives[i].target) {
-				allDone = false;
-				break;
-			}
-		}
-
-		if (allDone) {
-			self.quest.completeCurrentStep();
-		}
-	});
+	var _step = createCollectItemsStep(
+		"collect_axe_materials",
+		"Colete os itens necessários",
+		[
+			{ itemId: trashItems.twig, type: itemType.trash, count: 0, target: 3 },
+			{ itemId: trashItems.rock, type: itemType.trash, count: 0, target: 2 }
+		]
+	);
 
 	_quest.addStep(_step);
 
