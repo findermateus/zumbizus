@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_quest_list",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_quest_list",
+  "parent":{
+    "name":"Quest",
+    "path":"folders/Scripts/Quest.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

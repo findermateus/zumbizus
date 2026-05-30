@@ -55,7 +55,7 @@ curveAnimationIndex = 0;
 
 weaponAction = {
 	weaponId: noone,
-	item: global.blankInventorySpace,
+	item: BLANK_INVENTORY_SPACE,
 	yScale: -1,
 	angle: 0,
 	recoilXPosition: 0,
@@ -82,7 +82,7 @@ function weaponIdleState(){
 function weaponAimState(){
 	updateWeaponActionData();
 	
-	if (weaponAction.item == global.blankInventorySpace) {
+	if (weaponAction.item == BLANK_INVENTORY_SPACE) {
 		setStateIdle();
 		return;
 	}
@@ -119,7 +119,7 @@ function setStateIdle(){
 }
 
 function getWeaponBackDrawData(){
-	if(global.activeEquipedItem == global.blankInventorySpace) return noone;
+	if(global.activeEquipedItem == BLANK_INVENTORY_SPACE) return noone;
 	
 	var _weaponId = global.activeEquipedItem.itemId;
 	var _weapon = global.weapons[_weaponId];
@@ -178,7 +178,7 @@ function weaponAim(_comingFromAttack = false){
 function attackWithPlayer(){
 	if (instance_exists(obj_hitbox)) return false;
 	if (currentState != weaponAimState) return false;
-	if (weaponAction.item == global.blankInventorySpace) return false;
+	if (weaponAction.item == BLANK_INVENTORY_SPACE) return false;
 	
 	if(weaponAction.item.type == weaponTypes.shoot && !weaponAction.info.bullets){
 		if(mouse_check_button_pressed(mb_left)) audio_play_sound(weaponAction.item.emptyShot, 0, false);
@@ -200,21 +200,21 @@ function attackWithPlayer(){
 
 function updateWeaponActionData() {
 	weaponAction.info = global.activeEquipedItem;
-	if (global.activeEquipedItem != global.blankInventorySpace && variable_struct_exists(global.activeEquipedItem, "itemId")){
+	if (global.activeEquipedItem != BLANK_INVENTORY_SPACE && variable_struct_exists(global.activeEquipedItem, "itemId")){
 		weaponAction.weaponId = global.activeEquipedItem.itemId;
 		weaponAction.item = global.weapons[weaponAction.weaponId];
 	} else {
-		weaponAction.weaponId = global.blankInventorySpace;
-		weaponAction.item = global.blankInventorySpace;
+		weaponAction.weaponId = BLANK_INVENTORY_SPACE;
+		weaponAction.item = BLANK_INVENTORY_SPACE;
 	}
 }
 
 function resetActiveItem() {
-	global.equipedItems[| global.activeEquipedItemIndex] = global.blankInventorySpace;
-	global.activeEquipedItemIndex = global.blankInventorySpace;
-	global.activeEquipedItem = global.blankInventorySpace;
-	weaponAction.item = global.blankInventorySpace;
-	weaponAction.info = global.blankInventorySpace;
+	global.equipedItems[| global.activeEquipedItemIndex] = BLANK_INVENTORY_SPACE;
+	global.activeEquipedItemIndex = BLANK_INVENTORY_SPACE;
+	global.activeEquipedItem = BLANK_INVENTORY_SPACE;
+	weaponAction.item = BLANK_INVENTORY_SPACE;
+	weaponAction.info = BLANK_INVENTORY_SPACE;
 }
 
 function setAimingCursor() {
@@ -226,7 +226,7 @@ function finishReloading(){
 	adjustPlayerInteractions(true);
 	obj_camera.setDefaultScale();
 	
-	if (mouse_check_button(mb_right) && global.activeEquipedItem != global.blankInventorySpace) {
+	if (mouse_check_button(mb_right) && global.activeEquipedItem != BLANK_INVENTORY_SPACE) {
 		weaponAim(true); 
 		obj_player.currentState = aimWeaponState;
 		

@@ -23,10 +23,10 @@ function drawQuests() {
 		}
 	}
 
-	var _targetOffset = global.activeMenu ? -(_maxTextWidth + _margin + _padding * 2 + 50) : 0;
+	var _targetOffset = isMenuOpen() ? -(_maxTextWidth + _margin + _padding * 2 + 50) : 0;
 	menu_offset_x = lerp(menu_offset_x, _targetOffset, 0.1);
 
-	if (global.activeMenu && abs(menu_offset_x - _targetOffset) < 2) return;
+	if (isMenuOpen() && abs(menu_offset_x - _targetOffset) < 2) return;
 
 	var _baseTextX = _margin + menu_offset_x; 
 	var _rectX1 = _baseTextX - _padding;
@@ -170,6 +170,11 @@ addQuest = function(_quest) {
 startQuest = function(_quest) {
 	_quest.start();
 	array_push(activeQuests, _quest);
+	
+	instance_create_layer(0, 0, "Alert", obj_quest_popup, {
+		textContent: _quest.name,
+		popupType: QUEST_POPUP_TYPE.QUEST_ADDED
+	});
 };
 
 completeQuest = function(_quest) {
@@ -188,12 +193,12 @@ completeQuest = function(_quest) {
 		array_delete(activeQuests, index, 1);
 	}
 	
-	instance_create_layer(0, 0, "Alert", obj_quest_step_completed, {
+	instance_create_layer(0, 0, "Alert", obj_quest_popup, {
 		textContent: _quest.name,
-		isStep: false
+		popupType: QUEST_POPUP_TYPE.QUEST_COMPLETED
 	});
 	
-	array_push(completedQuests, _quest);
+	array_push(completedQuests, _quest.id);
 };
 
 notifyEvent = function(_event, _data) {
@@ -211,221 +216,39 @@ notifyEvent = function(_event, _data) {
 	}
 };
 
-{
-	var _quest = new Quest("test", "Killing in the name of Love");
+hasActiveQuest = function(_questId) {
+	for (var i = 0; i < array_length(activeQuests); i++) {
+		var _quest = activeQuests[i];
 
-	_quest.onComplete = method(_quest, function () {
-		self.applyReward();
-	});
-
-	var _step = new QuestStep("Matar 5 Zumbis");
-	_step.killCount = 0;
-	_step.killTarget = 5;
-
-	_step.onEvent = method(_step, function(_event, _data) {
-		if (_event != QuestEvent.EnemyKilled) return;
-
-		self.killCount++;
-
-		if (self.killCount >= self.killTarget) {
-			self.quest.completeCurrentStep();
+		if (_quest.id == _questId && !_quest.isCompleted) {
+			return true;
 		}
-	});
+	}
 
-	_quest.addStep(_step);
-
-	addQuest(_quest);
+	return false;
 }
 
-function getCreateAxeQuest() {
-	var _quest = new Quest("craft_axe", "Se torne um Lenhador");
-
-	_quest.onComplete = method(_quest, function () {
-		self.applyReward();
+function hasCompletedQuest(_questId) {
+	for (var i = 0; i < array_length(completedQuests); i++) {
+		var _quest = completedQuests[i];
 		
-		with(obj_quest_manager) {
-			var _nextQuest = getCreateCampfireQuest();
-			addQuest(_nextQuest);
-			startQuest(_nextQuest);
+		if (_questId == _quest) {
+			return true;
 		}
-	}); 
-
-	var _step = new QuestStep("Colete os itens necesários");
-
-	_step.objectives = [
-		{ itemId: trashItems.twig, type: itemType.trash, count: 0, target: 3 },
-		{ itemId: trashItems.rock, type: itemType.trash, count: 0, target: 2 }
-	];
-
-	_step.onStart = method(_step, function () {
-		var _hasAll = true;
-		
-		for (var i = 0; i < array_length(self.objectives); i ++) {
-			var _itemObjective = self.objectives[i];
-			var _currentQuantity = getItemQuantityInInventory(global.inventory, _itemObjective.itemId, _itemObjective.type);
-			
-			self.objectives[i].count = _currentQuantity;
-			
-			if (_currentQuantity < _itemObjective.target) {
-				_hasAll = false;	
-			}
-		}
-		
-		if (_hasAll) {
-			self.quest.completeCurrentStep();
-		}
-	});
-
-	_step.onEvent = method(_step, function(_event, _data) {
-		if (_event != QuestEvent.ItemCollected) return;
-
-		for (var i = 0; i < array_length(self.objectives); i++) {
-			var obj = self.objectives[i];
-
-			if (_data.itemId == obj.itemId) {
-				obj.count += _data.quantity;
-
-				if (obj.count > obj.target) {
-					obj.count = obj.target;
-				}
-			}
-		}
-
-		var allDone = true;
-
-		for (var i = 0; i < array_length(self.objectives); i++) {
-			if (self.objectives[i].count < self.objectives[i].target) {
-				allDone = false;
-				break;
-			}
-		}
-
-		if (allDone) {
-			self.quest.completeCurrentStep();
-		}
-	});
-
-	_quest.addStep(_step);
+	}
 	
-	var _secondStep = new QuestStep("Volte para a base");
-	_secondStep.area = rm_player_base;
-	
-	_secondStep.onEvent = method(_secondStep, function(_event, _data) {
-		if (_event != QuestEvent.AreaEntered) return;
-		if (_data.area != self.area) return;
-
-		self.quest.completeCurrentStep();
-	});
-	
-	_quest.addStep(_secondStep);
-
-	var _thirdStep = new QuestStep("Faça o machado");
-	_thirdStep.itemType = itemType.weapons;
-	_thirdStep.itemId = weaponItems.axe;
-	
-	_thirdStep.onEvent = method(_thirdStep, function (_event, _data) {
-		if (_event != QuestEvent.ItemCrafted && _event != QuestEvent.ItemCollected) return;
-		
-		if (_data.itemType == self.itemType && _data.itemId == self.itemId) {
-			self.quest.completeCurrentStep();
-		}
-	});
-	
-	_quest.addStep(_thirdStep);
-	
-	var _reward = new QuestReward(105);
-	_quest.setReward(_reward);
-	
-	return _quest;
+	return false;
 }
 
-{
-	var _quest = getCreateAxeQuest();
-	addQuest(_quest);
-	startQuest(_quest);
-}
 
-function getCreateCampfireQuest() {
-	var _quest = new Quest("create_campfire", "Descubra o Fogo");
-	
-	_quest.onComplete = method(_quest, function () {
-		self.applyReward();
-	});
+function getQuest(_questId) {
+	for (var i = 0; i < array_length(quests); i++) {
+		var _quest = quests[i];
 
-	var _step = new QuestStep("Colete os itens necesários");
-
-	_step.objectives = [
-		{ itemId: trashItems.wood_log, type: itemType.trash, count: 0, target: 6 },
-		{ itemId: trashItems.twig, type: itemType.trash, count: 0, target: 12 },
-		{ itemId: trashItems.rock, type: itemType.trash, count: 0, target: 8 },
-	];
-
-	_step.onStart = method(_step, function () {
-		var _hasAll = true;
-		
-		for (var i = 0; i < array_length(self.objectives); i ++) {
-			var _itemObjective = self.objectives[i];
-			var _currentQuantity = getItemQuantityInInventory(global.inventory, _itemObjective.itemId, _itemObjective.type);
-			
-			self.objectives[i].count = _currentQuantity;
-			
-			if (_currentQuantity < _itemObjective.target) {
-				_hasAll = false;	
-			}
+		if (_quest.id == _questId) {
+			return _quest;
 		}
-		
-		if (_hasAll) {
-			self.quest.completeCurrentStep();
-		}
-	});
+	}
 
-	_step.onEvent = method(_step, function(_event, _data) {
-		if (_event != QuestEvent.ItemCollected) return;
-
-		for (var i = 0; i < array_length(self.objectives); i++) {
-			var obj = self.objectives[i];
-
-			if (_data.itemId == obj.itemId) {
-				obj.count += _data.quantity;
-
-				if (obj.count > obj.target) {
-					obj.count = obj.target;
-				}
-			}
-		}
-
-		var allDone = true;
-
-		for (var i = 0; i < array_length(self.objectives); i++) {
-			if (self.objectives[i].count < self.objectives[i].target) {
-				allDone = false;
-				break;
-			}
-		}
-
-		if (allDone) {
-			self.quest.completeCurrentStep();
-		}
-	});
-	
-	_quest.addStep(_step);
-	
-	var _craftCampfireStep = new QuestStep("Construa a fogueira");
-	
-	_craftCampfireStep.onEvent = method(_craftCampfireStep, function (_event, _data) {
-		if (_event != QuestEvent.FurnitureCrafted) return;
-		
-		if (_data.furnitureId == global.furnitureIds.campfire) {
-			self.quest.completeCurrentStep();
-		}
-	});
-	
-	_quest.addStep(_craftCampfireStep);
-	
-	var _reward = new QuestReward(15);
-	array_push(_reward.items, { itemId: consumableItems.watter_bottle, itemType: itemType.consumables}, {itemId: consumableItems.canned_pineapple, itemType: itemType.consumables});
-	
-	_quest.setReward(_reward);
-	
-	return _quest;
+	return undefined;
 }

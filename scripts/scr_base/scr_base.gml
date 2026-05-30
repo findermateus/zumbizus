@@ -29,24 +29,31 @@ function selectLateralMenuOption(_option){
 	if (global.currentBaseMenuOption != -1) {
 		deactivateLateralMenuOption(global.currentBaseMenuOption);
 	}
+	
 	global.currentBaseMenuOption = _option;
+	
 	with obj_base_controller {
 		lateralMenuGUIInfo.shakeEffect = 5;
 		lateralMenuGUIInfo.selectedOption = _option;
 	}
+	
 	closeInventory();
-	openMenu();
+	
 	if (_option == menu.builder) {
 		with obj_base_controller {
 			setUpResourceViewer(true);
 		}
+		
 		with (obj_builder) {
+			openMenu(Menus.Builder);
 			setUpModal();
 		}
+		
 		return;
 	}
 	if (_option == menu.resident) {
 		with obj_resident_gui_controller {
+			openMenu(Menus.ResidentController);
 			setUpModal();
 		}
 	}
@@ -54,18 +61,21 @@ function selectLateralMenuOption(_option){
 
 function deactivateLateralMenuOption(_option) {
 	global.currentBaseMenuOption = -1;
+	
 	with obj_base_controller {
 		setUpResourceViewer(false);
 	}
-	closeMenu();
+	
 	if (_option == menu.builder) {
 		with obj_builder {
+			if (global.activeMenu == Menus.Builder) closeMenu();
 			hideMenu();
 		}
 	}
 	
 	if (_option == menu.resident) {
 		with obj_resident_gui_controller {
+			if (global.activeMenu == Menus.ResidentController) closeMenu();
 			hideMenu();
 		}
 	}

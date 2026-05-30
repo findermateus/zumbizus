@@ -2,7 +2,7 @@ function getItemById(_inventory, _type, _id, _ignoreFull = false) {
 	for (var i = 0; i < ds_grid_height(_inventory); i ++) {
 		for (var j = 0; j < ds_grid_width(_inventory); j ++) {
 			var _item = _inventory[# j, i];
-			if (_item == global.blankInventorySpace) continue;
+			if (_item == BLANK_INVENTORY_SPACE) continue;
 			if (_item.itemId = _id && _item.type == _type) {
 				if (_ignoreFull && _item.quantity == _item.limit) {
 					continue;
@@ -60,7 +60,7 @@ function getBlankSpaceInInventory(_inventory) {
 	for (var i = 0; i < ds_grid_height(_inventory); i ++) {
 		for (var j = 0; j < ds_grid_width(_inventory); j ++) {
 			var _item = _inventory[# j, i];
-			if (_item == global.blankInventorySpace) return [j, i];
+			if (_item == BLANK_INVENTORY_SPACE) return [j, i];
 		}
 	}	
 	return false;
@@ -71,12 +71,12 @@ function cleanItemInInventoryById(_grid_id, _itemId, _itemType, _quantity){
     var height = ds_grid_height(_grid_id);
 	for (var _y = 0; _y < height; _y++) {
         for (var _x = 0; _x < width; _x++) {
-            if (_grid_id[# _x, _y] == global.blankInventorySpace) continue;
+            if (_grid_id[# _x, _y] == BLANK_INVENTORY_SPACE) continue;
 			if(_grid_id[# _x, _y].itemId == _itemId && _grid_id[# _x, _y].type == _itemType){
 				var _auxInGrid = _grid_id[# _x, _y].quantity;
 				_grid_id[# _x, _y].quantity -= _quantity;
 				if (_grid_id[# _x, _y].quantity <= 0){
-					_grid_id[# _x, _y] = global.blankInventorySpace;
+					_grid_id[# _x, _y] = BLANK_INVENTORY_SPACE;
 				}
 				_quantity -= _auxInGrid;
 			}
@@ -92,7 +92,7 @@ function countTotalItemsInInventoryById(_grid_id, _itemId, _itemType){
     for (var _y = 0; _y < height; _y++) {
         for (var _x = 0; _x < width; _x++) {
             var _item = _grid_id[# _x, _y]
-			if (_item == global.blankInventorySpace) continue;
+			if (_item == BLANK_INVENTORY_SPACE) continue;
 			if(_item.itemId == _itemId && _item.type == _itemType){
 				if (!_item.stackable) {
 					_quantity ++;
@@ -108,15 +108,15 @@ function countTotalItemsInInventoryById(_grid_id, _itemId, _itemType){
 function removeItemQuantityByGrid(_inventory, _j, _i, _quantity) {
 	if (_inventory[# _j, _i].quantity < _quantity) {
 		var _difference = _quantity - _inventory[# _j, _i].quantity 
-		_inventory[# _j, _i] = global.blankInventorySpace;
+		_inventory[# _j, _i] = BLANK_INVENTORY_SPACE;
 		return _difference;
 	}
 	_inventory[# _j, _i].quantity -= _quantity;
-	if (_inventory[# _j, _i] <= 0) _inventory[# _j, _i] = global.blankInventorySpace;
+	if (_inventory[# _j, _i] <= 0) _inventory[# _j, _i] = BLANK_INVENTORY_SPACE;
 }
 
 function cleanInventoryGrid(_inventory, _j, _i) {
-	_inventory[# _j, _i] = global.blankInventorySpace;
+	_inventory[# _j, _i] = BLANK_INVENTORY_SPACE;
 }
 
 function getInventoryItemByPosition(_j, _i, _inventory) {

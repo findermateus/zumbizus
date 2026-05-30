@@ -21,7 +21,7 @@ function findItemInInventoryByIdNoBullshit(_grid_id, _itemId, _itemType){
     var width = ds_grid_height(_grid_id);
     for (var _y = 0; _y < width; _y++) {
         for (var _x = 0; _x < height; _x++) {
-            if (_grid_id[# _x, _y] == global.blankInventorySpace) continue;
+            if (_grid_id[# _x, _y] == BLANK_INVENTORY_SPACE) continue;
 			if(_grid_id[# _x, _y].itemId == _itemId && _grid_id[# _x, _y].type == _itemType){
 				return [_x, _y];
 			}
@@ -35,7 +35,7 @@ function findItemInInventoryById(_grid_id, _itemId, _itemType){
     var width = ds_grid_height(_grid_id);
     for (var _y = 0; _y < width; _y++) {
         for (var _x = 0; _x < height; _x++) {
-            if (_grid_id[# _x, _y] == global.blankInventorySpace) continue;
+            if (_grid_id[# _x, _y] == BLANK_INVENTORY_SPACE) continue;
 			//adicionar conferencia por tipo
 			if(_grid_id[# _x, _y].itemId == _itemId && _grid_id[# _x, _y].type == _itemType){
 				if(_grid_id[# _x, _y].quantity < _grid_id[# _x, _y].limit) return [_x, _y];
@@ -50,7 +50,7 @@ function findItemInInventory(_grid_id, _item){
     var height = ds_grid_height(_grid_id);
     for (var _y = 0; _y < height; _y++) {
         for (var _x = 0; _x < width; _x++) {
-            if (_grid_id[# _x, _y] == global.blankInventorySpace) continue;
+            if (_grid_id[# _x, _y] == BLANK_INVENTORY_SPACE) continue;
 			if(_grid_id[# _x, _y].itemId == _item.itemId && _grid_id[# _x, _y].type == _item.type){
 				if(_grid_id[# _x, _y].quantity < _grid_id[# _x, _y].limit){
 					return [_x, _y];
@@ -63,9 +63,9 @@ function findItemInInventory(_grid_id, _item){
 
 function isItemStackable(_firstItem, _lastItem){
 	//são o mesmo item?
-	if (_firstItem.itemId != _lastItem.itemId || _firstItem.type != _lastItem.type) return global.blankInventorySpace;
-	if(!variable_struct_exists(_firstItem, "limit")) return global.blankInventorySpace;
-	if(_lastItem.quantity >= _lastItem.limit) return global.blankInventorySpace;
+	if (_firstItem.itemId != _lastItem.itemId || _firstItem.type != _lastItem.type) return BLANK_INVENTORY_SPACE;
+	if(!variable_struct_exists(_firstItem, "limit")) return BLANK_INVENTORY_SPACE;
+	if(_lastItem.quantity >= _lastItem.limit) return BLANK_INVENTORY_SPACE;
 	
 	var _remainingSpace = _lastItem.limit - _lastItem.quantity;
 
@@ -95,7 +95,7 @@ function getConsumedItem(_itemId){
 }
 
 function dropItem(){
-	if(global.currentItemPlayingTheAction == global.blankInventorySpace) return;
+	if(global.currentItemPlayingTheAction == BLANK_INVENTORY_SPACE) return;
 	var _itemToDrop = global.activeInventoryAction[# global.currentItemPlayingTheAction.j, global.currentItemPlayingTheAction.i];
 	var _droppedItem = instance_create_layer(obj_player.x, obj_player.y, "Items", obj_item);
 	_droppedItem.item = _itemToDrop;
@@ -104,8 +104,8 @@ function dropItem(){
 		_itemToDrop,
 		variable_struct_exists(_itemToDrop, "quantity") ? _itemToDrop.quantity : 1
 	);
-	global.activeInventoryAction[# global.currentItemPlayingTheAction.j, global.currentItemPlayingTheAction.i] = global.blankInventorySpace;
-	global.currentItemPlayingTheAction = global.blankInventorySpace;
+	global.activeInventoryAction[# global.currentItemPlayingTheAction.j, global.currentItemPlayingTheAction.i] = BLANK_INVENTORY_SPACE;
+	global.currentItemPlayingTheAction = BLANK_INVENTORY_SPACE;
 	return true;
 }
 
@@ -132,7 +132,7 @@ function dropItemFromToolBar(_item, _index){
 	createIndicatorForDroppedItems(_item);
 	var _droppedItem = instance_create_layer(obj_player.x, obj_player.y, "Items", obj_item);
 	_droppedItem.item = _item;
-	global.equipedItems[| _index] = global.blankInventorySpace;
+	global.equipedItems[| _index] = BLANK_INVENTORY_SPACE;
 }
 
 function cleanMenuOptions(){
@@ -143,7 +143,7 @@ function cleanMenuOptions(){
 }
 
 function itemIsDismantable(_item) {
-	if (_item == global.blankInventorySpace) return false;
+	if (_item == BLANK_INVENTORY_SPACE) return false;
 	if (array_length(global.dismantableItems) <= _item.type) return false;
 	if (global.dismantableItems[_item.type] == undefined) return false;
 	if (array_length(global.dismantableItems[_item.type]) <= _item.itemId) return false;
@@ -194,7 +194,7 @@ function getItemsThatCanBeDismantled(_inventory, _itemType) {
 
 
 function itemHasDurability(_item) {
-	if (_item == global.blankInventorySpace) return false;
+	if (_item == BLANK_INVENTORY_SPACE) return false;
 	if (variable_struct_exists(_item, "durability")) {
 		return _item.durability != undefined;
 	}
@@ -202,7 +202,7 @@ function itemHasDurability(_item) {
 }
 
 function itemWorksWithAmmo(_item) {
-	if (_item == global.blankInventorySpace) return false;
+	if (_item == BLANK_INVENTORY_SPACE) return false;
 	if (variable_struct_exists(_item, "maxAmmo")) {
 		return _item.maxAmmo != undefined;
 	}

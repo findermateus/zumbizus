@@ -2,12 +2,12 @@
 listOfElementsYPosition = display_get_gui_height();
 listOfElementsDestinyYPosition = 0;
 defaultListOfElementsDestinyYPosition = display_get_gui_height() - 100;
-selectedFurniture = global.blankInventorySpace;
+selectedFurniture = BLANK_INVENTORY_SPACE;
 alreadyPlacedSelectedFurniture = noone;
 furnitureDisplay = noone;
 selectedFurnitureIndex = {
-	category: global.blankInventorySpace,
-	index: global.blankInventorySpace
+	category: BLANK_INVENTORY_SPACE,
+	index: BLANK_INVENTORY_SPACE
 };
 buildIndicationBox = {
 	width: 25,
@@ -23,7 +23,7 @@ arrowDirection = 1;
 arrowScale = 1.5;
 arrowDestinyScale = 1.5;
 selectedCategory = furnitureCategories.decoration;
-hoverFurniture = global.blankInventorySpace;
+hoverFurniture = BLANK_INVENTORY_SPACE;
 hoverCategory = -1;
 constructorGridSize = 32;
 hoverIndicatorUIData = {
@@ -68,6 +68,8 @@ function setUpModal(){
 	global.playerStopInteractions = true;
 	listOfElementsDestinyYPosition = defaultListOfElementsDestinyYPosition;
 	playSwiiimmmSound();
+	obj_camera.setDefaultScale();
+	obj_camera.target = obj_player;
 	guiCurrentState = displayFurniture;
 	currentState = aimFurniture;
 }
@@ -177,7 +179,7 @@ function getRequirementsUiValues() {
 function drawFurnitureRequirements() {
 	static requirementUiValues = getRequirementsUiValues();
 	if (array_length(global.furniture[selectedCategory]) <= hoverFurniture) return;
-	if (hoverFurnitureControl == global.blankInventorySpace) return;
+	if (hoverFurnitureControl == BLANK_INVENTORY_SPACE) return;
 	var _furniture = global.furniture[selectedCategory][hoverFurniture];
 	var _requirements = _furniture.requirements;
 	var _requirementBoxHeight = 64;
@@ -253,7 +255,7 @@ function drawFurnitureItems(_box){
 	var _boxHorizontalArea = (_box.x2Position - _box.xPosition) - (_marginBetweenItems * _columns);
 	var _boxWidth = 0;
 	var _tempYForIndicator = _yPosition;
-	hoverFurnitureControl = global.blankInventorySpace;
+	hoverFurnitureControl = BLANK_INVENTORY_SPACE;
 	for (var i = 0; i < array_length(global.furniture[selectedCategory]); i++){
 		var _furniture = global.furniture[selectedCategory][i];
 		_boxWidth = drawFurnitureSelect(_furniture, _xPosition, _yPosition, _columns, _boxHorizontalArea, _marginBetweenItems, i);
@@ -269,14 +271,14 @@ function drawFurnitureItems(_box){
 }
 
 function handleHoverIndicator(_initialXPosition, _initialYPosition, _gridWidth){
-	if (hoverFurnitureControl == global.blankInventorySpace) {
+	if (hoverFurnitureControl == BLANK_INVENTORY_SPACE) {
 		hoverFurniture = 0;
 		hoverIndicatorUIData.destinyAlpha = 0;
 	} else {
 		hoverFurniture = hoverFurnitureControl;
 		hoverIndicatorUIData.destinyAlpha = 1;
 	}
-	if (hoverFurniture != global.blankInventorySpace){
+	if (hoverFurniture != BLANK_INVENTORY_SPACE){
 		drawHoverIndicator(_gridWidth);
 	}
 }
@@ -429,7 +431,7 @@ function checkRequirements(_furniture){
 		var _itemTotalQuantityOnInventory = countTotalItemsInInventoryById(global.inventory, _item.itemId, itemType.trash);
 		if (_requirementQuantity > _itemTotalQuantityOnInventory){
 			requirementsCheck = false;
-			selectedFurniture = global.blankInventorySpace;
+			selectedFurniture = BLANK_INVENTORY_SPACE;
 			furnitureDisplay.isDisplaying = false;
 			return false;
 		}
@@ -506,7 +508,7 @@ function checkMouseOnClick(){
 		arrowDirection = -1;
 		activeSelectingFurniture = true;
 		furnitureDisplay.isDisplaying = false;
-		selectedFurniture = global.blankInventorySpace;
+		selectedFurniture = BLANK_INVENTORY_SPACE;
 		obj_base_controller.setUpResourceViewer(false);
 		return;
 	}
@@ -572,7 +574,7 @@ function aimFurniture(){
 	}
 	if(mouseIsOnListOfFurniture) return;
 	if(activeSelectingFurniture) return;
-	if (selectedFurniture == global.blankInventorySpace){
+	if (selectedFurniture == BLANK_INVENTORY_SPACE){
 		if (alreadyPlacedSelectedFurniture == noone){
 			handleAlreadyPlacedFurnitures();
 			return;
@@ -667,10 +669,10 @@ function handleBuildable(){
 function handleNonBuildable(){
 	if (!requirementsCheck && !alreadyPlacedSelectedFurniture){
 		furnitureDisplay.isDisplaying = false;
-		selectedFurniture = global.blankInventorySpace
+		selectedFurniture = BLANK_INVENTORY_SPACE
 		selectedFurnitureIndex = {
-			category: global.blankInventorySpace,
-			index: global.blankInventorySpace
+			category: BLANK_INVENTORY_SPACE,
+			index: BLANK_INVENTORY_SPACE
 		};
 	}
 }
@@ -679,7 +681,7 @@ function hideMenu(){
 	playSwiiimmmSound();
 	global.stopInteractions = false;
 	global.playerStopInteractions = false;
-	selectedFurniture = global.blankInventorySpace;
+	selectedFurniture = BLANK_INVENTORY_SPACE;
 	furnitureDisplay.isDisplaying = false;
 	arrowDirection = 1;
 	activeSelectingFurniture = false;

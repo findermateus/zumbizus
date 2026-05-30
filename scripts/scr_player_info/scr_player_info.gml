@@ -143,7 +143,7 @@ function drawEquipmentGrid(_xPosition, _y, _grid, _box, _hMargin, _indicatorType
 		var _alphaIndex = (sin(_timer * 0.5) + 1) * 0.2;
 		drawSpriteWithGpuFog(c_white, _grid.sprite, 2, _xPosition, _y, _grid.scale, _grid.scale, 0, _alphaIndex);
 	}
-	if (_item != global.blankInventorySpace){
+	if (_item != BLANK_INVENTORY_SPACE){
 		drawItemInGrid(_item, _grid, _xPosition, _y);
 	}
 	var _gridSize = sprite_get_width(_grid.sprite) * _grid.scale;
@@ -154,7 +154,7 @@ function drawEquipmentGrid(_xPosition, _y, _grid, _box, _hMargin, _indicatorType
 		mouseIsOnEquipments = true;
 		handleHoldingOverItem(_indicatorType);
 	}
-	if(global.activeInventory && (_mouseIsOnGrid && activeHoldingItem == global.blankInventorySpace)){
+	if(global.activeInventory && (_mouseIsOnGrid && activeHoldingItem == BLANK_INVENTORY_SPACE)){
 		holdItemFromEquipment(_item);
 	}
 }
@@ -162,7 +162,7 @@ function drawEquipmentGrid(_xPosition, _y, _grid, _box, _hMargin, _indicatorType
 function holdItemFromEquipment(_item){
 	if(!mouse_check_button(mb_left)) return;
 	cleanMenuOptions();
-	if (_item == global.blankInventorySpace) return;
+	if (_item == BLANK_INVENTORY_SPACE) return;
 	holdingItemFromEquipments = true;
 	activeHoldingItem = _item;
 	holdingItem.scale = getItemScale(GRIDSIZE, sprite_get_height(_item.sprite));
@@ -173,13 +173,13 @@ function handleHoldingOverItem(_indicatorType){
 	if (!mouse_check_button_released(mb_left)) return;
 	if (holdingItemFromEquipments) return;
 	var _alreadyPlacedItem = variable_struct_get(global.equipments, _indicatorType)
-	if (_alreadyPlacedItem != global.blankInventorySpace){
+	if (_alreadyPlacedItem != BLANK_INVENTORY_SPACE){
 		var _inventoryItem = activeHoldingItem;
 		global.activeInventoryAction[# holdingItem.j, holdingItem.i] = _alreadyPlacedItem;
 		equipEquipment(_indicatorType, _inventoryItem);
 		return;
 	}
-	global.activeInventoryAction[# holdingItem.j, holdingItem.i] = global.blankInventorySpace;
+	global.activeInventoryAction[# holdingItem.j, holdingItem.i] = BLANK_INVENTORY_SPACE;
 	equipEquipment(_indicatorType, activeHoldingItem);
 }
 
@@ -195,9 +195,9 @@ function playEquipEquipmentSound() {
 
 function storeEquipment(){
 	var _inventorySpace = global.activeInventoryAction[# hoverItem.j, hoverItem.i];
-	if (_inventorySpace != global.blankInventorySpace) return;
+	if (_inventorySpace != BLANK_INVENTORY_SPACE) return;
 	global.activeInventoryAction[# hoverItem.j, hoverItem.i] = variable_struct_get(global.equipments, indicatorToWhereItemShouldBePut);
-	variable_struct_set(global.equipments, indicatorToWhereItemShouldBePut, global.blankInventorySpace);
+	variable_struct_set(global.equipments, indicatorToWhereItemShouldBePut, BLANK_INVENTORY_SPACE);
 	handleEquipmentSwitch();
 }
 
@@ -212,7 +212,7 @@ function handleEquipmentDropping(){
 	}
 	var _droppedItem = instance_create_layer(obj_player.x, obj_player.y, "Items", obj_item);
 	_droppedItem.item = activeHoldingItem;
-	variable_struct_set(global.equipments, indicatorToWhereItemShouldBePut, global.blankInventorySpace);
+	variable_struct_set(global.equipments, indicatorToWhereItemShouldBePut, BLANK_INVENTORY_SPACE);
 	handleEquipmentSwitch();
 }
 
@@ -258,8 +258,8 @@ function drawQuickUseItemsInInventory(_x1, _x2, _y, _size) {
 	
 	var _holdingItem = activeHoldingItem;
 	var _hoverItem = activeHoverItem;
-	var _actualItem = _holdingItem == global.blankInventorySpace ? _hoverItem : _holdingItem;
-	 _actualItem = itemCanBeAddedToQuickBarUse(_actualItem) ? _actualItem : global.blankInventorySpace;
+	var _actualItem = _holdingItem == BLANK_INVENTORY_SPACE ? _hoverItem : _holdingItem;
+	 _actualItem = itemCanBeAddedToQuickBarUse(_actualItem) ? _actualItem : BLANK_INVENTORY_SPACE;
 	
 	var _sprite = spr_inventory_grid;
 	var _spaceBetweenBoxes = 12;
@@ -279,7 +279,7 @@ function drawQuickUseItemsInInventory(_x1, _x2, _y, _size) {
 		var _actualX = _startX + (i * (_size + _spaceBetweenBoxes));
 		draw_sprite_stretched(_sprite, 0, _actualX, _y, _size, _size);
 		
-		if (_actualItem != global.blankInventorySpace) {
+		if (_actualItem != BLANK_INVENTORY_SPACE) {
 			drawSpriteWithGpuFogStretched(c_white, _sprite, 0, _actualX, _y, _size, _size, 0, indicatorAlpha * .6);
 		}
 		
@@ -315,7 +315,7 @@ function drawQuickUseItemsInInventory(_x1, _x2, _y, _size) {
 	}	
 	
 	mouseIsOnQuickUseBar = hoverIndicator.isHovering;
-	if (_actualItem != global.blankInventorySpace) {
+	if (_actualItem != BLANK_INVENTORY_SPACE) {
 		indicatorAlpha = getAlphaWithTimer(.2);
 	}
 	

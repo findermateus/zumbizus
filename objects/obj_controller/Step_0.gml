@@ -24,12 +24,8 @@ if (keyboard_check_pressed(ord("B"))){
 }
 
 
-if (keyboard_check_released(vk_space)){
-	getNpcListFromDatabase();
-}
-
-//if (mouse_check_button_released(mb_left)) {
-//	instance_create_layer(mouse_x, mouse_y, "Particles", obj_fire_weapon_light);
+//if (keyboard_check_released(vk_space)){
+//	getNpcListFromDatabase();
 //}
 
 if (global.debug && keyboard_check_released(ord("Z"))) {

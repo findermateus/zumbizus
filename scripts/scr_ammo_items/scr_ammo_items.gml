@@ -8,7 +8,8 @@ function AmmoConfig() {
 		quantity: 1,
 		sound: snd_can,
 		fitInGrid: fitInGridType.verticaly,
-		type: itemType.ammo
+		type: itemType.ammo,
+		value: 0
 	}
 }
 
@@ -22,6 +23,7 @@ function AmmoConfig() {
 	_config.quantity = 1;
 	_config.sound = snd_shells;
 	_config.fitInGrid = fitInGridType.verticaly;
+	_config.value = 13;
 
 	global.items[itemType.ammo][ammoItems.mm9] = _config;
 }
@@ -36,6 +38,7 @@ function AmmoConfig() {
 	_config.quantity = 1;
 	_config.sound = snd_shells;
 	_config.fitInGrid = fitInGridType.verticaly;
+	_config.value = 22
 
 	global.items[itemType.ammo][ammoItems.cal12] = _config;
 }
@@ -50,6 +53,7 @@ function AmmoConfig() {
 	_config.quantity = 1;
 	_config.sound = snd_shells;
 	_config.fitInGrid = fitInGridType.verticaly;
+	_config.value = 15;
 
 	global.items[itemType.ammo][ammoItems.rifle] = _config;
 }

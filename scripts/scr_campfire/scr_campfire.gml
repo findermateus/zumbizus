@@ -1,25 +1,25 @@
 /// @constructor CampfireData
 function CampfireSlot() constructor {
 	
-	itemId = global.blankInventorySpace;
+	itemId = BLANK_INVENTORY_SPACE;
 	type = -1;
 	itemQuantity = 0;
-	resultId = global.blankInventorySpace;
+	resultId = BLANK_INVENTORY_SPACE;
 	resultType = -1;
 	resultQuantity = 0;
 	resultCurrentProgress = 0;
 	requiredResultProgress = 100
 	
 	function getItem() {
-		return itemId == global.blankInventorySpace ? global.blankInventorySpace : constructItem(type, global.items[type, itemId]);
+		return itemId == BLANK_INVENTORY_SPACE ? BLANK_INVENTORY_SPACE : constructItem(type, global.items[type, itemId]);
 	}
 	
 	function getResult() {
-		return resultId == global.blankInventorySpace ? global.blankInventorySpace : constructItem(resultType, global.items[resultType, resultId]);
+		return resultId == BLANK_INVENTORY_SPACE ? BLANK_INVENTORY_SPACE : constructItem(resultType, global.items[resultType, resultId]);
 	}
 	
 	function canAddItem(_itemId, _itemType) {
-		return itemId == global.blankInventorySpace || itemId == _itemId && _itemType == type;
+		return itemId == BLANK_INVENTORY_SPACE || itemId == _itemId && _itemType == type;
 	}
 	
 	function setResult(_itemId, _itemType) {
@@ -29,7 +29,7 @@ function CampfireSlot() constructor {
 	}
 	
 	function addItem(_itemId, _itemType, _resultId, _resultType, _quantity = 1) {
-		if (itemId == global.blankInventorySpace) {
+		if (itemId == BLANK_INVENTORY_SPACE) {
 			itemId = _itemId;
 			type = _itemType;
 			itemQuantity = _quantity;
@@ -51,10 +51,10 @@ function CampfireSlot() constructor {
 	}
 	
 	function resetValues() {
-		itemId = global.blankInventorySpace;
+		itemId = BLANK_INVENTORY_SPACE;
 		type = -1;
 		itemQuantity = 0;
-		resultId = global.blankInventorySpace;
+		resultId = BLANK_INVENTORY_SPACE;
 		resultType = -1;
 		resultQuantity = 0;
 		resultCurrentProgress = 0;
@@ -84,10 +84,10 @@ function CampfireSlot() constructor {
 	}
 	
 	function loadFromSave(
-		_itemId = global.blankInventorySpace,
+		_itemId = BLANK_INVENTORY_SPACE,
 		_type = -1,
 		_itemQuantity = 0,
-		_resultId = global.blankInventorySpace,
+		_resultId = BLANK_INVENTORY_SPACE,
 		_resultType = -1,
 		_resultQuantity = 0,
 		_resultCurrentProgress = 0,

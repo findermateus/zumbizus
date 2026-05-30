@@ -69,7 +69,7 @@ function applyBuff(_buff) {
 function drawBuffs() {
 	var _size = 70;
 	var _margin = 40;
-	var _target = global.stopInteractions || global.activeMenu || global.activeInventory ? - (_size + 5) : _margin;
+	var _target = global.stopInteractions || isMenuOpen() || global.activeInventory ? - (_size + 5) : _margin;
 	drawY = lerp(drawY, _target, .1);
 	
 	if (drawY < -_size) return;

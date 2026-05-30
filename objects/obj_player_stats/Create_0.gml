@@ -81,7 +81,7 @@ function drawPlayerStatsList(
 	_borderThickness = 3
 ) {
 	static _x = _xPosition;
-	if (global.activeInventory || global.stopInteractions) {
+	if (isMenuOpen()) {
 		_x = lerp(_x, -_barWidth - 10, .1);
 		if (_x < -_barWidth) return;
 	} else {
@@ -125,7 +125,7 @@ function drawEquipedItems() {
 	static _y = equipedItemsY;
 	_y = lerp(_y, equipedItemsY, .1);
 	
-	if (global.activeInventory || global.activeMenu) { 
+	if (global.activeInventory || isMenuOpen()) { 
 		equipedItemsY = gui_height + EQUIPED_ITEM_GRID_SIZE;
 		return;
 	}
@@ -172,7 +172,7 @@ function drawEquipedItems() {
 
 		var _offset = (EQUIPED_ITEM_GRID_SIZE - _ui.size) / 2;
 		
-		if (_item != global.blankInventorySpace) {
+		if (_item != BLANK_INVENTORY_SPACE) {
 			var _gridX = _ui.x + _offset;
 			var _gridY = _ui.y + _offset;
 		
@@ -196,7 +196,7 @@ function drawEquipedItems() {
 			_ui.size
 		);
 
-		if (_item == global.blankInventorySpace) {
+		if (_item == BLANK_INVENTORY_SPACE) {
 			var _iconSprite = spr_pistol;
 			var _scale = getScale(EQUIPED_ITEM_GRID_SIZE * .5, sprite_get_width(_iconSprite));
 			drawSpriteWithGpuFog(
@@ -339,7 +339,7 @@ function drawQuickUseGrid(_x, _y, _item, _active = false, _slotSize = QUICK_USE_
 	
 	draw_sprite_stretched_ext(_gridSprite, _active, _x, _y, _slotSize, _slotSize, _color, draw_get_alpha());
 	
-	if (_item == global.blankInventorySpace) return;
+	if (_item == BLANK_INVENTORY_SPACE) return;
 	
 	var _sprite = _item.sprite;
 	var _scale = getScale(_slotSize * .8, sprite_get_width(_sprite));

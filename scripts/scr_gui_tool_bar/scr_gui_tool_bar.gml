@@ -1,4 +1,3 @@
-global.blankInventorySpace = "";
 global.toolBarGridSize = 0;
 #macro GRIDSIZE 64
 
@@ -85,7 +84,7 @@ function drawToolBarGrid(_x, _y, _width, _height, _index, _active = false){
 		hoverIndicatorUIData.destinyY = _y;
 	}
 	
-	if (_mouseIsOnGrid && activeHoldingItem != global.blankInventorySpace){
+	if (_mouseIsOnGrid && activeHoldingItem != BLANK_INVENTORY_SPACE){
 		if(activeHoldingItem.type == itemType.weapons){
 			if(toolBarAlpha[_index] == defaultToolBarAlpha){
 				playHoverSound();
@@ -98,7 +97,7 @@ function drawToolBarGrid(_x, _y, _width, _height, _index, _active = false){
 		}
 	}
 	
-	if(_mouseIsOnGrid && activeHoldingItem == global.blankInventorySpace) {
+	if(_mouseIsOnGrid && activeHoldingItem == BLANK_INVENTORY_SPACE) {
 		holdTheToolBarItem(_index, _height);
 	}
 	
@@ -189,9 +188,9 @@ function drawItemsInToolBar(_x, _y, _height, _i){
 }
 
 function drawToolBarItem(_equipedItem, _x, _y, _height, _alpha){
-	var _sprite = _equipedItem != global.blankInventorySpace ? _equipedItem.sprite : spr_pistol;
-	var _fitInGrid = _equipedItem != global.blankInventorySpace ? _equipedItem.fitInGrid : fitInGridType.horizontaly;
-	var _decreaseSize = _equipedItem != global.blankInventorySpace ? 20 : 50;
+	var _sprite = _equipedItem != BLANK_INVENTORY_SPACE ? _equipedItem.sprite : spr_pistol;
+	var _fitInGrid = _equipedItem != BLANK_INVENTORY_SPACE ? _equipedItem.fitInGrid : fitInGridType.horizontaly;
+	var _decreaseSize = _equipedItem != BLANK_INVENTORY_SPACE ? 20 : 50;
 	var _itemWidth = sprite_get_width(_sprite);
 	var _itemHeight = sprite_get_height(_sprite);
 	var _scale = getItemScale(_height - _decreaseSize, _itemHeight);
@@ -199,7 +198,7 @@ function drawToolBarItem(_equipedItem, _x, _y, _height, _alpha){
 		_scale = getItemScale(_height - _decreaseSize, _itemWidth);
 	}
 	
-	if (_equipedItem == global.blankInventorySpace) {
+	if (_equipedItem == BLANK_INVENTORY_SPACE) {
 		drawSpriteWithGpuFog(c_white, _sprite, 0, _x, _y, _scale, _scale, 0, _alpha * .2);
 		return;
 	}
@@ -215,7 +214,7 @@ function holdTheToolBarItem(_index, _height){
 	if(!mouse_check_button(mb_left)) return;
 	cleanMenuOptions();
 	var _item = global.equipedItems[| _index];
-	if (_item == global.blankInventorySpace) return;
+	if (_item == BLANK_INVENTORY_SPACE) return;
 	holdingItemFromToolBar = true;
 	holdingItemPositions.x = xMouseToGui;
 	holdingItemPositions.y = yMouseToGui;
@@ -230,9 +229,9 @@ function handleToolBarDropping(){
 	if(mouseIsOnInventoryGrid){
 		var _auxiliarInventory = mouseIsOnPrimaryInventory ? primaryInventory : secundaryInventory;
 		var _hoverItem = _auxiliarInventory[# hoverItem.j, hoverItem.i];
-		if (_hoverItem == global.blankInventorySpace ){
+		if (_hoverItem == BLANK_INVENTORY_SPACE ){
 			_auxiliarInventory[# hoverItem.j, hoverItem.i] = activeHoldingItem;
-			global.equipedItems[| toolbarIndex] = global.blankInventorySpace;
+			global.equipedItems[| toolbarIndex] = BLANK_INVENTORY_SPACE;
 			return;
 		}
 		if(_hoverItem.type == itemType.weapons){
@@ -244,7 +243,7 @@ function handleToolBarDropping(){
 	if(mouseIsOnInventory){
 		return;
 	}
-	if (mouseIsOnToolBar && hoverToolbarIndex != global.blankInventorySpace){
+	if (mouseIsOnToolBar && hoverToolbarIndex != BLANK_INVENTORY_SPACE){
 		var _auxItem = global.equipedItems[| hoverToolbarIndex];
 		global.equipedItems[| hoverToolbarIndex] = global.equipedItems[| toolbarIndex];
 		global.equipedItems[| toolbarIndex] = _auxItem;

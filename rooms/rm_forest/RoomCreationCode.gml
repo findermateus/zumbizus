@@ -4,8 +4,8 @@ var _roomWidth = room_width;
 var _roomHeight = room_height;
 var _grassSprite = tg_sGrass;
 
-var _camW = global.defaultCameraWidth;
-var _camH = global.defaultCameraHeight;
+var _camW = DEFAULT_CAM_W;
+var _camH = DEFAULT_CAM_H;
 
 var _xScale = getScale(_camW, sprite_get_width(_grassSprite));
 var _yScale = getScale(_camH, sprite_get_height(_grassSprite));

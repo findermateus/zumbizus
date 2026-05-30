@@ -1,4 +1,4 @@
-draw();
+event_inherited();
 
 if (global.debug) {
 	var _textToShow = [

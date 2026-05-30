@@ -1,23 +1,23 @@
+#macro DEFAULT_CAM_W 2048
+#macro DEFAULT_CAM_H 1152
+#macro BLANK_INVENTORY_SPACE ""
+
 function initSystem() {
 	display_set_gui_size(1920, 1080);
 	global.inventoryWidth = 2;
 	global.inventoryHeight = 5;
 	global.inventory = ds_grid_create(global.inventoryWidth, global.inventoryHeight);
-	window_set_cursor(cr_none);
 	global.stopInteractions = false;
 	global.debug = false;
-	ds_grid_clear(global.inventory, global.blankInventorySpace);
+	ds_grid_clear(global.inventory, BLANK_INVENTORY_SPACE);
 	global.activeInventory = false;
 	global.activeInventoryAction = global.inventory;
-	global.activeMenu = false;
+	global.activeMenu = undefined;
 	global.motionPlanningGrid = 0;
 	draw_set_font(fnt_gui_default);
 	
 	global.pause = false;
 	global.timeStopped = false;
-	
-	global.defaultCameraWidth = 2048;
-	global.defaultCameraHeight = 1152;
 }
 
 initSystem();
@@ -103,12 +103,16 @@ function playTickSound() {
 	audio_play_sound(snd_tick, 0, false);
 }
 
-function openMenu() {
-	global.activeMenu = true;
+function isMenuOpen() {
+	return global.activeMenu != undefined;
+}
+
+function openMenu(_menu = "") {
+	global.activeMenu = _menu;
 }
 
 function closeMenu() {
-	global.activeMenu = false;
+	global.activeMenu = undefined;
 }
 
 function getHexFromString(_hexcodeString){
