@@ -69,3 +69,14 @@ getCurrentDialogue = function() {
 
 	return noone;
 };
+
+canTrade = true;
+
+tradeItems = [
+	{
+		itemType: itemType.ammo,
+		itemId: ammoItems.mm9,
+		quantity: 16,
+		price: 13
+	}
+];
