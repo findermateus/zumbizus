@@ -191,3 +191,12 @@ function playerDialogueState() {
 	velh = 0;
 	velv = 0;
 }
+
+function playerTradeState() {
+	handleAngleOffset(true, .2, 0);
+	adjustPlayerInteractions(false);
+	updateSpriteWithState(sprites.iddle);
+
+	velh = 0;
+	velv = 0;
+}

@@ -7,5 +7,6 @@ enum Menus {
 	ResidentController,
 	Inventory,
 	Dialogue,
-	NpcInteraction
+	NpcInteraction,
+	Trade
 }

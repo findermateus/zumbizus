@@ -120,12 +120,14 @@ function handleNPCOption(option) {
 
 		case "trade":
 			if (!canTrade) return;
+			if (isInteracting) return;
 
+			isInteracting = true;
 			closeInteractOptions();
 
-			if (array_length(tradeItems) > 0) {
-				buyTradeItem(tradeItems[0]);
-			}
+			instance_create_layer(0, 0, "Controllers", obj_trade_menu, {
+				target: id
+			});
 		break;
 	}
 }
