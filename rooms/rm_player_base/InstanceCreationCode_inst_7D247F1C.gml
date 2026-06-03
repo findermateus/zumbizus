@@ -78,5 +78,17 @@ tradeItems = [
 		itemId: ammoItems.mm9,
 		quantity: 16,
 		price: 13
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.canned_food,
+		quantity: 1,
+		price: 15
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.canned_fish,
+		quantity: 1,
+		price: 20
 	}
 ];
