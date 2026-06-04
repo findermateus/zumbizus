@@ -287,13 +287,13 @@ function handleClick(_items, _hoverIndex, _xMouse, _yMouse) {
     if (_gIdx[0] == -1) {
         var _res = findItemInInventoryById(global.inventory, _conf.itemId, _conf.type);
         if (_res == false) {
-            createNotifyIndicator("Inventário cheio!", _xMouse, _yMouse);
+            createGUINotifyIndicator("Inventário cheio!", _xMouse, _yMouse);
             return;
         }
         
         var _qI = global.inventory[# _res[0], _res[1]];
         if (_qI.quantity >= _qI.limit) {
-            createNotifyIndicator("Inventário cheio!", _xMouse, _yMouse);
+            createGUINotifyIndicator("Inventário cheio!", _xMouse, _yMouse);
             return;
         }
         _gIdx = _res;
@@ -303,7 +303,7 @@ function handleClick(_items, _hoverIndex, _xMouse, _yMouse) {
     _bld.quantity = 1;
 
     if (!addItemToGrid(global.inventory, _bld)) {
-        createNotifyIndicator("Inventário cheio!", _xMouse, _yMouse);
+        createGUINotifyIndicator("Inventário cheio!", _xMouse, _yMouse);
         return;
     }
 

@@ -778,12 +778,12 @@ function drawPagination(_modal, _y, _actionUp = function () {}, _actionDown = fu
 	var _x = _modal.x2 - _buttonWidth - _modal.border;
 	
 	draw_sprite_stretched(_buttonSprite, _spriteIndex, _x, _y, _buttonWidth, _buttonHeight)
-	draw_sprite_ext(spr_builder_arrow_indicator, 0, _x + _buttonWidth/2, _y + _buttonHeight/2, 1, 1, 0, c_white, 1);
+	draw_sprite_ext(spr_arrow_indicator, 0, _x + _buttonWidth/2, _y + _buttonHeight/2, 1, 1, 0, c_white, 1);
 	
 	var _y2 = _y + _buttonHeight + 10;
 	
 	draw_sprite_stretched(_buttonSprite, _spriteIndex, _x, _y2, _buttonWidth, _buttonHeight)
-	draw_sprite_ext(spr_builder_arrow_indicator, 0, _x + _buttonWidth/2, _y2 + _buttonHeight/2, 1, -1, 0, c_white, 1);
+	draw_sprite_ext(spr_arrow_indicator, 0, _x + _buttonWidth/2, _y2 + _buttonHeight/2, 1, -1, 0, c_white, 1);
 	
 }
 
@@ -861,7 +861,7 @@ function handleClickOnItem(_item, _requirementItem){
 	if(_gridIndex[0] == -1){
 		var _modalX = xMouse;
 		var _modalY = yMouse;
-		createNotifyIndicator("Inventário cheio!", _modalX, _modalY);
+		createGUINotifyIndicator("Inventário cheio!", _modalX, _modalY);
 		return;
 	}
 	

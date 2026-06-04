@@ -39,3 +39,9 @@ if (!isClosing) {
 		performClose();
 	}
 }
+
+for (var i = 0; i < visibleRows; i++) {
+	if (itemShakeAmount[i] > 0) {
+		itemShakeAmount[i] = max(0, itemShakeAmount[i] - 1); 
+	}
+}

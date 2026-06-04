@@ -17,7 +17,7 @@ if (!instance_exists(merchant)) {
 tradeItems = merchant.tradeItems;
 selectedIndex = -1;
 scrollIndex = 0;
-visibleRows = 6;
+visibleRows = 9;
 rowHeight = 42;
 
 isClosing = false;
@@ -30,6 +30,9 @@ listBgAnimAlpha = 0;
 
 itemAnimYOffset = array_create(visibleRows, -20);
 itemAnimAlpha = array_create(visibleRows, 0);
+
+itemHoverOffset = array_create(visibleRows, 0);
+itemShakeAmount = array_create(visibleRows, 0);
 
 function performClose() {
 	closeMenu();
@@ -51,6 +54,8 @@ function handleTradeScroll() {
 	var _itemCount = array_length(tradeItems);
 	var _maxScroll = max(0, _itemCount - visibleRows);
 
+	var _lastScrollIndex = scrollIndex;
+
 	if (mouse_wheel_up()) {
 		scrollIndex--;
 	}
@@ -60,6 +65,10 @@ function handleTradeScroll() {
 	}
 
 	scrollIndex = clamp(scrollIndex, 0, _maxScroll);
+	
+	if (_lastScrollIndex != scrollIndex) {
+		playHoverSound();
+	}
 }
 
 function drawTradingMenu() {
@@ -141,7 +150,7 @@ function drawTradingMenu() {
 	draw_set_font(fnt_gui_default);
 
 	var _listX = _menuX + _padding;
-	var _listY = _animListBgY + _padding; 
+	var _listY = _animListBgY + _padding + 7; 
 
 	var _start = scrollIndex;
 	var _end = min(scrollIndex + visibleRows, array_length(tradeItems));
@@ -163,7 +172,8 @@ function drawTradingMenu() {
 
 		var _rowY = _listY + (_drawIndex * _stepHeight) + _iYOffset;
 		var _centerY = _rowY + (_barHeight / 2);
-		var _initialX = _listX;
+		
+		var _initialX = _listX; 
 		
 		var _tradeItem = tradeItems[i];
 		var _itemData = global.items[_tradeItem.itemType][_tradeItem.itemId];
@@ -177,19 +187,35 @@ function drawTradingMenu() {
 		var _quantityText = "x" + string(_quantity);
 		var _priceText = "$" + string(_totalPrice);
 
+		var _isHovering = mouseIsOnRectangle(_initialX, _rowY, _initialX + _rowWidth, _rowY + _barHeight);
+		var _canAfford = (global.player.money >= _totalPrice);
+		var _priceColor = _canAfford ? $1F8E00 : c_red;
+		
+		var _targetHover = _isHovering ? 10 : 0;
+		itemHoverOffset[_drawIndex] = lerp(itemHoverOffset[_drawIndex], _targetHover, 0.2);
+		
+		var _shakeX = 0;
+		if (itemShakeAmount[_drawIndex] > 0.5) {
+			_shakeX = random_range(-itemShakeAmount[_drawIndex], itemShakeAmount[_drawIndex]);
+		}
+		
+		var _finalX = _initialX + itemHoverOffset[_drawIndex] + _shakeX;
+
 		draw_set_alpha(_iAlpha);
-		draw_sprite_stretched(spr_bar_white, 0, _initialX, _rowY, _rowWidth, _barHeight);
+		
+		var _bgColor = _isHovering ? c_white : c_ltgray; 
+		draw_sprite_stretched_ext(spr_bar_white, 0, _finalX, _rowY, _rowWidth, _barHeight, _bgColor, _iAlpha);
 
 		draw_set_valign(fa_middle);
 
 		var _iconSize = 48; 
 		var _scale = getScale(_iconSize, sprite_get_height(_icon));
-		var _iconX = _initialX + _paddingX + (_iconSize / 2);
+		var _iconX = _finalX + _paddingX + (_iconSize / 2);
 		
 		drawSpriteShadow(_iconX, _centerY, _icon, 0, 0, _scale, _scale);
 		draw_sprite_ext(_icon, 0, _iconX, _centerY, _scale, _scale, 0, c_white, _iAlpha);
 
-		var _nameX = _initialX + _paddingX + _iconSize + 10;
+		var _nameX = _finalX + _paddingX + _iconSize + 10;
 		draw_set_halign(fa_left);
 		drawTextShadow(_nameX, _centerY, _name, _iAlpha);
 		draw_set_color(c_white);
@@ -201,13 +227,64 @@ function drawTradingMenu() {
 		draw_set_color(c_white);
 		draw_text(_quantityX, _centerY, _quantityText);
 		
-		var _priceX = _initialX + _rowWidth - _paddingX;
+		var _priceX = _finalX + _rowWidth - _paddingX;
 		draw_set_halign(fa_right);
 		drawTextShadow(_priceX, _centerY, _priceText, _iAlpha);
-		draw_set_color($1F8E00);
+		draw_set_color(_priceColor);
 		draw_text(_priceX, _centerY, _priceText);
 		
 		draw_set_halign(fa_left);
+		
+		var _hasClicked = mouse_check_button_released(mb_left);
+		
+		if (!_isHovering || !_hasClicked) continue;
+		playClickSound();
+		
+		var _result = buyTradeItem(_tradeItem);
+		
+		if (_result == TradeTransactionResult.Success) {
+			audio_play_sound(snd_shells, 0, false);
+			createIndicatorModal(_itemData, _tradeItem.quantity);
+			
+			itemShakeAmount[_drawIndex] = 6; 
+			continue;
+		}
+		
+		if (_result == TradeTransactionResult.NotEnoughMoney) {
+			playFailSound();
+			itemShakeAmount[_drawIndex] = 15; 
+			continue;
+		}
+		
+		if (_result == TradeTransactionResult.NotEnoughInventory) {
+			playFailSound();
+			itemShakeAmount[_drawIndex] = 10; 
+			createGUINotifyIndicator("Inventário cheio!", getMiddlePoint(_initialX, _initialX + _rowWidth), _rowY);
+		}
+	}
+
+	var _itemCount = array_length(tradeItems);
+	var _canScrollUp = (scrollIndex > 0);
+	var _canScrollDown = ((scrollIndex + visibleRows) < _itemCount);
+
+	if (_canScrollUp || _canScrollDown) {
+		var _arrowSize = 20;
+		var _arrowScale = getScale(_arrowSize, sprite_get_height(spr_arrow_indicator));
+		var _arrowX = getMiddlePoint(_menuX, _menuX + _menuW);
+		
+		var _bobbing = sin(current_time / 150) * 3;
+
+		if (_canScrollUp) {
+			var _upY = _animListBgY + 12 + _bobbing;
+			drawSpriteShadow(_arrowX, _upY, spr_arrow_indicator, 0, 0, _arrowScale, _arrowScale);
+			draw_sprite_ext(spr_arrow_indicator, 0, _arrowX, _upY, _arrowScale, _arrowScale, 0, c_white, _bgAlpha);
+		}
+
+		if (_canScrollDown) {
+			var _downY = _animListBgY + _listBgH - 12 - _bobbing;
+			drawSpriteShadow(_arrowX, _downY, spr_arrow_indicator, 0, 0, _arrowScale, -_arrowScale);
+			draw_sprite_ext(spr_arrow_indicator, 0, _arrowX, _downY, _arrowScale, -_arrowScale, 0, c_white, _bgAlpha);
+		}
 	}
 
 	draw_set_alpha(_globalAlpha);

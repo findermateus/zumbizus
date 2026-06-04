@@ -7,12 +7,17 @@ function buildTradeItem(_tradeItem) {
 	return _item;
 }
 
+enum TradeTransactionResult {
+	Success,
+	NotEnoughMoney,
+	NotEnoughInventory
+}
+
 function buyTradeItem(_tradeItem) {
 	var _totalPrice = _tradeItem.price * _tradeItem.quantity;
 
 	if (!playerHasMoney(_totalPrice)) {
-		show_message("Dinheiro insuficiente");
-		return false;
+		return TradeTransactionResult.NotEnoughMoney;
 	}
 
 	var _item = buildTradeItem(_tradeItem);
@@ -20,13 +25,10 @@ function buyTradeItem(_tradeItem) {
 	var _added = addAbsoluteItemToGrid(global.inventory, _item);
 
 	if (_added != true) {
-		show_message("Inventário cheio");
-		return false;
+		return TradeTransactionResult.NotEnoughInventory;
 	}
 
 	removePlayerMoney(_totalPrice);
 
-	show_message("Compra realizada");
-
-	return true;
+	return TradeTransactionResult.Success;
 }

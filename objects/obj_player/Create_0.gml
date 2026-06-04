@@ -138,18 +138,23 @@ function updateEquipedItems(){
 }
 
 function updateQuickUseBar() {
-	if (global.stopInteractions) {
+	if (global.stopInteractions || global.activeInventory || global.activeMenu || global.pause) {
 		return;
 	}
+	
 	var _scrollUp = mouse_wheel_up();
 	var _scrollDown = mouse_wheel_down();
+	
 	global.activeQuickUseIndex += _scrollDown - _scrollUp;
+	
 	if (_scrollDown || _scrollUp) {
 		playClickSound();
 	}
+	
 	if (global.activeQuickUseIndex < 0) global.activeQuickUseIndex = ds_list_size(global.quickUse) - 1;
 	if (global.activeQuickUseIndex >= global.quickUseBarSize) global.activeQuickUseIndex = 0;
 	if (!keyboard_check_released(ord("E"))) return;
+	
 	useItemFromQuickUseBar(global.activeQuickUseIndex);
 }
 
@@ -508,7 +513,7 @@ function unload(_item, _inventory, _j, _i) {
 	var _totalAmmo = _item.bullets;
 
 	if (_totalAmmo == 0) {
-		createNotifyIndicator("Sem munição", getMouseXGui(), getMouseYGui());
+		createGUINotifyIndicator("Sem munição", getMouseXGui(), getMouseYGui());
 		return false;
 	}
 

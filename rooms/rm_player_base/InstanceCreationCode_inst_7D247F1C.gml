@@ -74,12 +74,6 @@ canTrade = true;
 
 tradeItems = [
 	{
-		itemType: itemType.ammo,
-		itemId: ammoItems.mm9,
-		quantity: 16,
-		price: 13
-	},
-	{
 		itemType: itemType.consumables,
 		itemId: consumableItems.canned_food,
 		quantity: 1,
@@ -90,5 +84,83 @@ tradeItems = [
 		itemId: consumableItems.canned_fish,
 		quantity: 1,
 		price: 20
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.watter_bottle,
+		quantity: 1,
+		price: 40
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.dirt_water,
+		quantity: 1,
+		price: 15
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.bandage,
+		quantity: 1,
+		price: 25
+	},
+		{
+		itemType: itemType.consumables,
+		itemId: consumableItems.canned_food,
+		quantity: 1,
+		price: 15
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.canned_fish,
+		quantity: 1,
+		price: 20
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.watter_bottle,
+		quantity: 1,
+		price: 40
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.dirt_water,
+		quantity: 1,
+		price: 15
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.bandage,
+		quantity: 1,
+		price: 25
+	},
+		{
+		itemType: itemType.consumables,
+		itemId: consumableItems.canned_food,
+		quantity: 1,
+		price: 15
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.canned_fish,
+		quantity: 1,
+		price: 20
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.watter_bottle,
+		quantity: 1,
+		price: 40
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.dirt_water,
+		quantity: 1,
+		price: 15
+	},
+	{
+		itemType: itemType.consumables,
+		itemId: consumableItems.bandage,
+		quantity: 1,
+		price: 25
 	}
 ];
