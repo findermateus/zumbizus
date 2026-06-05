@@ -10,3 +10,7 @@ enum Menus {
 	NpcInteraction,
 	Trade
 }
+
+function isCurrentMenu(_menu) {
+	return global.activeMenu == _menu;
+}

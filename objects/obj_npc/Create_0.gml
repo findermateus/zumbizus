@@ -94,7 +94,7 @@ function handleInteract(_options) {
 
 function closeInteractOptions() {
 	activeInteraction = false;
-	if (global.activeMenu == menuId) closeMenu();
+	if (isCurrentMenu(menuId)) closeMenu();
 }
 
 function handleNPCOption(option) {

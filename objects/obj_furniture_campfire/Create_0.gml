@@ -140,7 +140,7 @@ function hideModal(){
 	currentState = innactive;
 	playSwiiimmmSound();
 	
-	if (global.activeMenu == menuId) {
+	if (isCurrentMenu(menuId)) {
 		closeMenu();
 	}
 	
@@ -169,7 +169,7 @@ function checkConditionsToClose(){
 	var _player = checkPlayerExistence();
 	if (!_player) return true;
 	if(checkObstacules(_player) && checkDistance(_player)) return false;
-	if (global.activeMenu == menuId) {
+	if (isCurrentMenu(menuId)) {
 		closeMenu();
 	}
 	

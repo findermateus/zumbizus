@@ -45,3 +45,7 @@ for (var i = 0; i < visibleRows; i++) {
 		itemShakeAmount[i] = max(0, itemShakeAmount[i] - 1); 
 	}
 }
+
+if (!isCurrentMenu(Menus.Trade)) {
+	closeTrade();
+}

@@ -1,5 +1,4 @@
 openMenu(Menus.Trade);
-blockPlayerMenus();
 
 obj_player.currentState = playerTradeState;
 
@@ -290,8 +289,13 @@ function drawTradingMenu() {
 
 		var _name = _itemData.name;
 		var _quantity = _tradeItem.quantity;
-		var _price = _tradeItem.price;
-		var _totalPrice = _price * _quantity;
+		
+		var _totalPrice = getBuyItemValue(
+			_tradeItem.itemId,
+			_tradeItem.type,
+			_tradeItem.quantity
+		);
+		
 		var _icon = _itemData.sprite;
 
 		var _quantityText = "x" + string(_quantity);

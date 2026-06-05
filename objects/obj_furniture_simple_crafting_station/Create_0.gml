@@ -99,7 +99,7 @@ function hide(){
     
     setVariablesCloseFurniture();
     
-	if (global.activeMenu == menuId) {
+	if (isCurrentMenu(menuId)) {
 		closeMenu();
 	}
 }

@@ -18,7 +18,7 @@ function buildTradeItem(_tradeItem) {
 }
 
 function buyTradeItem(_tradeItem) {
-	var _totalPrice = _tradeItem.price * _tradeItem.quantity;
+	var _totalPrice = getBuyItemValue(_tradeItem.itemId, _tradeItem.type, _tradeItem.quantity);
 
 	if (!playerHasMoney(_totalPrice)) {
 		return TradeResult.NotEnoughMoney;
@@ -35,6 +35,17 @@ function buyTradeItem(_tradeItem) {
 	removePlayerMoney(_totalPrice);
 
 	return TradeResult.Success;
+}
+
+function getBuyItemValue(_id, _type, _quantity = 1) {
+	if (!is_array(global.items)) return 0;
+
+	var _itemData = global.items[_type][_id];
+
+	if (!is_struct(_itemData)) return 0;
+	if (!variable_struct_exists(_itemData, "value")) return 0;
+
+	return _itemData.value * _quantity;
 }
 
 function getSellItemValue(_item, _quantity = 1) {

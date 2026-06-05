@@ -77,49 +77,41 @@ tradeItems = [
 		type: itemType.consumables,
 		itemId: consumableItems.canned_food,
 		quantity: 1,
-		price: 15
 	},
 	{
 		type: itemType.consumables,
 		itemId: consumableItems.canned_fish,
 		quantity: 1,
-		price: 20
 	},
 	{
 		type: itemType.consumables,
 		itemId: consumableItems.watter_bottle,
 		quantity: 1,
-		price: 40
 	},
 	{
 		type: itemType.consumables,
 		itemId: consumableItems.dirt_water,
 		quantity: 1,
-		price: 15
 	},
 	{
 		type: itemType.consumables,
 		itemId: consumableItems.bandage,
 		quantity: 1,
-		price: 25
 	},
 		{
 		type: itemType.consumables,
 		itemId: consumableItems.canned_food,
 		quantity: 1,
-		price: 15
 	},
 	{
 		type: itemType.consumables,
 		itemId: consumableItems.canned_fish,
 		quantity: 1,
-		price: 20
 	},
 	{
 		type: itemType.consumables,
 		itemId: consumableItems.watter_bottle,
 		quantity: 1,
-		price: 40
 	},
 	{
 		type: itemType.consumables,
@@ -131,36 +123,30 @@ tradeItems = [
 		type: itemType.consumables,
 		itemId: consumableItems.bandage,
 		quantity: 1,
-		price: 25
 	},
 		{
 		type: itemType.consumables,
 		itemId: consumableItems.canned_food,
 		quantity: 1,
-		price: 15
 	},
 	{
 		type: itemType.consumables,
 		itemId: consumableItems.canned_fish,
 		quantity: 1,
-		price: 20
 	},
 	{
 		type: itemType.consumables,
 		itemId: consumableItems.watter_bottle,
 		quantity: 1,
-		price: 40
 	},
 	{
 		type: itemType.consumables,
 		itemId: consumableItems.dirt_water,
 		quantity: 1,
-		price: 15
 	},
 	{
 		type: itemType.consumables,
 		itemId: consumableItems.bandage,
 		quantity: 1,
-		price: 25
 	}
 ];
