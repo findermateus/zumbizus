@@ -74,91 +74,91 @@ canTrade = true;
 
 tradeItems = [
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.canned_food,
 		quantity: 1,
 		price: 15
 	},
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.canned_fish,
 		quantity: 1,
 		price: 20
 	},
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.watter_bottle,
 		quantity: 1,
 		price: 40
 	},
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.dirt_water,
 		quantity: 1,
 		price: 15
 	},
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.bandage,
 		quantity: 1,
 		price: 25
 	},
 		{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.canned_food,
 		quantity: 1,
 		price: 15
 	},
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.canned_fish,
 		quantity: 1,
 		price: 20
 	},
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.watter_bottle,
 		quantity: 1,
 		price: 40
 	},
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.dirt_water,
 		quantity: 1,
 		price: 15
 	},
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.bandage,
 		quantity: 1,
 		price: 25
 	},
 		{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.canned_food,
 		quantity: 1,
 		price: 15
 	},
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.canned_fish,
 		quantity: 1,
 		price: 20
 	},
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.watter_bottle,
 		quantity: 1,
 		price: 40
 	},
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.dirt_water,
 		quantity: 1,
 		price: 15
 	},
 	{
-		itemType: itemType.consumables,
+		type: itemType.consumables,
 		itemId: consumableItems.bandage,
 		quantity: 1,
 		price: 25
