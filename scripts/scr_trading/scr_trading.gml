@@ -59,21 +59,40 @@ function sellInventoryItem(_inventory, _x, _y) {
 	var _item = _inventory[# _x, _y];
 
 	if (_item == BLANK_INVENTORY_SPACE || !is_struct(_item)) {
-		
 		return TradeResult.InvalidItem;
 	}
 
 	var _quantity = variable_struct_exists(_item, "quantity") ? _item.quantity : 1;
 
-	if (_quantity <= 0) {
-		
+	return sellInventoryItemQuantity(_inventory, _x, _y, _quantity);
+}
+
+function sellInventoryItemQuantity(_inventory, _x, _y, _quantity) {
+	var _item = _inventory[# _x, _y];
+
+	if (_item == BLANK_INVENTORY_SPACE || !is_struct(_item)) {
+		return TradeResult.InvalidItem;
+	}
+
+	var _availableQuantity = variable_struct_exists(_item, "quantity") ? _item.quantity : 1;
+
+	if (_quantity <= 0 || _quantity > _availableQuantity) {
 		return TradeResult.InvalidQuantity;
 	}
 
 	var _sellValue = getSellItemValue(_item, _quantity);
+
 	addPlayerMoney(_sellValue);
-	
-	_inventory[# _x, _y] = BLANK_INVENTORY_SPACE;
+
+	if (variable_struct_exists(_item, "quantity")) {
+		_item.quantity -= _quantity;
+
+		if (_item.quantity <= 0) {
+			_inventory[# _x, _y] = BLANK_INVENTORY_SPACE;
+		}
+	} else {
+		_inventory[# _x, _y] = BLANK_INVENTORY_SPACE;
+	}
 
 	return TradeResult.Success;
 }

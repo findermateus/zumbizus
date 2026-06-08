@@ -352,9 +352,10 @@ function drawTradingMenu() {
 		
 		draw_set_halign(fa_left);
 
-		var _hasClicked = mouse_check_button_released(mb_left);
+		var _leftButtonClicked = mouse_check_button_released(mb_left);
+		var _rightButtonClicked = mouse_check_button_released(mb_right);
 		
-		if (!_isHovering || !_hasClicked) continue;
+		if (!_isHovering || (!_leftButtonClicked && !_rightButtonClicked)) continue;
 		playClickSound();
 		
 		if (currentTab == "BUY") {
@@ -379,20 +380,54 @@ function drawTradingMenu() {
 				createGUINotifyIndicator("Inventário cheio!", getMiddlePoint(_initialX, _initialX + _rowWidth), _rowY);
 			}
 			
-		} else if (currentTab == "SELL") {
-			var _result = sellInventoryItem(global.inventory, _tradeItem.gridx, _tradeItem.gridy);
 			
+			continue;
+		}
+		
+		if (currentTab == "SELL") {
+			var _item = global.inventory[# _tradeItem.gridx, _tradeItem.gridy];
+
+			if (_item == BLANK_INVENTORY_SPACE || !is_struct(_item)) {
+				playFailSound();
+				itemShakeAmount[_drawIndex] = 10;
+				
+				break;
+			}
+
+			var _quantityToSell = 0;
+
+			if (_leftButtonClicked) {
+				_quantityToSell = 1;
+			}
+
+			if (_rightButtonClicked) {
+				_quantityToSell = variable_struct_exists(_item, "quantity") ? _item.quantity : 1;
+			}
+
+			if (_quantityToSell <= 0) {
+				break;
+			}
+
+			var _result = sellInventoryItemQuantity(
+				global.inventory,
+				_tradeItem.gridx,
+				_tradeItem.gridy,
+				_quantityToSell
+			);
+	
 			if (_result == TradeResult.Success) {
 				audio_play_sound(snd_shells, 0, false);
+
 				tradeItems = generatePlayerSellList(); 
-				
+		
 				var _maxScroll = max(0, array_length(tradeItems) - visibleRows);
 				scrollIndex = clamp(scrollIndex, 0, _maxScroll);
+
 				break; 
-			} else {
-				playFailSound();
-				itemShakeAmount[_drawIndex] = 10; 
 			}
+			
+			playFailSound();
+			itemShakeAmount[_drawIndex] = 10; 
 		}
 	}
 
@@ -418,6 +453,20 @@ function drawTradingMenu() {
 			drawSpriteShadow(_arrowX, _downY, spr_arrow_indicator, 0, 0, _arrowScale, -_arrowScale);
 			draw_sprite_ext(spr_arrow_indicator, 0, _arrowX, _downY, _arrowScale, -_arrowScale, 0, c_white, _bgAlpha);
 		}
+	}
+	
+	if (currentTab == "SELL") {
+		draw_set_font(fnt_gui_default);
+		draw_set_halign(fa_center);
+		draw_set_valign(fa_top);
+		
+		var _hintText = "Botão Esquerdo: Vender 1  |  Botão Direito: Vender Tudo";
+		
+		var _hintY = _menuY + _menuH + 15; 
+		
+		drawTextShadow(_menuX + (_menuW / 2), _hintY, _hintText, _bgAlpha, 2, 0.85);
+		draw_set_color(c_white);
+		draw_text_transformed(_menuX + (_menuW / 2), _hintY, _hintText, 0.85, 0.85, 0);
 	}
 
 	draw_set_alpha(_globalAlpha);
