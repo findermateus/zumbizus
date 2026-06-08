@@ -553,7 +553,7 @@ function getListOfFurnitureBox(){
 }
 
 function drawIndicationArrow(_box, _xPosition){
-	var _sprite = spr_builder_arrow_indicator;
+	var _sprite = spr_arrow_indicator;
 	var _yPosition = _box.yPosition + _box.yMarginFromBottom/2;
 	var _yScale = arrowScale * arrowDirection;
 	_xPosition += sprite_get_width(_sprite) * arrowScale;
@@ -640,9 +640,7 @@ function handleBuildable(){
 		return;
 	}
 	
-	var _alert = instance_create_layer(furnitureDisplayInfo.xPosition, furnitureDisplayInfo.yPosition, "Alert", obj_alert);
-	_alert.textAlert = "Mobília construída";
-	_alert.alertColor = c_lime;
+	createRoomNotifyIndicator("Mobília construída", furnitureDisplayInfo.xPosition, furnitureDisplayInfo.yPosition, c_lime);
 	
 	var _furnitureId = selectedFurniture.furnitureId;
 	

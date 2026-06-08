@@ -10,6 +10,7 @@ if (!activeInteraction) {
     hover_offset1 = 0;
     hover_offset2 = 0;
     hover_offset3 = 0;
+	
     return;
 }
 
@@ -24,12 +25,6 @@ if(!checkObstacules(obj_player) || !checkDistance(obj_player)) {
 }
 
 var _optionCount = array_length(interactOptions);
-
-if (_optionCount == 1) {
-    handleNPCOption(interactOptions[0].action);
-    activeInteraction = false;  
-    return;
-}
 
 animProgress = lerp(animProgress, 1, 0.15);
 alpha = lerp(alpha, 1, 0.1);

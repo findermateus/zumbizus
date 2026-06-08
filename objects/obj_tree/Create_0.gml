@@ -40,8 +40,8 @@ function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weapo
 	
 	if (!_isHittingWithAnAxe) {
 		_damage = 1;
-		var _alert = instance_create_layer(roomToGuiX(x), roomToGuiY(y), "Alert", obj_alert);
-		_alert.textAlert = "É necessário um machado!";
+		
+		createRoomNotifyIndicator("É necessário um machado!", x, getMiddlePoint(bbox_top, bbox_bottom))
 	}
 	
 	if (_isHittingWithAnAxe) {
