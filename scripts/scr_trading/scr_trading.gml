@@ -34,6 +34,12 @@ function buyTradeItem(_tradeItem) {
 
 	removePlayerMoney(_totalPrice);
 
+	obj_quest_manager.notifyEvent(QuestEvent.ItemBought, {
+		itemId: _tradeItem.itemId,
+		itemType: _tradeItem.type,
+		quantity: _tradeItem.quantity
+	});
+
 	return TradeResult.Success;
 }
 
@@ -93,6 +99,15 @@ function sellInventoryItemQuantity(_inventory, _x, _y, _quantity) {
 	} else {
 		_inventory[# _x, _y] = BLANK_INVENTORY_SPACE;
 	}
+
+	var _itemId = _item.itemId;
+	var _itemType = _item.type;
+
+	obj_quest_manager.notifyEvent(QuestEvent.ItemSold, {
+		itemId: _itemId,
+		itemType: _itemType,
+		quantity: _quantity
+	});
 
 	return TradeResult.Success;
 }
