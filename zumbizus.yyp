@@ -264,7 +264,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.6.0.157",
+    "IDEVersion":"2024.6.1.160",
   },
   "name":"zumbizus",
   "resources":[
@@ -327,6 +327,7 @@
     {"id":{"name":"obj_furniture_usable","path":"objects/obj_furniture_usable/obj_furniture_usable.yy",},},
     {"id":{"name":"obj_furniture_with_workers","path":"objects/obj_furniture_with_workers/obj_furniture_with_workers.yy",},},
     {"id":{"name":"obj_furniture","path":"objects/obj_furniture/obj_furniture.yy",},},
+    {"id":{"name":"obj_game_boot","path":"objects/obj_game_boot/obj_game_boot.yy",},},
     {"id":{"name":"obj_grabbing_controller","path":"objects/obj_grabbing_controller/obj_grabbing_controller.yy",},},
     {"id":{"name":"obj_hitbox","path":"objects/obj_hitbox/obj_hitbox.yy",},},
     {"id":{"name":"obj_hittable","path":"objects/obj_hittable/obj_hittable.yy",},},
@@ -372,10 +373,12 @@
     {"id":{"name":"tg_oGrass","path":"objects/tg_oGrass/tg_oGrass.yy",},},
     {"id":{"name":"tg_oManager","path":"objects/tg_oManager/tg_oManager.yy",},},
     {"id":{"name":"ps_campfire","path":"particles/ps_campfire/ps_campfire.yy",},},
+    {"id":{"name":"rm_boot","path":"rooms/rm_boot/rm_boot.yy",},},
     {"id":{"name":"rm_dump","path":"rooms/rm_dump/rm_dump.yy",},},
     {"id":{"name":"rm_forest","path":"rooms/rm_forest/rm_forest.yy",},},
     {"id":{"name":"rm_player_base","path":"rooms/rm_player_base/rm_player_base.yy",},},
     {"id":{"name":"rm_small_city","path":"rooms/rm_small_city/rm_small_city.yy",},},
+    {"id":{"name":"rm_tutorial_intro","path":"rooms/rm_tutorial_intro/rm_tutorial_intro.yy",},},
     {"id":{"name":"RoomBase","path":"rooms/RoomBase/RoomBase.yy",},},
     {"id":{"name":"__scribble_class_element","path":"scripts/__scribble_class_element/__scribble_class_element.yy",},},
     {"id":{"name":"__scribble_class_event","path":"scripts/__scribble_class_event/__scribble_class_event.yy",},},
@@ -938,11 +941,13 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
+    {"roomId":{"name":"rm_boot","path":"rooms/rm_boot/rm_boot.yy",},},
     {"roomId":{"name":"rm_player_base","path":"rooms/rm_player_base/rm_player_base.yy",},},
     {"roomId":{"name":"RoomBase","path":"rooms/RoomBase/RoomBase.yy",},},
     {"roomId":{"name":"rm_dump","path":"rooms/rm_dump/rm_dump.yy",},},
     {"roomId":{"name":"rm_forest","path":"rooms/rm_forest/rm_forest.yy",},},
     {"roomId":{"name":"rm_small_city","path":"rooms/rm_small_city/rm_small_city.yy",},},
+    {"roomId":{"name":"rm_tutorial_intro","path":"rooms/rm_tutorial_intro/rm_tutorial_intro.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[

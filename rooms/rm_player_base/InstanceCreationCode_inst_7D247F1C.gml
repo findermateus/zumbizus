@@ -73,80 +73,9 @@ getCurrentDialogue = function() {
 canTrade = true;
 
 tradeItems = [
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.canned_food,
-		quantity: 1,
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.canned_fish,
-		quantity: 1,
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.watter_bottle,
-		quantity: 1,
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.dirt_water,
-		quantity: 1,
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.bandage,
-		quantity: 1,
-	},
-		{
-		type: itemType.consumables,
-		itemId: consumableItems.canned_food,
-		quantity: 1,
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.canned_fish,
-		quantity: 1,
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.watter_bottle,
-		quantity: 1,
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.dirt_water,
-		quantity: 1,
-		price: 15
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.bandage,
-		quantity: 1,
-	},
-		{
-		type: itemType.consumables,
-		itemId: consumableItems.canned_food,
-		quantity: 1,
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.canned_fish,
-		quantity: 1,
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.watter_bottle,
-		quantity: 1,
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.dirt_water,
-		quantity: 1,
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.bandage,
-		quantity: 1,
-	}
+	new TradeItem(consumableItems.canned_food, itemType.consumables, 1),
+	new TradeItem(consumableItems.canned_fish, itemType.consumables, 1),
+	new TradeItem(consumableItems.watter_bottle, itemType.consumables, 1),
+	new TradeItem(consumableItems.dirt_water, itemType.consumables, 1),
+	new TradeItem(consumableItems.bandage, itemType.consumables, 1),
 ];

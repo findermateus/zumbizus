@@ -1,69 +1,278 @@
-function saveGame(_playerData = false, _playerBase = false){
-	if(_playerData) savePlayerData();
-	if(_playerBase) savePlayerBase();
+function saveExists() {
+	if (!file_exists("player_save.json")) {
+		return false;
+	}
+
+	var _saveFile = file_text_open_read("player_save.json");
+	var _saveJson = file_text_read_string(_saveFile);
+	file_text_close(_saveFile);
+
+	if (_saveJson == "") {
+		return false;
+	}
+
+	try {
+		var _saveData = json_parse(_saveJson);
+
+		if (!is_struct(_saveData)) return false;
+		if (!variable_struct_exists(_saveData, "version")) return false;
+		if (!variable_struct_exists(_saveData, "inventory")) return false;
+		if (!variable_struct_exists(_saveData, "toolBar")) return false;
+		if (!variable_struct_exists(_saveData, "equipedItem")) return false;
+		if (!variable_struct_exists(_saveData, "player")) return false;
+		if (!variable_struct_exists(_saveData, "quickUse")) return false;
+		if (!variable_struct_exists(_saveData, "equipments")) return false;
+
+		return true;
+	} catch (_error) {
+		return false;
+	}
+}
+
+function saveGame(_playerData = true, _playerBase = false) {
+	if (_playerData) {
+		savePlayerData();
+	}
+
+	if (_playerBase) {
+		savePlayerBase();
+	}
+}
 	
-	var _toolBarData = {
+function savePlayerData() {
+	var _saveData = {
+		version: 2,
+		inventory: getInventorySaveData(global.inventory),
+		toolBar: getToolBarSaveData(),
+		equipedItem: getEquipedItemSaveData(),
+		quickUse: getQuickUseSaveData(),
+		equipments: getEquipmentsSaveData(),
+		player: getPlayerSaveData()
+	};
+
+	var _saveFile = file_text_open_write("player_save.json");
+	file_text_write_string(_saveFile, json_stringify(_saveData));
+	file_text_close(_saveFile);
+}
+
+function getQuickUseSaveData() {
+	var _quickUseItems = [];
+
+	for (var i = 0; i < ds_list_size(global.quickUse); i++) {
+		_quickUseItems[i] = global.quickUse[| i];
+	}
+
+	return {
+		items: _quickUseItems
+	};
+}
+
+function getInventorySaveData(_inventory) {
+	var _inventoryData = [];
+
+	var _width = ds_grid_width(_inventory);
+	var _height = ds_grid_height(_inventory);
+
+	for (var i = 0; i < _height; i++) {
+		for (var j = 0; j < _width; j++) {
+			_inventoryData[i][j] = _inventory[# j, i];
+		}
+	}
+
+	return _inventoryData;
+}
+
+function getToolBarSaveData() {
+	var _toolBarEquipedItems = [];
+
+	for (var i = 0; i < ds_list_size(global.equipedItems); i++) {
+		_toolBarEquipedItems[i] = global.equipedItems[| i];
+	}
+
+	return {
 		equipedItems: _toolBarEquipedItems,
 		toolBarSize: global.toolBarSize
 	};
-	var _equipedItemData = {
+}
+
+function getEquipmentsSaveData() {
+	return {
+		head: global.equipments.head,
+		armor: global.equipments.armor,
+		bag: global.equipments.bag
+	};
+}
+
+function getEquipedItemSaveData() {
+	return {
 		activeEquipedItem: global.activeEquipedItem,
 		activeEquipedItemIndex: global.activeEquipedItemIndex
 	};
-	var _inventoryData = [];
-	for(var i = 0; i < ds_grid_height(global.inventory); i ++){
-		for(var j = 0; j < ds_grid_width(global.inventory); j ++){
-			_inventoryData[i][j] = global.inventory[# i, j];
+}
+
+function getPlayerSaveData() {
+	return {
+		identity: {
+			name: global.player.name,
+			skinColor: global.player.skinColor,
+			gender: global.player.gender,
+			hair: global.player.hair
+		},
+
+		progression: {
+			level: global.player.level,
+			xp: global.player.xp,
+			skills: global.player.skills,
+			stats: global.player.stats,
+			blueprints: global.player.blueprints
+		},
+
+		economy: {
+			money: global.player.money
+		},
+
+		survival: {
+			defaultTotalThirst: global.player.defaultTotalThirst,
+			defaultTotalHunger: global.player.defaultTotalHunger,
+			currentThirst: global.player.currentThirst,
+			currentHunger: global.player.currentHunger
+		},
+
+		health: {
+			maxHealth: global.player.maxHealth,
+			health: global.player.health,
+			defaultMaxHealth: global.player.defaultMaxHealth
+		},
+
+		stamina: {
+			maxStamina: global.player.maxStamina,
+			defaultMaxStamina: global.player.defaultMaxStamina,
+			stamina: global.player.stamina,
+			staminaAcceleration: global.player.staminaAcceleration,
+			staminaRecoveryDelay: global.player.staminaRecoveryDelay,
+			staminaDecreaseAcceleration: global.player.staminaDecreaseAcceleration,
+			sprintSpeed: global.player.sprintSpeed,
+			sprintStaminaDecrease: global.player.sprintStaminaDecrease
+		},
+
+		movement: {
+			walkingAceleration: global.player.walkingAceleration,
+			walkingSpeed: global.player.walkingSpeed
+		},
+
+		buffs: {
+			buffList: global.player.buffList
 		}
-	}
-	var _stats = {
-		hunger: global.player.currentHunger,
-		thirst: global.player.currentThirst
 	};
-	var _saveData = json_stringify({
-		inventory:  _inventoryData,
-		toolBar: _toolBarData,
-		equipedItem: _equipedItemData,
-		stats: _stats
-	});
-	var _saveFile = file_text_open_write("player_save.json");
-	file_text_write_string(_saveFile, _saveData);
-	file_text_close(_saveFile);
 }
 	
 function loadGame(){
 	loadPlayerData();
-	loadPlayerBase();
 }
 
-function loadPlayerData(){
-	if (!file_exists("player_save.json")) {
+function loadPlayerData() {
+	if (!saveExists()) {
 		return;
 	}
+
 	var _playerSaveFile = file_text_open_read("player_save.json");
 	var _playerSaveJson = file_text_read_string(_playerSaveFile);
-	if(_playerSaveJson != ""){
-		var _playerData = json_parse(_playerSaveJson);
-		loadArrayToDsGrid(_playerData.inventory, global.inventory);
-		loadPlayerToolBar(_playerData.toolBar);
-		loadPlayerEquipedItem(_playerData.equipedItem);
-		if (variable_struct_exists(_playerData, "stats")){
-			loadPlayerStats(_playerData.stats);
-		}
-	}
 	file_text_close(_playerSaveFile);
+
+	var _playerData = json_parse(_playerSaveJson);
+
+	loadPlayerState(_playerData.player);
+
+	loadPlayerEquipments(_playerData.equipments);
+	applyEquipmentsAfterLoad();
+
+	loadArrayToDsGrid(_playerData.inventory, global.inventory);
+
+	loadPlayerToolBar(_playerData.toolBar);
+	loadPlayerEquipedItem(_playerData.equipedItem);
+	loadPlayerQuickUse(_playerData.quickUse);
 }
 
-function loadArrayToDsGrid(_data, _destiny){
-	var _inventoryHeight = ds_grid_height(_destiny);
-	var _inventoryWidth = ds_grid_width(_destiny);
-	for(var i = 0; i < _inventoryHeight; i++){
-		for(var j = 0; j < ds_grid_width(_destiny); j ++){
-			var _item = _data[i][j];
+function loadArrayToDsGrid(_data, _destiny) {
+	var _height = ds_grid_height(_destiny);
+	var _width = ds_grid_width(_destiny);
+
+	for (var i = 0; i < _height; i++) {
+		for (var j = 0; j < _width; j++) {
 			_destiny[# j, i] = _data[i][j];
-			if (_data[i][j] == BLANK_INVENTORY_SPACE) continue;
 		}
 	}
+}
+
+function loadPlayerState(_playerData) {
+	loadPlayerIdentity(_playerData.identity);
+	loadPlayerProgression(_playerData.progression);
+	loadPlayerEconomy(_playerData.economy);
+	loadPlayerSurvival(_playerData.survival);
+	loadPlayerHealth(_playerData.health);
+	loadPlayerStamina(_playerData.stamina);
+	loadPlayerMovement(_playerData.movement);
+	loadPlayerBuffs(_playerData.buffs);
+}
+
+function loadPlayerQuickUse(_quickUse) {
+	ds_list_clear(global.quickUse);
+
+	for (var i = 0; i < array_length(_quickUse.items); i++) {
+		ds_list_add(global.quickUse, _quickUse.items[i]);
+	}
+}
+
+function loadPlayerIdentity(_identity) {
+	global.player.name = _identity.name;
+	global.player.skinColor = _identity.skinColor;
+	global.player.gender = _identity.gender;
+	global.player.hair = _identity.hair;
+}
+
+function loadPlayerProgression(_progression) {
+	global.player.level = _progression.level;
+	global.player.xp = _progression.xp;
+	global.player.skills = _progression.skills;
+	global.player.stats = _progression.stats;
+	global.player.blueprints = _progression.blueprints;
+}
+
+function loadPlayerSurvival(_survival) {
+	global.player.defaultTotalThirst = _survival.defaultTotalThirst;
+	global.player.defaultTotalHunger = _survival.defaultTotalHunger;
+	global.player.currentThirst = _survival.currentThirst;
+	global.player.currentHunger = _survival.currentHunger;
+}
+
+function loadPlayerHealth(_health) {
+	global.player.maxHealth = _health.maxHealth;
+	global.player.health = _health.health;
+	global.player.defaultMaxHealth = _health.defaultMaxHealth;
+}
+
+function loadPlayerStamina(_stamina) {
+	global.player.maxStamina = _stamina.maxStamina;
+	global.player.defaultMaxStamina = _stamina.defaultMaxStamina;
+	global.player.stamina = _stamina.stamina;
+	global.player.staminaAcceleration = _stamina.staminaAcceleration;
+	global.player.staminaRecoveryDelay = _stamina.staminaRecoveryDelay;
+	global.player.staminaDecreaseAcceleration = _stamina.staminaDecreaseAcceleration;
+	global.player.sprintSpeed = _stamina.sprintSpeed;
+	global.player.sprintStaminaDecrease = _stamina.sprintStaminaDecrease;
+}
+
+function loadPlayerMovement(_movement) {
+	global.player.walkingAceleration = _movement.walkingAceleration;
+	global.player.walkingSpeed = _movement.walkingSpeed;
+}
+
+function loadPlayerBuffs(_buffs) {
+	global.player.buffList = _buffs.buffList;
+}
+
+function loadPlayerEconomy(_economy) {
+	global.player.money = _economy.money;
 }
 
 function loadPlayerToolBar(_toolBar){
@@ -74,14 +283,21 @@ function loadPlayerToolBar(_toolBar){
 	}
 }
 
-function loadPlayerStats(_stats){
-	global.player.currentThirst = _stats.thirst;
-	global.player.currentHunger = _stats.hunger;
-}
-
 function loadPlayerEquipedItem(_equipedItem){
 	global.activeEquipedItemIndex = _equipedItem.activeEquipedItemIndex;
 	global.activeEquipedItem = _equipedItem.activeEquipedItem;
+}
+
+function loadPlayerEquipments(_equipments) {
+	global.equipments.head = _equipments.head;
+	global.equipments.armor = _equipments.armor;
+	global.equipments.bag = _equipments.bag;
+}
+	
+function applyEquipmentsAfterLoad() {
+	handleBagSwitch();
+	handleArmorSwitch();
+	handleHeadSwitch();
 }
 	
 function createBlankBaseSaveFile() {
@@ -90,32 +306,37 @@ function createBlankBaseSaveFile() {
 	file_text_close(_saveFile);
 }
 	
-function loadPlayerBase(){
+function loadPlayerBase() {
 	if (!file_exists("player_base_save.json")) {
 		createBlankBaseSaveFile();
 	}
+
 	var _playerBaseSaveFile = file_text_open_read("player_base_save.json");
 	var _baseSaveJson = file_text_read_string(_playerBaseSaveFile);
-	if (_baseSaveJson == BLANK_INVENTORY_SPACE){
+	file_text_close(_playerBaseSaveFile);
+
+	if (_baseSaveJson == "" || _baseSaveJson == BLANK_INVENTORY_SPACE) {
 		loadDefaultBaseData();
-		file_text_close(_playerBaseSaveFile);
 		return;
 	}
-	var _baseData = json_parse(_baseSaveJson);
-	if (is_struct(_baseData)){
-		loadBaseFurnitures(_baseData.furnitures);
-		loadBaseItems(_baseData.items);
-	} else {
-		//caso ainda não exista save, carregar as mobilias base.
+
+	try {
+		var _baseData = json_parse(_baseSaveJson);
+
+		if (is_struct(_baseData)) {
+			loadBaseFurnitures(_baseData.furnitures);
+			loadBaseItems(_baseData.items);
+		} else {
+			loadDefaultBaseData();
+		}
+	} catch (_error) {
 		loadDefaultBaseData();
+		return;
 	}
-	
-	//caso tenha um save legado
+
 	if (!instance_exists(obj_furniture_map_selector)) {
 		loadDefaultBaseData();
 	}
-	
-	file_text_close(_playerBaseSaveFile);
 }
 
 function loadDefaultBaseData() {
