@@ -7,7 +7,9 @@ enum QuestEvent {
 	DialogueEnded,
 	DialogueStarted,
 	ItemBought,
-	ItemSold
+	ItemSold,
+	ObjectInteracted,
+	ItemConsumed
 }
 
 function Quest(_id, _name) constructor {
@@ -135,6 +137,7 @@ function QuestReward(_xp) constructor {
 }
 
 enum Quests {
+	FindSafePlace,
 	BecomeALumberjack,
 	CraftACampfire,
 	KillingInTheNameOfLove

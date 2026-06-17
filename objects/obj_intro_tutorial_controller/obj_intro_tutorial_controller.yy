@@ -1,22 +1,19 @@
 {
   "$GMObject":"",
-  "%Name":"obj_bush",
+  "%Name":"obj_intro_tutorial_controller",
   "eventList":[
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":64,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_bush",
+  "name":"obj_intro_tutorial_controller",
   "overriddenProperties":[],
   "parent":{
-    "name":"InteractableDecoration",
-    "path":"folders/Objects/Enviroment/InteractableDecoration.yy",
+    "name":"Controllers",
+    "path":"folders/Objects/Controllers.yy",
   },
-  "parentObjectId":{
-    "name":"obj_interactable_decoration",
-    "path":"objects/obj_interactable_decoration/obj_interactable_decoration.yy",
-  },
+  "parentObjectId":null,
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
@@ -30,16 +27,11 @@
   "physicsShape":1,
   "physicsShapePoints":[],
   "physicsStartAwake":true,
-  "properties":[
-    {"$GMObjectProperty":"v1","%Name":"height","filters":[],"listItems":[],"multiselect":false,"name":"height","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"0","varType":1,},
-  ],
+  "properties":[],
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":{
-    "name":"spr_bush",
-    "path":"sprites/spr_bush/spr_bush.yy",
-  },
+  "spriteId":null,
   "spriteMaskId":null,
   "visible":true,
 }

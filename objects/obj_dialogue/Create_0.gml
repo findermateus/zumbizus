@@ -28,7 +28,11 @@ function endDialogue() {
 	
 	obj_player.currentState = playerIddleState;
 	
-	obj_quest_manager.notifyEvent(QuestEvent.DialogueEnded, { dialogue: dialogue, npc: target});
+	if (instance_exists(target)) {
+		obj_quest_manager.notifyEvent(QuestEvent.DialogueEnded, {
+			npc: target
+		});
+	}
 	
 	if (is_callable(dialogue.onEnd)) {
 		dialogue.onEnd();

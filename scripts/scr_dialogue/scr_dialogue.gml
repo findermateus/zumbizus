@@ -19,3 +19,19 @@ function DialogueParticipant(_name, _gender, _skinColor, _hairColor, _hairId, _a
     armor     = _armor;
     helmet    = _helmet;
 }
+
+function createPlayerThoughtDialogue(_texts, _onEnd = undefined, _textSpeed = .7) {
+	var _dialogueTexts = [];
+
+	for (var i = 0; i < array_length(_texts); i++) {
+		_dialogueTexts[i] = new DialogueText(_texts[i], true);
+	}
+
+	var _dialogue = new Dialogue(_dialogueTexts, noone, _textSpeed);
+
+	if (is_callable(_onEnd)) {
+		_dialogue.onEnd = _onEnd;
+	}
+
+	return _dialogue;
+}

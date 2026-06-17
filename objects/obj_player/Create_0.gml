@@ -402,6 +402,13 @@ function eat(_item, _comingFromInventory, _inventory, _j, _i) {
 	if (_buff != false) {
 		applyBuff(_buff);
 	}
+	
+	obj_quest_manager.notifyEvent(QuestEvent.ItemConsumed, {
+		itemId: _item.itemId,
+		type: _item.type,
+		quantity: 1
+	});
+	
 	if (!_comingFromInventory) return;
 	handleCleanInventoryAfterConsuming(_item, _data, _j, _i, _inventory);
 }
@@ -415,6 +422,13 @@ function drink(_item, _comingFromInventory, _inventory, _j, _i) {
 	if (_buff != false) {
 		applyBuff(_buff);
 	}
+	
+	obj_quest_manager.notifyEvent(QuestEvent.ItemConsumed, {
+		itemId: _item.itemId,
+		type: _item.type,
+		quantity: 1
+	});
+	
 	if (!_comingFromInventory) return;
 	handleCleanInventoryAfterConsuming(_item, _data, _j, _i, _inventory);
 }
