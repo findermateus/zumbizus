@@ -147,7 +147,7 @@ function getWeaponBackDrawData(){
 }
 
 function weaponAim(_comingFromAttack = false){
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
 	
 	if (_comingFromAttack && !mouse_check_button(mb_right)) {
 		setStateIdle();
@@ -224,7 +224,7 @@ function setAimingCursor() {
 
 function finishReloading(){
 	adjustPlayerInteractions(true);
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
 	
 	if (mouse_check_button(mb_right) && global.activeEquipedItem != BLANK_INVENTORY_SPACE) {
 		weaponAim(true); 

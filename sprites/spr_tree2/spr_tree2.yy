@@ -45,7 +45,7 @@
   "origin":9,
   "parent":{
     "name":"Trees",
-    "path":"folders/Sprites/Enviroment/Trees.yy",
+    "path":"folders/Sprites/Enviroment/Assets/Trees.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

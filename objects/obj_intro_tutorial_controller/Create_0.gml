@@ -26,6 +26,11 @@ function startIntroPlayerDialogue() {
 		}
 
 		introState = "running";
+		
+		global.player.currentHunger = global.player.defaultTotalHunger * .2;
+		global.player.currentThirst = global.player.defaultTotalThirst * .2;
+		
+		obj_camera.setDefaultValues();
 	}));
 
 	instance_create_layer(0, 0, "Controllers", obj_dialogue, {

@@ -23,7 +23,7 @@ function endDialogue() {
 	closeMenu();
 	unBlockPlayerMenus();
 	
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
 	obj_camera.target = obj_player;
 	
 	obj_player.currentState = playerIddleState;

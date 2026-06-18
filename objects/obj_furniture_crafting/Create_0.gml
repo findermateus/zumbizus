@@ -103,7 +103,7 @@ function reloadItems() {
 
 function hide(){
 	if (!global.activeInventory) {
-		obj_camera.setDefaultScale();
+		obj_camera.setDefaultValues();
 		obj_camera.target = obj_player;
 	}
 	

@@ -68,7 +68,7 @@ function setUpModal(){
 	global.playerStopInteractions = true;
 	listOfElementsDestinyYPosition = defaultListOfElementsDestinyYPosition;
 	playSwiiimmmSound();
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
 	obj_camera.target = obj_player;
 	guiCurrentState = displayFurniture;
 	currentState = aimFurniture;
