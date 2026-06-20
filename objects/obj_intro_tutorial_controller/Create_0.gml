@@ -112,6 +112,20 @@ function getFindSafePlaceQuest() {
 
 	_quest.addStep(_eatAndDrinkStep);
 
+	var _clearBlockageStep = new QuestStep(
+		"clear_exit_blockage",
+		"Remova o bloqueio da porta"
+	);
+
+	_clearBlockageStep.onEvent = method(_clearBlockageStep, function(_event, _data) {
+		if (_event != QuestEvent.ObjectInteracted) return;
+		if (_data.tag != "intro_door_blockage") return;
+
+		self.quest.completeCurrentStep();
+	});
+
+	_quest.addStep(_clearBlockageStep);
+
 	var _findSafePlaceStep = new QuestStep(
 		"find_safe_place",
 		"Encontre um lugar seguro"

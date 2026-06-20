@@ -1,19 +1,21 @@
 {
   "$GMObject":"",
-  "%Name":"obj_intro_tutorial_controller",
+  "%Name":"obj_intro_door_blockage",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":64,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_intro_tutorial_controller",
+  "name":"obj_intro_door_blockage",
   "overriddenProperties":[],
   "parent":{
     "name":"Tutorial",
     "path":"folders/Objects/Quests/Tutorial.yy",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"obj_interactable_decoration_with_colision",
+    "path":"objects/obj_interactable_decoration_with_colision/obj_interactable_decoration_with_colision.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
@@ -31,7 +33,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"spr_collision",
+    "path":"sprites/spr_collision/spr_collision.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

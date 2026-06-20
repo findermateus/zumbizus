@@ -1,6 +1,4 @@
-/// @description Inserir descrição aqui
-// Você pode escrever seu código neste editor
+if (is_dying) exit;
 
-// Inherit the parent event
 event_inherited();
 
