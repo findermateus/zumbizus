@@ -161,7 +161,7 @@ function getPlayerSaveData() {
 		},
 
 		buffs: {
-			buffList: global.player.buffList
+			buffList: getPlayerBuffsSaveData()
 		}
 	};
 }
@@ -267,8 +267,68 @@ function loadPlayerMovement(_movement) {
 	global.player.walkingSpeed = _movement.walkingSpeed;
 }
 
+function getPlayerBuffsSaveData() {
+	var _buffList = [];
+
+	for (var i = 0; i < array_length(global.player.buffList); i++) {
+		var _buff = global.player.buffList[i];
+
+		if (!is_struct(_buff)) continue;
+
+		array_push(_buffList, {
+			id: _buff.id,
+			multiplier: _buff.multiplier,
+			type: _buff.type,
+			description: _buff.description,
+			timeInSeconds: _buff.timeInSeconds,
+			currentTime: _buff.currentTime,
+			positive: _buff.positive,
+			icon: _buff.icon,
+			customDescription: _buff.customDescription
+		});
+	}
+
+	return {
+		buffList: _buffList
+	};
+}
+
 function loadPlayerBuffs(_buffs) {
-	global.player.buffList = _buffs.buffList;
+	global.player.buffList = [];
+
+	if (!is_struct(_buffs)) return;
+	if (!variable_struct_exists(_buffs, "buffList")) return;
+
+	for (var i = 0; i < array_length(_buffs.buffList); i++) {
+		var _buffData = _buffs.buffList[i];
+
+		if (!is_struct(_buffData)) continue;
+
+		var _icon = variable_struct_exists(_buffData, "icon")
+			? _buffData.icon
+			: undefined;
+
+		var _customDescription = variable_struct_exists(_buffData, "customDescription")
+			? _buffData.customDescription
+			: "";
+
+		var _buff = new Buff(
+			_buffData.id,
+			_buffData.multiplier,
+			_buffData.type,
+			_buffData.description,
+			_buffData.timeInSeconds,
+			_buffData.positive,
+			_icon,
+			_customDescription
+		);
+
+		if (variable_struct_exists(_buffData, "currentTime")) {
+			_buff.currentTime = _buffData.currentTime;
+		}
+
+		array_push(global.player.buffList, _buff);
+	}
 }
 
 function loadPlayerEconomy(_economy) {
