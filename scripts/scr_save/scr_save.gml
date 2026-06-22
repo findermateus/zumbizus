@@ -401,6 +401,7 @@ function loadPlayerBase() {
 
 function loadDefaultBaseData() {
 	instance_create_layer(400, 700, "Items", obj_furniture_map_selector);
+	instance_create_layer(600, 700, "Items", obj_furniture_simple_crafting_station);
 }
 
 function loadBaseFurnitures(_furnitures){
