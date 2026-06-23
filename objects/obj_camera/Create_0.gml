@@ -12,6 +12,7 @@ target = noone;
 currentShakeEffect = 0;
 
 setGuiSize(1920, 1080);
+window_set_size(1920, 1080)
 
 cameraScaleSpeed = DEFAULT_CAM_SCALE_SPEED;
 cameraScale = DEFAULT_CAM_SCALE;

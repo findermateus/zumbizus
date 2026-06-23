@@ -6,3 +6,4 @@ global.itemMethods[_itemType][equipmentItems.simpleOutfit] = [
 global.itemMethods[_itemType][equipmentItems.simpleCap] = [];
 global.itemMethods[_itemType][equipmentItems.leatherJacket] = [];
 global.itemMethods[_itemType][equipmentItems.boonieHat] = [];
+global.itemMethods[_itemType][equipmentItems.tornLabCoat] = [];

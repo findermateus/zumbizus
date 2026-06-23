@@ -45,6 +45,25 @@ function EquipmentConfig() {
 
 {
 	var _config = EquipmentConfig();
+
+	_config.itemId = equipmentItems.tornLabCoat;
+	_config.equipType = equipmentType.armor;
+
+	_config.name = "Jaleco Rasgado";
+	_config.description = "Um jaleco velho e rasgado. Não oferece muita proteção, mas é melhor do que continuar exposto.";
+
+	_config.sprite = spr_torn_lab_coat_icon;
+	_config.fitInGrid = fitInGridType.verticaly;
+
+	_config.equipmentData.damageAbsortion = 2;
+
+	_config.value = 7;
+
+	global.items[itemType.equipment][equipmentItems.tornLabCoat] = _config;
+}
+
+{
+	var _config = EquipmentConfig();
 	_config.itemId = equipmentItems.leatherJacket;
 	_config.equipType = equipmentType.armor;
 	_config.name = "Jaqueta de couro";

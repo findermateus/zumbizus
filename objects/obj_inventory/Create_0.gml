@@ -336,11 +336,6 @@ function drawInventoryGrid(_inventory, _inventoryBox){
 			}
 		}
 	}
-	
-	if (activeHoverItem == BLANK_INVENTORY_SPACE) return;
-	
-	draw_text(xMouseToGui, yMouseToGui, "Valor: " + string(getItemValue(activeHoverItem)));
-	draw_text(xMouseToGui, yMouseToGui + 20, "Total: " + string(getItemTotalValue(activeHoverItem)));
 }
 
 function verifyConditionToApplyHoverEffect() {

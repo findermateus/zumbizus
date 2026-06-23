@@ -3,3 +3,5 @@ if (!hasFadeOut && !isFadingOut) {
 }
 
 isFadingOut = false;
+
+adjustClosestDepth();

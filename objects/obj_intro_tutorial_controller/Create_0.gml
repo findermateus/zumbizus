@@ -2,11 +2,13 @@ introState = "fade_from_black";
 
 fadeAlpha = 1;
 fadeTimer = 0;
-fadeDuration = game_get_speed(gamespeed_fps) * 2;
+fadeDuration = game_get_speed(gamespeed_fps) * 4;
 
 dialogueStarted = false;
 
 obj_player.currentState = playerDialogueState;
+
+openMenu(Menus.Cutscene);
 
 function startIntroPlayerDialogue() {
 	var _dialogue = createPlayerThoughtDialogue([
@@ -125,6 +127,32 @@ function getFindSafePlaceQuest() {
 	});
 
 	_quest.addStep(_clearBlockageStep);
+
+	var _findClothesStep = new QuestStep(
+		"find_clothes",
+		"Procure algo para vestir"
+	);
+
+	_findClothesStep.onEvent = method(_findClothesStep, function(_event, _data) {
+		if (_event != QuestEvent.ObjectInteracted) return;
+		if (_data.tag != "chest") return;
+
+		self.quest.completeCurrentStep();
+	});
+
+	_quest.addStep(_findClothesStep);
+
+	var _wearClothesStep = new QuestStep("wear_clothes", "Vista a roupa encontrada");
+
+	_wearClothesStep.onEvent = method(_wearClothesStep, function (_event, _data) {
+		if (_event != QuestEvent.ItemEquiped) return;
+		if (_data.type != "armor") return;
+		if (_data.item.itemId != equipmentItems.tornLabCoat) return;
+		
+		self.quest.completeCurrentStep();
+	});
+
+	_quest.addStep(_wearClothesStep);
 
 	var _findSafePlaceStep = new QuestStep(
 		"find_safe_place",

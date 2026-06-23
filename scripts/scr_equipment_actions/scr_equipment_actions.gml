@@ -17,10 +17,25 @@ function handleBagSwitch(){
 	var _itemData = global.equipments.bag.equipmentData;
 	var _inventoryWidth = global.inventoryWidth + _itemData.capacity
 	setInventorySize(_inventoryWidth, global.inventoryHeight);
+	
+	obj_quest_manager.notifyEvent(QuestEvent.ItemEquiped, {
+		type: "bag",
+		item: global.equipments.bag
+	});
 }
 
 function handleHeadSwitch() {
-	
+	obj_quest_manager.notifyEvent(QuestEvent.ItemEquiped, {
+		type: "head",
+		item: global.equipments.head
+	});
+}
+
+function handleArmorSwitch(){
+	obj_quest_manager.notifyEvent(QuestEvent.ItemEquiped, {
+		type: "armor",
+		item: global.equipments.armor
+	});
 }
 
 function setInventorySize(_width, _height){
@@ -28,6 +43,7 @@ function setInventorySize(_width, _height){
 	var _inventoryWidth = ds_grid_width(global.inventory);
 	var _inventoryHeight = ds_grid_height(global.inventory);
 	//limpa o inventário
+	
 	for (var i = 0; i < _inventoryHeight; i++){
 		for (var j = 0; j < _inventoryWidth; j ++){
 			var _item = global.inventory[# j, i];
@@ -35,17 +51,24 @@ function setInventorySize(_width, _height){
 			array_push(_auxiliarInventory, _item);
 		}
 	}
+	
 	ds_grid_destroy(global.inventory);
+	
 	global.inventory = ds_grid_create(_width, _height);
+	
 	ds_grid_clear(global.inventory, BLANK_INVENTORY_SPACE);
+	
 	for (var i = 0; i < _height; i++){
 		for (var j = 0; j < _width; j ++){
 			if (!array_length(_auxiliarInventory)) continue;
 			global.inventory[# j, i] = array_shift(_auxiliarInventory);
 		}
 	}
+	
 	var _inventoryLength = array_length(_auxiliarInventory);
+	
 	if (!_inventoryLength) return;
+	
 	array_foreach(_auxiliarInventory, function (_item) {
 		createIndicatorForDroppedItems(_item);
 		createItem(_item, true);
@@ -78,8 +101,4 @@ function createIndicatorForQuestItem(_item, _quantity = 1){
 	_indicatorModal.box.sprite = _item.sprite;
 	_indicatorModal.box.itemId = _item.itemId;
 	_indicatorModal.box.quantity = _quantity;
-}
-
-function handleArmorSwitch(){
-
 }
