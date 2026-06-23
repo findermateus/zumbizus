@@ -11,3 +11,4 @@
 	
 		part_particles_create(part_sys, cam_x + random(cam_w), cam_y + random(cam_h*0.75), part_dust_light, choose(2,3));
 	}
+	
