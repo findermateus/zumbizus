@@ -187,6 +187,11 @@ function equipEquipment(_type, _inventoryItem) {
 	playEquipEquipmentSound();
 	variable_struct_set(global.equipments, _type, _inventoryItem);
 	handleEquipmentSwitch();
+	
+	obj_quest_manager.notifyEvent(QuestEvent.ItemEquiped, {
+		type: _type,
+		item: _inventoryItem
+	});
 }
 
 function playEquipEquipmentSound() {

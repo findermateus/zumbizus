@@ -17,25 +17,13 @@ function handleBagSwitch(){
 	var _itemData = global.equipments.bag.equipmentData;
 	var _inventoryWidth = global.inventoryWidth + _itemData.capacity
 	setInventorySize(_inventoryWidth, global.inventoryHeight);
-	
-	obj_quest_manager.notifyEvent(QuestEvent.ItemEquiped, {
-		type: "bag",
-		item: global.equipments.bag
-	});
 }
 
 function handleHeadSwitch() {
-	obj_quest_manager.notifyEvent(QuestEvent.ItemEquiped, {
-		type: "head",
-		item: global.equipments.head
-	});
+	
 }
 
 function handleArmorSwitch(){
-	obj_quest_manager.notifyEvent(QuestEvent.ItemEquiped, {
-		type: "armor",
-		item: global.equipments.armor
-	});
 }
 
 function setInventorySize(_width, _height){
