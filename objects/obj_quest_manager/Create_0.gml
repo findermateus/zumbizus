@@ -94,6 +94,21 @@ function drawQuestTitle(_x, _y, _maxWidth, _quest, _isDraw) {
 	return _h + 5;
 }
 
+function getQuestStepById(_quest, _stepId) {
+	if (!is_struct(_quest)) return undefined;
+	if (!variable_struct_exists(_quest, "steps")) return undefined;
+
+	for (var i = 0; i < array_length(_quest.steps); i++) {
+		var _step = _quest.steps[i];
+
+		if (_step.id == _stepId) {
+			return _step;
+		}
+	}
+
+	return undefined;
+}
+
 function drawQuestStep(_x, _y, _maxWidth, _step, _stepIndex, _isDraw) {
 	var _stepScale = 0.7;
 	var _scaledMaxWidth = _maxWidth / _stepScale; 
