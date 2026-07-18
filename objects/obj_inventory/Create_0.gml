@@ -587,12 +587,22 @@ function addItemToToolBar(_index = undefined, _inventory = global.inventory, _it
 	if (holdingItemFromToolBar) return;
 	var _auxiliarItem = _inventory[# _item.j, _item.i];
 	if (_auxiliarItem.type != itemType.weapons) return;
+	
 	_index = _index == undefined ? getCleanIndexFromToolBar() : _index;
+
+	obj_quest_manager.notifyEvent(QuestEvent.ItemEquiped, {
+		type: "weapon",
+		itemId: _auxiliarItem.itemId,
+		itemType: _auxiliarItem.type
+	});
+	
 	if (_index != BLANK_INVENTORY_SPACE){
 		_inventory[# _item.j, _item.i] = global.equipedItems[| _index];
 		global.equipedItems[| _index] = _auxiliarItem;
+		
 		return;
 	}
+	
 	_inventory[# _item.j, _item.i] = global.equipedItems[| 0];
 	global.equipedItems[| 0] = _auxiliarItem;
 }

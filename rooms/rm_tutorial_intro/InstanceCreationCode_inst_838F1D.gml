@@ -1,0 +1,1 @@
+defineItem(itemType.weapons, weaponItems.nailBoard);

@@ -154,6 +154,34 @@ function getFindSafePlaceQuest() {
 
 	_quest.addStep(_wearClothesStep);
 
+	var _getWeaponStep = new QuestStep(
+		"get_weapon",
+		"Encontre uma arma"
+	);
+
+	_getWeaponStep.onEvent = method(_getWeaponStep, function(_event, _data) {
+		if (_event != QuestEvent.ItemCollected) return;
+		if (_data.itemType != itemType.weapons) return;
+		
+		self.quest.completeCurrentStep();
+	});
+
+	_quest.addStep(_getWeaponStep);
+	
+	var _equipWeaponStep = new QuestStep(
+		"get_weapon",
+		"Equipe a arma"
+	);
+
+	_equipWeaponStep.onEvent = method(_equipWeaponStep, function(_event, _data) {
+		if (_event != QuestEvent.ItemEquiped) return;
+		if (_data.itemType != itemType.weapons) return;
+		
+		self.quest.completeCurrentStep();
+	});
+	
+	_quest.addStep(_equipWeaponStep);
+
 	var _findSafePlaceStep = new QuestStep(
 		"find_safe_place",
 		"Encontre um lugar seguro"
