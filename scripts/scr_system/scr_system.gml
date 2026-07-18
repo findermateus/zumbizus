@@ -152,7 +152,7 @@ global.collidableObjects = [
 	obj_collision,
 	obj_furniture_colidable,
 	obj_furniture_usable,
-	obj_tree,
+	obj_breakable,
 	obj_interactable_decoration_with_colision
 ];
 

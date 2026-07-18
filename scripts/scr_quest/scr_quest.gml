@@ -10,7 +10,8 @@ enum QuestEvent {
 	ItemSold,
 	ObjectInteracted,
 	ItemConsumed,
-	ItemEquiped
+	ItemEquiped,
+	ObjectDestroyed
 }
 
 function Quest(_id, _name) constructor {

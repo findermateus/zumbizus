@@ -1,1 +1,1 @@
-defineItem(itemType.weapons, weaponItems.nailBoard);
+defineItem(itemType.weapons, weaponItems.metalPipe);

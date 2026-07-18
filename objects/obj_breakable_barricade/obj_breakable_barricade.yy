@@ -1,19 +1,20 @@
 {
   "$GMObject":"",
-  "%Name":"obj_hitbox",
+  "%Name":"obj_breakable_barricade",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":12,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_hitbox",
+  "name":"obj_breakable_barricade",
   "overriddenProperties":[],
   "parent":{
-    "name":"HitBoxes",
-    "path":"folders/Objects/Etc/InGame/HitBoxes.yy",
+    "name":"Dump",
+    "path":"folders/Objects/Enviroment/Dump.yy",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"obj_breakable",
+    "path":"objects/obj_breakable/obj_breakable.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
@@ -32,8 +33,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_hitbox_weapon_machete",
-    "path":"sprites/spr_hitbox_weapon_machete/spr_hitbox_weapon_machete.yy",
+    "name":"spr_collision",
+    "path":"sprites/spr_collision/spr_collision.yy",
   },
   "spriteMaskId":null,
   "visible":true,

@@ -181,6 +181,19 @@ function getFindSafePlaceQuest() {
 	});
 	
 	_quest.addStep(_equipWeaponStep);
+	
+	var _destroyBarricateStep = new QuestStep(
+		"destroy_barricate",
+		"Destrua o bloqueio da porta"
+	);
+
+	_destroyBarricateStep.onEvent = method(_destroyBarricateStep, function(_event, _data) {
+		if (_event != QuestEvent.ObjectDestroyed) return;
+		
+		self.quest.completeCurrentStep();
+	});
+	
+	_quest.addStep(_destroyBarricateStep);
 
 	var _findSafePlaceStep = new QuestStep(
 		"find_safe_place",
