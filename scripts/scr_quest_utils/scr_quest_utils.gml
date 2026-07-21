@@ -61,3 +61,29 @@ function createCollectItemsStep(_id, _description, _objectives) {
 
 	return _step;
 }
+
+function createDefeatEnemiesStep(_id, _description, _enemyType, _killTarget) {
+	var _step = new QuestStep(_id, _description);
+
+	_step.enemyType = _enemyType;
+	_step.killTarget = _killTarget;
+	_step.killCount = 0;
+
+	_step.onEvent = method(_step, function (_event, _data) {
+		if (_event != QuestEvent.EnemyKilled) return;
+		if (
+			_data.enemyType == self.enemyType 
+			|| object_is_ancestor(_data.enemyType, self.enemyType)
+		) {
+			self.killCount += 1;
+
+			// Verifica se atingiu a meta
+			if (self.killCount >= self.killTarget) {
+				self.killCount = self.killTarget;
+				self.quest.completeCurrentStep();
+			}
+		}
+	});
+
+	return _step;
+}

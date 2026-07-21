@@ -123,3 +123,245 @@ function getCreateAxeQuest(_npc) {
 	
 	return _quest;
 }
+
+function getFindSafePlaceQuest() {
+	var _quest = new Quest(Quests.FindSafePlace, "Perdido e Destruído");
+
+	var _inspectTrashStep = new QuestStep(
+		"inspect_the_trash",
+		"Investigue a lixeira"
+	);
+
+	_inspectTrashStep.onEvent = method(_inspectTrashStep, function(_event, _data) {
+		if (_event != QuestEvent.ObjectInteracted) return;
+		if (_data.tag != "intro_trash") return;
+
+		self.quest.completeCurrentStep();
+	});
+
+	_quest.addStep(_inspectTrashStep);
+
+	var _eatAndDrinkStep = new QuestStep(
+		"eat_and_drink",
+		"Coma algo e beba água"
+	);
+
+	_eatAndDrinkStep.objectives = [
+		{
+			type: itemType.consumables,
+			itemId: consumableItems.watter_bottle,
+			count: 0,
+			target: 1
+		},
+		{
+			type: itemType.consumables,
+			itemId: consumableItems.canned_pineapple,
+			count: 0,
+			target: 1
+		}
+	];
+
+	_eatAndDrinkStep.onEvent = method(_eatAndDrinkStep, function(_event, _data) {
+		if (_event != QuestEvent.ItemConsumed) return;
+
+		var _quantity = variable_struct_exists(_data, "quantity") ? _data.quantity : 1;
+
+		for (var i = 0; i < array_length(self.objectives); i++) {
+			var _objective = self.objectives[i];
+
+			if (
+				_data.itemId == _objective.itemId
+				&& _data.type == _objective.type
+			) {
+				_objective.count += _quantity;
+
+				if (_objective.count > _objective.target) {
+					_objective.count = _objective.target;
+				}
+			}
+		}
+
+		var _allDone = true;
+
+		for (var i = 0; i < array_length(self.objectives); i++) {
+			if (self.objectives[i].count < self.objectives[i].target) {
+				_allDone = false;
+				break;
+			}
+		}
+
+		if (_allDone) {
+			self.quest.completeCurrentStep();
+		}
+	});
+
+	_quest.addStep(_eatAndDrinkStep);
+
+	var _clearBlockageStep = new QuestStep(
+		"clear_exit_blockage",
+		"Remova o bloqueio da porta"
+	);
+
+	_clearBlockageStep.onEvent = method(_clearBlockageStep, function(_event, _data) {
+		if (_event != QuestEvent.ObjectInteracted) return;
+		if (_data.tag != "intro_door_blockage") return;
+
+		self.quest.completeCurrentStep();
+	});
+
+	_quest.addStep(_clearBlockageStep);
+
+	var _findClothesStep = new QuestStep(
+		"find_clothes",
+		"Procure algo para vestir"
+	);
+
+	_findClothesStep.onEvent = method(_findClothesStep, function(_event, _data) {
+		if (_event != QuestEvent.ObjectInteracted) return;
+		if (_data.tag != "chest") return;
+
+		self.quest.completeCurrentStep();
+	});
+
+	_quest.addStep(_findClothesStep);
+
+	var _wearClothesStep = new QuestStep("wear_clothes", "Vista a roupa encontrada");
+
+	_wearClothesStep.onEvent = method(_wearClothesStep, function (_event, _data) {
+		if (_event != QuestEvent.ItemEquiped) return;
+		if (_data.type != "armor") return;
+		
+		self.quest.completeCurrentStep();
+	});
+
+	_quest.addStep(_wearClothesStep);
+
+	var _getWeaponStep = new QuestStep(
+		"get_weapon",
+		"Encontre uma arma"
+	);
+
+	_getWeaponStep.onEvent = method(_getWeaponStep, function(_event, _data) {
+		if (_event != QuestEvent.ItemCollected) return;
+		if (_data.itemType != itemType.weapons) return;
+		
+		self.quest.completeCurrentStep();
+	});
+
+	_quest.addStep(_getWeaponStep);
+	
+	var _equipWeaponStep = new QuestStep(
+		"get_weapon",
+		"Equipe a arma"
+	);
+
+	_equipWeaponStep.onEvent = method(_equipWeaponStep, function(_event, _data) {
+		if (_event != QuestEvent.ItemEquiped) return;
+		if (_data.itemType != itemType.weapons) return;
+		
+		self.quest.completeCurrentStep();
+	});
+	
+	_quest.addStep(_equipWeaponStep);
+	
+	var _destroyBarricateStep = new QuestStep(
+		"destroy_barricate",
+		"Destrua o bloqueio da porta"
+	);
+
+	_destroyBarricateStep.onEvent = method(_destroyBarricateStep, function(_event, _data) {
+		if (_event != QuestEvent.ObjectDestroyed) return;
+		
+		self.quest.completeCurrentStep();
+	});
+	
+	_quest.addStep(_destroyBarricateStep);
+
+	var _continueExploringStep = new QuestStep(
+		"continue_exploring",
+		"Continue Explorando"
+	);
+
+	_continueExploringStep.onEvent = method(_continueExploringStep, function(_event, _data) {
+		if (_event != QuestEvent.DialogueEnded) return;
+
+		self.quest.completeCurrentStep();
+	});
+	
+	_quest.addStep(_continueExploringStep);
+	
+	var _defeatZombiesStep = createDefeatEnemiesStep(
+		"defeat_zombies",
+		"Derrote os zumbis",
+		obj_enemy,
+		2
+	);
+
+	_quest.addStep(_defeatZombiesStep);
+
+	var _destroyNpcBarricadeStep = new QuestStep(
+		"destroy_npc_barricade",
+		"Destrua a bancada que está prendendo o rapaz"
+	);
+
+	_destroyNpcBarricadeStep.onStart = method(_destroyNpcBarricadeStep, function () {
+		var _alreadyDestroyedBarricate = true;
+		
+		with (obj_breakable_empty_wooden_shelf) {
+			if (destroyed_tag == "npc_barricade") {
+				_alreadyDestroyedBarricate = false;
+			}
+		}
+		
+		if (_alreadyDestroyedBarricate) {
+			self.quest.completeCurrentStep();
+			
+			return;
+		}
+		
+		var _dialogue = createNpcDialogue(
+			npc_tutorial,
+			[
+				"Ufa... Obrigado! Achei que fosse morrer aqui.",
+				"Não sei quem é você, mas me salvou.",
+				"Será que pode me dar mais uma ajudinha?",
+				"Fiquei preso atrás dessa bancada quando aqueles monstros apareceram.",
+				"Se conseguir tirá-la do caminho, eu finalmente vou conseguir sair daqui."
+			]
+		);
+
+		instance_create_layer(0, 0, "Controllers", obj_dialogue, {
+			target: npc_tutorial,
+			dialogue: _dialogue
+		});
+	});
+
+	_destroyNpcBarricadeStep.onEvent = method(_destroyNpcBarricadeStep, function(_event, _data) {
+		if (_event != QuestEvent.ObjectDestroyed) return;
+		if (_data.tag != "npc_barricade") return;
+
+		self.quest.completeCurrentStep();
+	});
+
+	_quest.addStep(_destroyNpcBarricadeStep);
+
+	var _findSafePlaceStep = new QuestStep(
+		"find_safe_place",
+		"Encontre um lugar seguro"
+	);
+
+	_findSafePlaceStep.onEvent = method(_findSafePlaceStep, function(_event, _data) {
+		if (_event != QuestEvent.AreaEntered) return;
+		if (_data.area != rm_player_base) return;
+
+		self.quest.completeCurrentStep();
+	});
+
+	_quest.addStep(_findSafePlaceStep);
+
+	_quest.onComplete = method(_quest, function () {
+		saveGame(true, false);
+	});
+
+	return _quest;
+}

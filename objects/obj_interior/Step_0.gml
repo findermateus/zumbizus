@@ -4,4 +4,4 @@ if (!hasFadeOut && !isFadingOut) {
 
 isFadingOut = false;
 
-adjustClosestDepth();
+depth = -10000;

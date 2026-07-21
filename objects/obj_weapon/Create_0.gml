@@ -75,6 +75,8 @@ function drawNothing() {
 }
 
 function weaponIdleState(){
+	setStateIdle();
+	
 	weapon.xPosition = father.x;
 	weapon.yPosition = father.y;
 }

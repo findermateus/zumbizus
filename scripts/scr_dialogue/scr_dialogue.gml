@@ -35,3 +35,30 @@ function createPlayerThoughtDialogue(_texts, _onEnd = undefined, _textSpeed = .7
 
 	return _dialogue;
 }
+
+function createNpcDialogue(_npc, _texts, _onEnd = undefined) {
+	var _dialogueTexts = [];
+
+	for (var i = 0; i < array_length(_texts); i++) {
+		array_push(_dialogueTexts, new DialogueText(_texts[i], false));
+	}
+	
+	var _participant = new DialogueParticipant(
+		_npc.name,
+		_npc.genderId,
+		_npc.skinColor,
+		_npc.hairColor,
+		_npc.hairOption,
+		-1,
+		-1
+	);
+
+	var _dialogue = new Dialogue(
+		_dialogueTexts,
+		_participant
+	);
+
+	_dialogue.onEnd = _onEnd;
+
+	return _dialogue;
+}

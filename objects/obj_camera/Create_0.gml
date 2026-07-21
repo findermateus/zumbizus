@@ -1,5 +1,6 @@
 #macro DEFAULT_CAM_SCALE 1
-#macro DEFAULT_CAM_SCALE_SPEED .1
+#macro DEFAULT_CAM_SCALE_SPEED .07
+#macro DEFAULT_CAM_SPEED .07
 
 x = 0;
 y = 0;
@@ -21,6 +22,7 @@ destinyCameraScale = DEFAULT_CAM_SCALE;
 
 cameraHeight = DEFAULT_CAM_H;
 cameraWIdth = DEFAULT_CAM_W;
+camSpeed = DEFAULT_CAM_SPEED;
 
 followMouse = true;
 
@@ -52,6 +54,7 @@ function setCustomValues(_destinyScale, _scaleSpeed, _followsMouse, _currentScal
 function setDefaultValues(){
 	destinyCameraScale = DEFAULT_CAM_SCALE;
 	cameraScaleSpeed = DEFAULT_CAM_SCALE_SPEED;
+	camSpeed = DEFAULT_CAM_SPEED;
 	followMouse = true;
 }
 
@@ -66,15 +69,13 @@ function followTarget(){
 	var _viewHeight = camera_get_view_height(view_camera[0]);
 	var _viewWidth = camera_get_view_width(view_camera[0]);
 	
-	var _cameraSpeed = .1;
-	
 	if (mouse_check_button(mb_right) && !global.activeInventory && followMouse){
 		adjustCameraWithMouse();
 	} else {
 		var _targetMiddleXPoint = getMiddlePoint(target.bbox_left, target.bbox_right);
 		var _targetMiddleYPoint = getMiddlePoint(target.bbox_top, target.bbox_bottom);
-		cameraX = lerp(cameraX, _targetMiddleXPoint, _cameraSpeed);	
-		cameraY = lerp(cameraY, _targetMiddleYPoint, _cameraSpeed);
+		cameraX = lerp(cameraX, _targetMiddleXPoint, camSpeed);	
+		cameraY = lerp(cameraY, _targetMiddleYPoint, camSpeed);
 	}
 	
 	x = cameraX;

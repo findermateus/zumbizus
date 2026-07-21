@@ -9,15 +9,13 @@ avatarTransitionProgress = 0;
 avatarTransitionState = "idle";
 lastParticipantIndex = -1;
 
-obj_player.currentState = playerDialogueState;
-
 if (!is_struct(dialogue)) {
 	instance_destroy(id);
 }
 
-if (instance_exists(target)) {
-	obj_camera.setTargetWithZoom(target);
-}
+obj_player.currentState = playerDialogueState;
+
+obj_camera.camSpeed = .05
 
 function endDialogue() {
 	closeMenu();
@@ -114,6 +112,17 @@ function drawDialogueBox() {
     var _participantY       = _currentDialogTopY;
 
     var _name = "";
+	
+	if (lastParticipantIndex != _isPlayer) {
+        lastParticipantIndex = _isPlayer;
+        
+        if (_isPlayer) {
+            obj_camera.setTargetWithZoom(obj_player);
+        } else if (instance_exists(target)) {
+            obj_camera.setTargetWithZoom(target);
+        }
+    }
+	
     if (_isPlayer) {
         _name = global.player.name;
         drawPersonBody(

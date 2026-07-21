@@ -188,6 +188,8 @@ function playerDialogueState() {
 	adjustPlayerInteractions(false);
 	updateSpriteWithState(sprites.iddle);
 	
+	obj_weapon.currentState = obj_weapon.weaponIdleState;
+	
 	velh = 0;
 	velv = 0;
 }
