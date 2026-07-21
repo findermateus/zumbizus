@@ -46,7 +46,7 @@ function checkPlayerExistence(){
 }
 
 
-#macro TILESIZE	64
+#macro TILESIZE	16
 
 font_enable_effects(fnt_gui_default_outline, true, {
 	outlineEnable: true,

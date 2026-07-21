@@ -53,7 +53,7 @@ iddleSpeed = 0;
 #region combat
 velh = 0;
 velv = 0;
-enemyHealth = 20;
+enemyHealth = 25;
 fallDirection = 0;
 pushForce = 0;
 #endregion
@@ -94,6 +94,7 @@ function updateSpriteWithState(_sprite, _state){
 }
 
 function enemyIddleState(){
+	enemyColision(obj_collision);
 	updateSpriteWithState(sprites.iddle, states.unoccupied);
 	switchFromDifferentStatesWhenNotAttacking();
 	handlePositionWithPathHandler(true);
@@ -117,6 +118,7 @@ function enemyChasePlayerState(){
 }
 
 function enemyWalkToRandomDirectionState() {
+	enemyColision(obj_collision);
 	switchFromDifferentStatesWhenNotAttacking();
 	handlePositionWithPathHandler(true);
 	if (state != states.walkRandomDirection) {
@@ -180,6 +182,7 @@ function switchToChase(){
 }
 
 function getKilledState(){
+	enemyColision(obj_collision);
 	var _shouldDie = false;
 	velh = lerp(velh, 0, .1);
 	velv = lerp(velv, 0, .1);
@@ -290,6 +293,7 @@ function endPath() {
 
 
 function recoverFromGettingHitState(){
+	enemyColision(obj_collision);
 	endPath();
 	handlePositionWithPathHandler(true);
 	updateSpriteWithState(sprites.iddle, states.hit);
@@ -349,6 +353,7 @@ function getRandomPositionOnCircle(_x, _y, _radius) {
 }
 
 function setUpAttackState() {
+	enemyColision(obj_collision);
 	hasHit = false;
 	updateSpriteWithState(sprites.iddle, states.setUpAttack);
 	var _playerX = getMiddlePoint(obj_player.bbox_left, obj_player.bbox_right);
@@ -365,6 +370,7 @@ function setUpAttackState() {
 hasHit = false;
 
 function grabPlayerState() {
+	enemyColision(obj_collision);
 	velh = 0;
 	velv = 0;
 	hasHit = false;
@@ -378,6 +384,8 @@ function grabPlayerState() {
 function attackState() {
 	velh = lerp(velh, 0, .05);
 	velv = lerp(velv, 0, .05);
+	
+	enemyColision(obj_collision);
 	
 	x += velh;
 	y += velv;
