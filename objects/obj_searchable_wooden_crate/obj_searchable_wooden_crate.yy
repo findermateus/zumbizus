@@ -1,20 +1,19 @@
 {
   "$GMObject":"",
-  "%Name":"obj_interactable_decoration",
+  "%Name":"obj_searchable_wooden_crate",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_interactable_decoration",
+  "name":"obj_searchable_wooden_crate",
   "overriddenProperties":[],
   "parent":{
     "name":"InteractableDecoration",
     "path":"folders/Objects/Enviroment/InteractableDecoration.yy",
   },
   "parentObjectId":{
-    "name":"obj_interactable",
-    "path":"objects/obj_interactable/obj_interactable.yy",
+    "name":"obj_searchable_base",
+    "path":"objects/obj_searchable_base/obj_searchable_base.yy",
   },
   "persistent":false,
   "physicsAngularDamping":0.1,
@@ -33,7 +32,10 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{
+    "name":"spr_wooden_crate",
+    "path":"sprites/spr_wooden_crate/spr_wooden_crate.yy",
+  },
   "spriteMaskId":null,
   "visible":true,
 }

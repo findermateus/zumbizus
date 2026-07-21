@@ -1,22 +1,19 @@
 {
   "$GMObject":"",
-  "%Name":"obj_trash_can",
+  "%Name":"obj_searchable_trash_can",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":64,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":2,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_trash_can",
+  "name":"obj_searchable_trash_can",
   "overriddenProperties":[],
   "parent":{
     "name":"InteractableDecoration",
     "path":"folders/Objects/Enviroment/InteractableDecoration.yy",
   },
   "parentObjectId":{
-    "name":"obj_interactable_decoration_with_colision",
-    "path":"objects/obj_interactable_decoration_with_colision/obj_interactable_decoration_with_colision.yy",
+    "name":"obj_searchable_base",
+    "path":"objects/obj_searchable_base/obj_searchable_base.yy",
   },
   "persistent":false,
   "physicsAngularDamping":0.1,

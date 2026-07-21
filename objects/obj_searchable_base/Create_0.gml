@@ -1,61 +1,24 @@
 event_inherited();
 
 textToDraw = "Investigar";
+interactSound = snd_click;
+dropItems = [];
 
 base_scale = 1;
-
 target_angle = 0;
 target_xscale = base_scale;
 target_yscale = base_scale;
-
 lerp_speed = 0.15;
-
 is_dying = false;
 was_searched = false;
-
 shake_timer = 0;
 shake_duration = 24;
 shake_strength = 6;
-
 fade_speed = 0.015;
-
 base_x = x;
 shake_offset_x = 0;
-
 questTag = "";
-
 yPositionToDrawShadow = y - 20;
-
-dropItems = [
-	{
-		type: itemType.trash,
-		itemId: trashItems.twig,
-		min: 1,
-		max: 2,
-		chance: 80
-	},
-	{
-		type: itemType.trash,
-		itemId: trashItems.plant_fiber,
-		min: 1,
-		max: 2,
-		chance: 70
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.watter_bottle,
-		min: 1,
-		max: 1,
-		chance: 35
-	},
-	{
-		type: itemType.consumables,
-		itemId: consumableItems.canned_pineapple,
-		min: 1,
-		max: 1,
-		chance: 25
-	}
-];
 
 function handlePlayerCollision() {
 	if (!instance_exists(obj_player)) return;
@@ -67,19 +30,14 @@ function handlePlayerCollision() {
 	}
 
 	var _side = sign(obj_player.x - x);
-
-	if (_side == 0) {
-		_side = 1;
-	}
+	if (_side == 0) _side = 1;
 
 	target_angle = _side * 8;
 	target_yscale = base_scale * 0.95;
 }
 
-function getTrashDropQuantity(_drop) {
-	if (variable_struct_exists(_drop, "quantity")) {
-		return _drop.quantity;
-	}
+function getDropQuantity(_drop) {
+	if (variable_struct_exists(_drop, "quantity")) return _drop.quantity;
 
 	var _min = variable_struct_exists(_drop, "min") ? _drop.min : 1;
 	var _max = variable_struct_exists(_drop, "max") ? _drop.max : _min;
@@ -87,34 +45,29 @@ function getTrashDropQuantity(_drop) {
 	return irandom_range(_min, _max);
 }
 
-function shouldDropTrashItem(_drop) {
-	if (!variable_struct_exists(_drop, "chance")) {
-		return true;
-	}
-
+function shouldDropItem(_drop) {
+	if (!variable_struct_exists(_drop, "chance")) return true;
 	return irandom(99) < _drop.chance;
 }
 
-function createTrashDrop(_drop) {
-	if (!shouldDropTrashItem(_drop)) {
-		return false;
-	}
+function createDrop(_drop) {
+	if (!shouldDropItem(_drop)) return false;
 
 	var _itemConfig = global.items[_drop.type][_drop.itemId];
 	var _buildedItem = constructItem(_drop.type, _itemConfig);
 
-	_buildedItem.quantity = getTrashDropQuantity(_drop);
+	_buildedItem.quantity = getDropQuantity(_drop);
 
 	createItemByObjectId(id, _buildedItem, true);
 
 	return true;
 }
 
-function createTrashDrops() {
+function createDrops() {
 	var _createdAny = false;
 
 	for (var i = 0; i < array_length(dropItems); i++) {
-		if (createTrashDrop(dropItems[i])) {
+		if (createDrop(dropItems[i])) {
 			_createdAny = true;
 		}
 	}
@@ -124,22 +77,22 @@ function createTrashDrops() {
 		var _itemConfig = global.items[_drop.type][_drop.itemId];
 		var _buildedItem = constructItem(_drop.type, _itemConfig);
 
-		_buildedItem.quantity = getTrashDropQuantity(_drop);
+		_buildedItem.quantity = getDropQuantity(_drop);
 
 		createItemByObjectId(id, _buildedItem, true);
 	}
 }
 
-function handleClickOnTrashCan() {
-	if (was_searched || is_dying) {
-		return;
-	}
+function handleSearch() {
+	if (was_searched || is_dying) return;
 
 	was_searched = true;
 
-	audio_play_sound(snd_can, 0, false);
+	if (interactSound != noone) {
+		audio_play_sound(interactSound, 0, false);
+	}
 
-	createTrashDrops();
+	createDrops();
 
 	if (questTag != "") {
 		obj_quest_manager.notifyEvent(QuestEvent.ObjectInteracted, {

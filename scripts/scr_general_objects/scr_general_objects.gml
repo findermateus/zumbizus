@@ -20,9 +20,11 @@ function adjustAlphaToInterior() {
 	var _inst_interior = instance_place(x, y, obj_interior);
 
 	if (_inst_interior != noone) {
-	    image_alpha = 1 - _inst_interior.alpha;
-		
-		return;
+		if (!_inst_interior.hasFadeOut) {
+			image_alpha = 1 - _inst_interior.alpha;
+			
+			return;
+		}
 	}
 	
 	image_alpha = 1;

@@ -1,5 +1,7 @@
-handleHover();
-adjustObjectDepth();
+if (!is_dying) {
+	event_inherited();
+	handleHover();
+}
 
 handleDeath();
 
@@ -24,5 +26,6 @@ image_yscale = lerp(image_yscale, target_yscale, lerp_speed);
 image_xscale = lerp(image_xscale, target_xscale, lerp_speed);
 
 if (!is_dying && isHovering && mouse_check_button_pressed(mb_left)) {
-	handleClickOnTrashCan();
+	handleSearch();
 }
+
