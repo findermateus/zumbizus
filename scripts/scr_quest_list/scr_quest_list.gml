@@ -326,7 +326,7 @@ function getFindSafePlaceQuest() {
 				"Não sei quem é você, mas me salvou.",
 				"Será que pode me dar mais uma ajudinha?",
 				"Fiquei preso atrás dessa bancada quando aqueles monstros apareceram.",
-				"Se conseguir tirá-la do caminho, eu finalmente vou conseguir sair daqui."
+				"Se conseguir tirá-la do caminho, vou conseguir sair daqui."
 			]
 		);
 
@@ -349,6 +349,37 @@ function getFindSafePlaceQuest() {
 		"find_safe_place",
 		"Encontre um lugar seguro"
 	);
+
+	_findSafePlaceStep.onStart = method(_findSafePlaceStep, function () {
+		
+		var _dialogue = new Dialogue(
+			[
+				new DialogueText("Espera aí. Quem é você e o que diabos tá acontecendo nesse lugar?", true),
+				new DialogueText("Calma, abaixa isso! Eu não sou seu inimigo.", false),
+				new DialogueText("Eu vi quando te arrastaram inconsciente aqui pra dentro do hospital e vim conferir se você tava bem.", false),
+				new DialogueText("Mas de repente aqueles monstros apareceram e eu tive que me esconder.", false),
+				new DialogueText("Me arrastaram? Quem? ...Olha, quer saber? Esquece.", true),
+				new DialogueText("Nós dois estamos numa situação de merda. Ficar aqui é suicídio.", true),
+				new DialogueText("A gente precisa encontrar um lugar seguro, agora.", true),
+				new DialogueText("Concordo com você. Vamos dar o fora daqui.", false)
+			],
+			new DialogueParticipant(
+				npc_tutorial.name,
+				npc_tutorial.genderId,
+				npc_tutorial.skinColor,
+				npc_tutorial.hairColor,
+				npc_tutorial.hairOption,
+				-1,
+				-1
+			)
+		);
+
+		instance_create_layer(0, 0, "Controllers", obj_dialogue, {
+			target: npc_tutorial,
+			dialogue: _dialogue
+		});
+		
+	});
 
 	_findSafePlaceStep.onEvent = method(_findSafePlaceStep, function(_event, _data) {
 		if (_event != QuestEvent.AreaEntered) return;

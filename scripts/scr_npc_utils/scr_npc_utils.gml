@@ -5,7 +5,6 @@ function drawNpcHead(_npcXPosition, _y, _headSize, _size, _hair, _skinColor, _ge
 	drawPersonBody(_npcXPosition, _actualY, _gender, 0, _scale, 0, 1, _skinColor, _hair, -1, -1, -1, 1);
 }
 
-
 function drawEmptyNpcInsideBlock(_x, _y, _size, _alpha) {
 	draw_sprite_stretched_ext(spr_builder_furniture_box, 0, _x, _y, _size, _size, c_white, _alpha);
 	var _sprite = spr_person;

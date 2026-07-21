@@ -91,26 +91,26 @@ hoverUiFurnitureIndicator =  {
 
 function loadNpcMock() {
     return [
-        new NPC("Alice The Brave of the Northern Lands", 1, genders.female, "#FFDAB9", new PersonHair(hairIds.afro, "#A52A2A")),
-        new NPC("John The Hunter", 2, genders.male, "#8D5524", new PersonHair(hairIds.longStraight, "#A52A2A")),
-        new NPC("Riley The Rogue of the Shadows", 3, genders.female, "#C68642", new PersonHair(hairIds.mohawk, "#FF69B4")),
-        new NPC("Zara The Wise", 4, genders.others, "#E0AC69", new PersonHair(hairIds.bald, "#FFD700")),
-        new NPC("Mateus Who Never Falls?", 5, genders.male, "#F1C27D", new PersonHair(hairIds.quiff, "#ffffff")),
-        new NPC("Liam Ironfist", 6, genders.male, "#F1C27D", new PersonHair(hairIds.buzzCut, "#333333")),
-        new NPC("Clara Storm of the West", 7, genders.female, "#E0AC69", new PersonHair(hairIds.longStraight, "#B22222")),
-        new NPC("Marcus Flame", 8, genders.male, "#C68642", new PersonHair(hairIds.mohawk, "#000000")),
-        new NPC("Ella Moonshade", 9, genders.others, "#FFDAB9", new PersonHair(hairIds.afro, "#8B4513")),
-        new NPC("Noa Wild", 10, genders.others, "#8D5524", new PersonHair(hairIds.bald, "#7FFF00")),
-        new NPC("Victor Dustwalker Silent Arrow", 11, genders.male, "#C68642", new PersonHair(hairIds.quiff, "#AAAAAA")),
-        new NPC("Nina Blight", 12, genders.male, "#E0AC69", new PersonHair(hairIds.buzzCut, "#DA70D6")),
-        new NPC("Alex Starfall Crimson Moon", 13, genders.male, "#F1C27D", new PersonHair(hairIds.longStraight, "#DC143C")),
-        new NPC("Bruce Ironjaw", 14, genders.male, "#8D5524", new PersonHair(hairIds.mohawk, "#D2691E")),
-        new NPC("Maya Frost", 15, genders.male, "#FFDAB9", new PersonHair(hairIds.afro, "#191970")),
-        new NPC("Sam Echo", 16, genders.male, "#E0AC69", new PersonHair(hairIds.bald, "#00CED1")),
-        new NPC("Dante Hollow", 17, genders.male, "#C68642", new PersonHair(hairIds.quiff, "#2F4F4F")),
-        new NPC("Ivy Dawn", 18, genders.male, "#F1C27D", new PersonHair(hairIds.buzzCut, "#F08080")),
-        new NPC("Sky Ember of the Wastes", 19, genders.male, "#8D5524", new PersonHair(hairIds.longStraight, "#9ACD32")),
-        new NPC("Logan Ashfall Flameborne", 20, genders.male, "#FFDAB9", new PersonHair(hairIds.mohawk, "#4B0082"))
+        new NPC("Alice The Brave of the Northern Lands", 1, genders.female, "#FFDAB9", new PersonHair(HairOption.AFRO, "#A52A2A")),
+        new NPC("John The Hunter", 2, genders.male, "#8D5524", new PersonHair(HairOption.LONG_STRAIGHT, "#A52A2A")),
+        new NPC("Riley The Rogue of the Shadows", 3, genders.female, "#C68642", new PersonHair(HairOption.MOHAWK, "#FF69B4")),
+        new NPC("Zara The Wise", 4, genders.others, "#E0AC69", new PersonHair(HairOption.BALD, "#FFD700")),
+        new NPC("Mateus Who Never Falls?", 5, genders.male, "#F1C27D", new PersonHair(HairOption.QUIFF, "#ffffff")),
+        new NPC("Liam Ironfist", 6, genders.male, "#F1C27D", new PersonHair(HairOption.BUZZ_CUT, "#333333")),
+        new NPC("Clara Storm of the West", 7, genders.female, "#E0AC69", new PersonHair(HairOption.LONG_STRAIGHT, "#B22222")),
+        new NPC("Marcus Flame", 8, genders.male, "#C68642", new PersonHair(HairOption.MOHAWK, "#000000")),
+        new NPC("Ella Moonshade", 9, genders.others, "#FFDAB9", new PersonHair(HairOption.AFRO, "#8B4513")),
+        new NPC("Noa Wild", 10, genders.others, "#8D5524", new PersonHair(HairOption.BALD, "#7FFF00")),
+        new NPC("Victor Dustwalker Silent Arrow", 11, genders.male, "#C68642", new PersonHair(HairOption.QUIFF, "#AAAAAA")),
+        new NPC("Nina Blight", 12, genders.male, "#E0AC69", new PersonHair(HairOption.BUZZ_CUT, "#DA70D6")),
+        new NPC("Alex Starfall Crimson Moon", 13, genders.male, "#F1C27D", new PersonHair(HairOption.LONG_STRAIGHT, "#DC143C")),
+        new NPC("Bruce Ironjaw", 14, genders.male, "#8D5524", new PersonHair(HairOption.MOHAWK, "#D2691E")),
+        new NPC("Maya Frost", 15, genders.male, "#FFDAB9", new PersonHair(HairOption.AFRO, "#191970")),
+        new NPC("Sam Echo", 16, genders.male, "#E0AC69", new PersonHair(HairOption.BALD, "#00CED1")),
+        new NPC("Dante Hollow", 17, genders.male, "#C68642", new PersonHair(HairOption.QUIFF, "#2F4F4F")),
+        new NPC("Ivy Dawn", 18, genders.male, "#F1C27D", new PersonHair(HairOption.BUZZ_CUT, "#F08080")),
+        new NPC("Sky Ember of the Wastes", 19, genders.male, "#8D5524", new PersonHair(HairOption.LONG_STRAIGHT, "#9ACD32")),
+        new NPC("Logan Ashfall Flameborne", 20, genders.male, "#FFDAB9", new PersonHair(HairOption.MOHAWK, "#4B0082"))
     ];
 }
 

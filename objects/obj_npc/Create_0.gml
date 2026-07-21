@@ -217,3 +217,19 @@ function draw() {
 		drawState
 	);
 }
+
+if (presetId != "") {    
+    if (variable_struct_exists(global.npcPresets, presetId)) {
+        
+        var _preset = global.npcPresets[$ presetId];
+        
+        name = _preset.name;
+        genderId = _preset.genderId;
+        skinColor = _preset.skinColor;
+        hairOption = _preset.hairOption;
+        hairColor = _preset.hairColor;
+        
+    } else {
+        show_debug_message("AVISO: Preset de NPC '" + presetId + "' não encontrado no banco de dados!");
+    }
+}

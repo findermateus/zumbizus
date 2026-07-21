@@ -47,7 +47,7 @@ function drawPersonBody(_x, _y, _gender, _imageIndex, _scale, _angle, _alpha, _s
 		drawBackPack(_x, _y, _bag, _direction, _scale, _angle, _alpha, 0);
 	}
 	
-	if (_hair.hairId != hairIds.bald) {
+	if (_hair.hairId != HairOption.BALD) {
 		drawBackPartOfHair(_hair, _helmet, _x, _y, _direction, _scale, _angle, _alpha);
 	}
 	
@@ -58,7 +58,7 @@ function drawPersonBody(_x, _y, _gender, _imageIndex, _scale, _angle, _alpha, _s
 	if (_armor != -1) {
 		drawArmor(_x, _y, _armor, _direction, _scale, _angle, _alpha, _drawState, _imageIndex, _gender);
 	}
-	if (_helmet == -1 && _hair.hairId != hairIds.bald) {
+	if (_helmet == -1 && _hair.hairId != HairOption.BALD) {
 		drawHair(_x, _y, _hair.hairId, _hair.color, _direction, _scale, _angle, _alpha);
 	}
 	if (_bag != -1) {
