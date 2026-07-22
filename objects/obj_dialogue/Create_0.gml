@@ -142,7 +142,7 @@ function drawDialogueBox() {
             _npc.gender, 0, _scale, 0, 1,
             _npc.skinColor,
             new PersonHair(_npc.hairId, _npc.hairColor),
-            -1, -1, -1, -1
+            _npc.outfitId, _npc.helmetId, _npc.bagId, -1
         );
     }
 

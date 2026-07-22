@@ -4,6 +4,9 @@ global.npcPresets = {
 	    genderId: genders.male, 
 	    hairOption: HairOption.QUIFF,
 		hairColor: #593708,
-	    skinColor: #D39B6A
+	    skinColor: #D39B6A,
+		outfitId: equipmentItems.leatherJacket,
+		helmetId: -1,
+		bagId: equipmentItems.simpleBag
 	}
 }

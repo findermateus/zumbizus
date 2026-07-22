@@ -478,7 +478,6 @@
     {"id":{"name":"scr_furniture_productive","path":"scripts/scr_furniture_productive/scr_furniture_productive.yy",},},
     {"id":{"name":"scr_furniture_usable","path":"scripts/scr_furniture_usable/scr_furniture_usable.yy",},},
     {"id":{"name":"scr_general_objects","path":"scripts/scr_general_objects/scr_general_objects.yy",},},
-    {"id":{"name":"scr_get_npcs","path":"scripts/scr_get_npcs/scr_get_npcs.yy",},},
     {"id":{"name":"scr_gui_quick_use","path":"scripts/scr_gui_quick_use/scr_gui_quick_use.yy",},},
     {"id":{"name":"scr_gui_stats","path":"scripts/scr_gui_stats/scr_gui_stats.yy",},},
     {"id":{"name":"scr_gui_tool_bar","path":"scripts/scr_gui_tool_bar/scr_gui_tool_bar.yy",},},

@@ -10,7 +10,7 @@ yPositionToDrawShadow = y - 5;
 
 activationMethod = function () {
 	if (instance_exists(obj_map_transition)) return;
-	//sons
+	
 	playClickSound();
 	
 	instance_create_layer(0, 0, "Controllers", obj_map_transition, {

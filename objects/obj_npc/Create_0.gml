@@ -304,7 +304,7 @@ function draw() {
 		new PersonHair(hairOption, hairColor),
 		outfitId,
 		helmetId,
-		backpack,
+		bagId,
 		currentDirection,
 		drawState
 	);
@@ -320,6 +320,11 @@ if (presetId != "") {
         skinColor = _preset.skinColor;
         hairOption = _preset.hairOption;
         hairColor = _preset.hairColor;
+		
+		outfitId = _preset.outfitId;
+		bagId = _preset.bagId;
+		helmetId = _preset.helmetId;
+		
         
     } else {
         show_debug_message("AVISO: Preset de NPC '" + presetId + "' não encontrado no banco de dados!");

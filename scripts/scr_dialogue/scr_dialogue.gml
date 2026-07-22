@@ -10,14 +10,15 @@ function DialogueText(_text, _isPlayer) constructor {
     isPlayer = _isPlayer;
 }
 
-function DialogueParticipant(_name, _gender, _skinColor, _hairColor, _hairId, _armor, _helmet) constructor {
-    name      = _name;
-    gender    = _gender;
+function DialogueParticipant(_name, _gender, _skinColor, _hairColor, _hairId, _outfitId, _helmetId, _bagId) constructor {
+    name = _name;
+    gender = _gender;
     skinColor = _skinColor;
     hairColor = _hairColor;
-    hairId    = _hairId;
-    armor     = _armor;
-    helmet    = _helmet;
+    hairId = _hairId;
+    outfitId = _outfitId;
+    helmetId = _helmetId;
+	bagId = _bagId
 }
 
 function createPlayerThoughtDialogue(_texts, _onEnd = undefined, _textSpeed = .7) {
@@ -49,8 +50,9 @@ function createNpcDialogue(_npc, _texts, _onEnd = undefined) {
 		_npc.skinColor,
 		_npc.hairColor,
 		_npc.hairOption,
-		-1,
-		-1
+		_npc.outfitId,
+		_npc.helmetId,
+		_npc.bagId
 	);
 
 	var _dialogue = new Dialogue(

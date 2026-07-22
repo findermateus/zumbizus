@@ -369,8 +369,9 @@ function getFindSafePlaceQuest() {
 				npc_tutorial.skinColor,
 				npc_tutorial.hairColor,
 				npc_tutorial.hairOption,
-				-1,
-				-1
+				npc_tutorial.outfitId,
+				npc_tutorial.helmetId,
+				npc_tutorial.bagId
 			)
 		);
 		
