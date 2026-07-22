@@ -184,7 +184,7 @@ function playerGetGrabbedState() {
 }
 
 function playerDialogueState() {
-	handleAngleOffset(true, .2, 0);
+	handleAngleOffset(false);
 	adjustPlayerInteractions(false);
 	updateSpriteWithState(sprites.iddle);
 	
@@ -195,7 +195,7 @@ function playerDialogueState() {
 }
 
 function playerTradeState() {
-	handleAngleOffset(true, .2, 0);
+	handleAngleOffset(false);
 	adjustPlayerInteractions(false);
 	updateSpriteWithState(sprites.iddle);
 

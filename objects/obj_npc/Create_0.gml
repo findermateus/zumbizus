@@ -30,6 +30,98 @@ tradeItems = [];
 
 isInteracting = false;
 
+walkSpeed = irandom_range(3,5);
+
+pathHandler = instance_create_layer(
+	x, y,
+	layer,
+	obj_path_handler,
+	{ father: id }
+);
+
+destinyX = x;
+destinyY = y;
+
+angleTimer = 0;
+
+function handleAngleOffset(_canJiggle, _speed = .3, _force = 3){
+	if (!_canJiggle) {
+		angleOffset = lerp(angleOffset, 0, 0.1);
+		return;
+	}
+	
+	angleTimer += 1;
+	angleOffset = sin(angleTimer * _speed) * _force;
+}
+
+iddle = function() {
+	drawState = drawStates.iddle;
+	handleAngleOffset(false);
+}
+
+currentState = iddle;
+
+onArriveAtDestiny = function() {
+	currentState = iddle;
+}
+
+function setDestiny(_x, _y, _onArrive, _walkSpeed = walkSpeed) {
+	destinyX = _x;
+	destinyY = _y;
+	onArriveAtDestiny = _onArrive;
+	walkSpeed = _walkSpeed;
+	
+	currentState = goToDestiny;
+}
+
+function goToDestiny() {
+	handleAngleOffset(true, .25, 4);
+	drawState = drawStates.walking;
+	
+	pathHandler.calculatePath(
+		walkSpeed,
+		destinyX,
+		destinyY
+	);
+	
+	if (point_distance(x, y, destinyX, destinyY) > 12) {
+		if (abs(destinyX - x) > 1) {
+			currentDirection = (destinyX > x) ? 1 : -1;
+		}
+	}
+	
+	var _velh = destinyX > x ? walkSpeed : -walkSpeed;
+	var _velv = destinyY > y ? walkSpeed : -walkSpeed;
+	
+	if (choose(0, 1)) {
+		createWalkingParticles(x, y, _velh, _velv, 1);
+	}
+	
+	handleNpcPositionWithPathHandler();
+	
+	if (point_distance(x, y, destinyX, destinyY) < 16) {
+		onArriveAtDestiny();
+	}
+}
+
+function handleNpcPositionWithPathHandler(_shouldStop = false) {
+	if (_shouldStop) {
+		pathHandler.x = x;
+		pathHandler.y = y;
+		
+		return;
+	}
+	
+	var _speed = 0.08;
+
+	if (point_distance(x, y, pathHandler.x, pathHandler.y) < 32) {
+		_speed = 0.3;
+	}
+
+	x = lerp(x, pathHandler.x, _speed);
+	y = lerp(y, pathHandler.y, _speed);
+}
+
 function canPlayerTalk() {
 	return is_struct(getCurrentDialogue());
 }
@@ -232,4 +324,14 @@ if (presetId != "") {
     } else {
         show_debug_message("AVISO: Preset de NPC '" + presetId + "' não encontrado no banco de dados!");
     }
+}
+
+function fadeOutState() {
+	iddle();
+						
+	image_alpha = lerp(image_alpha, 0, .1);
+						
+	if (image_alpha < .1) {
+		instance_destroy(id);
+	}
 }

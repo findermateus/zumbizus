@@ -1,10 +1,10 @@
 {
   "$GMSprite":"",
-  "%Name":"spr_interior_fog",
+  "%Name":"spr_fog",
   "bboxMode":0,
-  "bbox_bottom":210,
+  "bbox_bottom":445,
   "bbox_left":0,
-  "bbox_right":341,
+  "bbox_right":707,
   "bbox_top":0,
   "collisionKind":1,
   "collisionTolerance":0,
@@ -16,12 +16,12 @@
   ],
   "gridX":0,
   "gridY":0,
-  "height":211,
+  "height":446,
   "HTile":false,
   "layers":[
     {"$GMImageLayer":"","%Name":"f8684341-efea-4f08-96d9-bb301346c03e","blendMode":0,"displayName":"default","isLocked":false,"name":"f8684341-efea-4f08-96d9-bb301346c03e","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
   ],
-  "name":"spr_interior_fog",
+  "name":"spr_fog",
   "nineSlice":null,
   "origin":0,
   "parent":{
@@ -33,7 +33,7 @@
   "resourceVersion":"2.0",
   "sequence":{
     "$GMSequence":"",
-    "%Name":"spr_interior_fog",
+    "%Name":"spr_fog",
     "autoRecord":true,
     "backdropHeight":768,
     "backdropImageOpacity":0.5,
@@ -57,7 +57,7 @@
       "resourceType":"KeyframeStore<MomentsEventKeyframe>",
       "resourceVersion":"2.0",
     },
-    "name":"spr_interior_fog",
+    "name":"spr_fog",
     "playback":1,
     "playbackSpeed":30.0,
     "playbackSpeedType":0,
@@ -69,7 +69,7 @@
     "tracks":[
       {"$GMSpriteFramesTrack":"","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"$KeyframeStore<SpriteFrameKeyframe>":"","Keyframes":[
             {"$Keyframe<SpriteFrameKeyframe>":"","Channels":{
-                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"a6d3c1f5-f46c-49eb-8622-ea735358f776","path":"sprites/spr_interior_fog/spr_interior_fog.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
+                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"a6d3c1f5-f46c-49eb-8622-ea735358f776","path":"sprites/spr_fog/spr_fog.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
               },"Disabled":false,"id":"6147d223-d912-46b7-8191-21a9c03eee78","IsCreationKey":false,"Key":0.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
           ],"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"2.0",},"modifiers":[],"name":"frames","resourceType":"GMSpriteFramesTrack","resourceVersion":"2.0","spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],
@@ -86,5 +86,5 @@
   },
   "type":0,
   "VTile":false,
-  "width":342,
+  "width":708,
 }

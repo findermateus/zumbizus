@@ -373,6 +373,14 @@ function getFindSafePlaceQuest() {
 				-1
 			)
 		);
+		
+		_dialogue.onEnd = function () {
+			with(npc_tutorial) {
+				setDestiny(obj_waypoint.x, obj_waypoint.y, function () {
+					currentState = fadeOutState;
+				});
+			}
+		}
 
 		instance_create_layer(0, 0, "Controllers", obj_dialogue, {
 			target: npc_tutorial,
