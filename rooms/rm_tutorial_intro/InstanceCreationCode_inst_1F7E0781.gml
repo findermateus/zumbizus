@@ -1,1 +1,0 @@
-destroyed_tag = "npc_barricade"; 

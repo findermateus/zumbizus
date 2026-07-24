@@ -15,6 +15,10 @@ isInteracting = false;
 alpha = 0;
 animProgress = 0;
 
+bubble_scale = 0;
+bubble_alpha = 0;
+was_near = false;
+
 hover_offset1 = 0;
 hover_offset2 = 0;
 hover_offset3 = 0;
