@@ -2,6 +2,7 @@ animationCurveItemDescription = animcurve_get_channel(ac_inventory,"item_descrip
 playedItemDescription = false;
 curveAnimationIndex = 0;
 isHovering = false;
+disabled = false;
 textToDraw = "";
 
 drawInterface = function(){
@@ -40,6 +41,7 @@ checkDistance = function(_player){
 }
 
 verifyConditions = function(){
+	if (disabled) return false;
 	var _player = checkPlayerExistence();
 	if(!_player) return false;
 	if(global.pause) return false;
@@ -54,10 +56,11 @@ verifyConditions = function(){
 }
 
 function handleHover() {
-	if(!verifyConditions()) {
-		isHovering = false;
-		
-		return;
+	if (!verifyConditions()) {
+	    isHovering = false;
+	    playedItemDescription = false;
+	    curveAnimationIndex = 0;
+	    return;
 	}
 	
 	if (!isHovering) {

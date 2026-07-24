@@ -376,6 +376,19 @@ function getFindSafePlaceQuest() {
 		);
 		
 		_dialogue.onEnd = function () {
+			obj_waypoint.disabled = false;
+			
+			obj_waypoint.onClick = method(obj_waypoint, function () {
+				if (instance_exists(obj_map_transition)) return;
+	
+				playClickSound();
+	
+				instance_create_layer(0, 0, "Controllers", obj_map_transition, {
+					destination: rm_player_base,
+					mapName: "Base"
+				});
+			})
+			
 			with(npc_tutorial) {
 				setDestiny(obj_waypoint.x, obj_waypoint.y, function () {
 					currentState = fadeOutState;
@@ -402,6 +415,10 @@ function getFindSafePlaceQuest() {
 	_quest.onComplete = method(_quest, function () {
 		saveGame(true, false);
 	});
+	
+	var _reward = new QuestReward(50);
+	
+	_quest.setReward(_reward);
 
 	return _quest;
 }
