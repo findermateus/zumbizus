@@ -26,6 +26,7 @@ global.player = {
 	name: "Player Name",
 	skinColor: #D39B6A,
 	gender: genders.male,
+	eyeId: Eye.WITH_EYEBROW,
 	hair: new PersonHair(HairOption.BUZZ_CUT, #593708),
 	
 	level: 1,

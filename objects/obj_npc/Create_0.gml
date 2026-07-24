@@ -302,6 +302,7 @@ function draw() {
 		image_alpha,
 		skinColor,
 		new PersonHair(hairOption, hairColor),
+		eyeId,
 		outfitId,
 		helmetId,
 		bagId,
@@ -320,6 +321,7 @@ if (presetId != "") {
         skinColor = _preset.skinColor;
         hairOption = _preset.hairOption;
         hairColor = _preset.hairColor;
+		eyeId = _preset.eyeId;
 		
 		outfitId = _preset.outfitId;
 		bagId = _preset.bagId;

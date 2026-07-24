@@ -8,6 +8,7 @@ function loadNpcFromDatabase(_data){
 }
 
 function setNpc(_npcData) {
+	/*
 	global.npcList[_npcData.npcId] = new NPC(
 		_npcData.npcName,
 		_npcData.npcId,
@@ -25,4 +26,5 @@ function setNpc(_npcData) {
 	_mappedAttributes[? "commerce"] = baseAttribute.economy;
 	_npc.attributes[_mappedAttributes[? _npcData.attribute]].level = 1;
 	ds_map_destroy(_mappedAttributes);
+	*/
 }

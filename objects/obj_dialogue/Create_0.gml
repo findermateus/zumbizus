@@ -130,6 +130,7 @@ function drawDialogueBox() {
             global.player.gender, 0, _scale, 0, 1,
             global.player.skinColor,
             global.player.hair,
+			global.player.eyeId,
             is_struct(global.equipments.armor) ? global.equipments.armor.itemId : -1,
             is_struct(global.equipments.head)  ? global.equipments.head.itemId  : -1,
             is_struct(global.equipments.bag)   ? global.equipments.bag.itemId   : -1
@@ -142,6 +143,7 @@ function drawDialogueBox() {
             _npc.gender, 0, _scale, 0, 1,
             _npc.skinColor,
             new PersonHair(_npc.hairId, _npc.hairColor),
+			_npc.eyeId,
             _npc.outfitId, _npc.helmetId, _npc.bagId, -1
         );
     }

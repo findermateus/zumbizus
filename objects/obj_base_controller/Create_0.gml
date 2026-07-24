@@ -64,6 +64,7 @@ function createNpcs() {
 			hairColor: _npcData.hair.color,
 			skinColor: getHexFromString(_npcData.skinColor),
 			genderId: _npcData.gender,
+			eyeId: _npcData.eyeId,
 			workerId: _npcData.id
 		});
 	}

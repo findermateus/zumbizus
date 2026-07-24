@@ -91,26 +91,26 @@ hoverUiFurnitureIndicator =  {
 
 function loadNpcMock() {
     return [
-        new NPC("Alice The Brave of the Northern Lands", 1, genders.female, "#FFDAB9", new PersonHair(HairOption.AFRO, "#A52A2A")),
-        new NPC("John The Hunter", 2, genders.male, "#8D5524", new PersonHair(HairOption.LONG_STRAIGHT, "#A52A2A")),
-        new NPC("Riley The Rogue of the Shadows", 3, genders.female, "#C68642", new PersonHair(HairOption.MOHAWK, "#FF69B4")),
-        new NPC("Zara The Wise", 4, genders.others, "#E0AC69", new PersonHair(HairOption.BALD, "#FFD700")),
-        new NPC("Mateus Who Never Falls?", 5, genders.male, "#F1C27D", new PersonHair(HairOption.QUIFF, "#ffffff")),
-        new NPC("Liam Ironfist", 6, genders.male, "#F1C27D", new PersonHair(HairOption.BUZZ_CUT, "#333333")),
-        new NPC("Clara Storm of the West", 7, genders.female, "#E0AC69", new PersonHair(HairOption.LONG_STRAIGHT, "#B22222")),
-        new NPC("Marcus Flame", 8, genders.male, "#C68642", new PersonHair(HairOption.MOHAWK, "#000000")),
-        new NPC("Ella Moonshade", 9, genders.others, "#FFDAB9", new PersonHair(HairOption.AFRO, "#8B4513")),
-        new NPC("Noa Wild", 10, genders.others, "#8D5524", new PersonHair(HairOption.BALD, "#7FFF00")),
-        new NPC("Victor Dustwalker Silent Arrow", 11, genders.male, "#C68642", new PersonHair(HairOption.QUIFF, "#AAAAAA")),
-        new NPC("Nina Blight", 12, genders.male, "#E0AC69", new PersonHair(HairOption.BUZZ_CUT, "#DA70D6")),
-        new NPC("Alex Starfall Crimson Moon", 13, genders.male, "#F1C27D", new PersonHair(HairOption.LONG_STRAIGHT, "#DC143C")),
-        new NPC("Bruce Ironjaw", 14, genders.male, "#8D5524", new PersonHair(HairOption.MOHAWK, "#D2691E")),
-        new NPC("Maya Frost", 15, genders.male, "#FFDAB9", new PersonHair(HairOption.AFRO, "#191970")),
-        new NPC("Sam Echo", 16, genders.male, "#E0AC69", new PersonHair(HairOption.BALD, "#00CED1")),
-        new NPC("Dante Hollow", 17, genders.male, "#C68642", new PersonHair(HairOption.QUIFF, "#2F4F4F")),
-        new NPC("Ivy Dawn", 18, genders.male, "#F1C27D", new PersonHair(HairOption.BUZZ_CUT, "#F08080")),
-        new NPC("Sky Ember of the Wastes", 19, genders.male, "#8D5524", new PersonHair(HairOption.LONG_STRAIGHT, "#9ACD32")),
-        new NPC("Logan Ashfall Flameborne", 20, genders.male, "#FFDAB9", new PersonHair(HairOption.MOHAWK, "#4B0082"))
+        new NPC("Alice The Brave of the Northern Lands", 1, genders.female, "#FFDAB9", new PersonHair(HairOption.AFRO, "#A52A2A"), Eye.WITH_EYEBROW),
+        new NPC("John The Hunter", 2, genders.male, "#8D5524", new PersonHair(HairOption.LONG_STRAIGHT, "#A52A2A"), Eye.SHORT_VERTICAL),
+        new NPC("Riley The Rogue of the Shadows", 3, genders.female, "#C68642", new PersonHair(HairOption.MOHAWK, "#FF69B4"), Eye.LONG_VERTICAL),
+        new NPC("Zara The Wise", 4, genders.others, "#E0AC69", new PersonHair(HairOption.BALD, "#FFD700"), Eye.WITH_EYEBROW),
+        new NPC("Mateus Who Never Falls?", 5, genders.male, "#F1C27D", new PersonHair(HairOption.QUIFF, "#ffffff"), Eye.SHORT_VERTICAL),
+        new NPC("Liam Ironfist", 6, genders.male, "#F1C27D", new PersonHair(HairOption.BUZZ_CUT, "#333333"), Eye.LONG_VERTICAL),
+        new NPC("Clara Storm of the West", 7, genders.female, "#E0AC69", new PersonHair(HairOption.LONG_STRAIGHT, "#B22222"), Eye.WITH_EYEBROW),
+        new NPC("Marcus Flame", 8, genders.male, "#C68642", new PersonHair(HairOption.MOHAWK, "#000000"), Eye.SHORT_VERTICAL),
+        new NPC("Ella Moonshade", 9, genders.others, "#FFDAB9", new PersonHair(HairOption.AFRO, "#8B4513"), Eye.LONG_VERTICAL),
+        new NPC("Noa Wild", 10, genders.others, "#8D5524", new PersonHair(HairOption.BALD, "#7FFF00"), Eye.WITH_EYEBROW),
+        new NPC("Victor Dustwalker Silent Arrow", 11, genders.male, "#C68642", new PersonHair(HairOption.QUIFF, "#AAAAAA"), Eye.SHORT_VERTICAL),
+        new NPC("Nina Blight", 12, genders.male, "#E0AC69", new PersonHair(HairOption.BUZZ_CUT, "#DA70D6"), Eye.LONG_VERTICAL),
+        new NPC("Alex Starfall Crimson Moon", 13, genders.male, "#F1C27D", new PersonHair(HairOption.LONG_STRAIGHT, "#DC143C"), Eye.WITH_EYEBROW),
+        new NPC("Bruce Ironjaw", 14, genders.male, "#8D5524", new PersonHair(HairOption.MOHAWK, "#D2691E"), Eye.SHORT_VERTICAL),
+        new NPC("Maya Frost", 15, genders.male, "#FFDAB9", new PersonHair(HairOption.AFRO, "#191970"), Eye.LONG_VERTICAL),
+        new NPC("Sam Echo", 16, genders.male, "#E0AC69", new PersonHair(HairOption.BALD, "#00CED1"), Eye.WITH_EYEBROW),
+        new NPC("Dante Hollow", 17, genders.male, "#C68642", new PersonHair(HairOption.QUIFF, "#2F4F4F"), Eye.SHORT_VERTICAL),
+        new NPC("Ivy Dawn", 18, genders.male, "#F1C27D", new PersonHair(HairOption.BUZZ_CUT, "#F08080"), Eye.LONG_VERTICAL),
+        new NPC("Sky Ember of the Wastes", 19, genders.male, "#8D5524", new PersonHair(HairOption.LONG_STRAIGHT, "#9ACD32"), Eye.WITH_EYEBROW),
+        new NPC("Logan Ashfall Flameborne", 20, genders.male, "#FFDAB9", new PersonHair(HairOption.MOHAWK, "#4B0082"), Eye.SHORT_VERTICAL)
     ];
 }
 
@@ -433,7 +433,7 @@ function handleHoldNpc(_isHoveringNpc){
 		var _boxSize = 90 * holding_npc_scale;
 		
 		draw_set_alpha(.7);
-		drawNpcHead(_mouseX, _mouseY - _boxSize*.1, _boxSize, _boxSize, _npc.hair, getHexFromString(_npc.skinColor), _npc.gender);
+		drawNpcHead(_mouseX, _mouseY - _boxSize*.1, _boxSize, _boxSize, _npc.hair, getHexFromString(_npc.skinColor), _npc.gender, _npc.eyeId);
 		draw_set_alpha(1);
 	}
 	
@@ -640,7 +640,7 @@ function drawFurnitureWorker(_x, _y, _size, _furnitureId, _objectId, _index){
 		return;
 	}
 	var _npc = global.npcList[_worker.id];
-	drawNpcHead(_x, _y, _size * .6, _size, _npc.hair, getHexFromString(_npc.skinColor), _npc.gender);
+	drawNpcHead(_x, _y, _size * .6, _size, _npc.hair, getHexFromString(_npc.skinColor), _npc.gender, _npc.eyeId);
 }
 
 function handleWorkerBoxHover(_x, _y, _x2, _y2, _fId, _oId, i, _hNpc, _able){
@@ -765,7 +765,7 @@ function drawNpcInsideBox(_x, _y, _npc, _size, i) {
 	var _midX = _x + (_size/2);
 	var _scale = min(1, _size / string_width(_npc.name)) * (guiModal.width / guiModalOpen.destinyWidth);
 	
-	drawNpcHead(_midX, _y, 110, _size, _npc.hair, getHexFromString(_npc.skinColor), _npc.gender);
+	drawNpcHead(_midX, _y, 110, _size, _npc.hair, getHexFromString(_npc.skinColor), _npc.gender, _npc.eyeId);
 	draw_set_halign(fa_center); draw_set_valign(fa_middle);
 	drawTextShadow(_midX, _y + _size*.9, _npc.name, 1, 4, _scale);
 	draw_text_transformed(_midX, _y + _size*.9, _npc.name, _scale, _scale, 0);

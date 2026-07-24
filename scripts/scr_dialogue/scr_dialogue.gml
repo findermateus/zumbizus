@@ -10,12 +10,13 @@ function DialogueText(_text, _isPlayer) constructor {
     isPlayer = _isPlayer;
 }
 
-function DialogueParticipant(_name, _gender, _skinColor, _hairColor, _hairId, _outfitId, _helmetId, _bagId) constructor {
+function DialogueParticipant(_name, _gender, _skinColor, _hairColor, _hairId, _eyeId, _outfitId, _helmetId, _bagId) constructor {
     name = _name;
     gender = _gender;
     skinColor = _skinColor;
     hairColor = _hairColor;
     hairId = _hairId;
+	eyeId = _eyeId;
     outfitId = _outfitId;
     helmetId = _helmetId;
 	bagId = _bagId
@@ -50,6 +51,7 @@ function createNpcDialogue(_npc, _texts, _onEnd = undefined) {
 		_npc.skinColor,
 		_npc.hairColor,
 		_npc.hairOption,
+		_npc.eyeId,
 		_npc.outfitId,
 		_npc.helmetId,
 		_npc.bagId

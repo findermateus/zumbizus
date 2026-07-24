@@ -21,12 +21,13 @@ function NpcAttribute(_id) constructor {
 	}
 }
 
-function NPC(_name, _id, _gender, _skinColor, _hair) constructor {
+function NPC(_name, _id, _gender, _skinColor, _hair, _eyeId) constructor {
 	name = _name;
 	id = _id;
 	gender = _gender;
 	skinColor = _skinColor;
 	hair = _hair;
+	eyeId = _eyeId;
 	attributes = [];
 	attributes[sectorList.crafting] = new NpcAttribute(sectorList.crafting);
 	attributes[sectorList.defense] = new NpcAttribute(sectorList.defense);

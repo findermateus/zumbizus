@@ -20,6 +20,7 @@ getCurrentDialogue = function() {
 				skinColor,
 				hairColor,
 				hairOption,
+				eyeId,
 				outfitId,
 				helmetId,
 				bagId
@@ -55,6 +56,7 @@ getCurrentDialogue = function() {
 					skinColor,
 					hairColor,
 					hairOption,
+					eyeId,
 					outfitId,
 					helmetId,
 					bagId

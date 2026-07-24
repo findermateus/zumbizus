@@ -82,6 +82,7 @@ function drawPlayerInsideInfoBox(_box) {
 		1,
 		_skinColor,
 		_hair,
+		global.player.eyeId,
 		_armorId,
 		_helmetId,
 		_bagId,

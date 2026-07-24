@@ -19,37 +19,44 @@ global.player.currentHunger = clamp(global.player.currentHunger, 0, global.playe
 global.player.stamina = clamp(global.player.stamina, 0, global.player.maxStamina);
 global.player.health = clamp(global.player.health, 0, global.player.maxHealth);
 
-if (keyboard_check_pressed(vk_right)) {
-	if (global.player.gender == genders.male) {
-		global.player.gender = genders.female
-	} else {
-		global.player.gender = genders.male;
-	}	
-}
-
-
 var _keyUp = keyboard_check_pressed(vk_up);
 var _keyDown = keyboard_check_pressed(vk_down);
+var _keyLeft = keyboard_check_pressed(vk_left);
+var _keyRight = keyboard_check_pressed(vk_right);
 
 if (_keyUp or _keyDown) {
+    var _currentId = global.player.hair.hairId;
+    var _totalOptions = array_length(global.hairOptions);
+    var _move = _keyDown - _keyUp;
+    var _newId = _currentId + _move;
 
-	var _currentId = global.player.hair.hairId;
+    if (_newId >= _totalOptions) {
+        _newId = 1;
+    }
+    
+    if (_newId < 1) {
+        _newId = _totalOptions - 1;
+    }
+
+    global.player.hair.hairId = global.hairOptions[_newId].hairId;
+}
+
+if (_keyLeft or _keyRight) {
+    var _currentEyeId = global.player.eyeId;
+    var _totalEyeOptions = array_length(global.EYE_OPTIONS);
+    
+    var _moveEye = _keyRight - _keyLeft;
+    var _newEyeId = _currentEyeId + _moveEye;
+
+    if (_newEyeId >= _totalEyeOptions) {
+        _newEyeId = 0;
+    }
+    
+    if (_newEyeId < 0) {
+        _newEyeId = _totalEyeOptions - 1;
+    }
 	
-	var _totalOptions = array_length(global.hairOptions);
-
-	var _move = _keyDown - _keyUp;
-
-	var _newId = _currentId + _move;
-
-	if (_newId >= _totalOptions) {
-		_newId = 1;
-	}
-	
-	if (_newId < 1) {
-		_newId = _totalOptions - 1;
-	}
-
-	global.player.hair.hairId = global.hairOptions[_newId].hairId;
+    global.player.eyeId = _newEyeId;
 }
 
 if (keyboard_check_pressed(vk_backspace)) {
