@@ -104,7 +104,7 @@ function drawDialogueBox() {
     var _currentTextPart = string_copy(_text, 1, textIndex);
     draw_set_font(fnt_gui_default);
     drawTextShadowScribble(_textX1, _textY1, _currentTextPart, _alpha, 4, _reservedSpaceForText);
-    draw_text_scribble_ext(_textX1, _textY1, _currentTextPart, -1, _reservedSpaceForText);
+    draw_text_scribble_ext(_textX1, _textY1, _currentTextPart, _reservedSpaceForText);
 
     var _personCentralPoint = getMiddlePoint(_avatarBoxX, _avatarBoxX + _avatarBoxW);
     var _expectedBodySize   = _avatarBoxH * 0.65;
