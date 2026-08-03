@@ -574,5 +574,7 @@ function getGrabbed(_enemyId) {
 		enemy: _enemyId
 	});
 	
+	//colocar um timeout quando acarrado;
+	
 	currentState = playerGetGrabbedState;
 }
