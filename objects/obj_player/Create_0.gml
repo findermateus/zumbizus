@@ -32,6 +32,9 @@ playerAngleTimer = 0;
 closestObjectToCatch = noone;
 hitFlash = 0;
 
+grabCooldownTimer = 0; 
+grabCooldownMax = game_get_speed(gamespeed_fps) * 2;
+
 inputs = {
 	up: keyboard_check(ord("W")),
 	down: keyboard_check(ord("S")),
@@ -570,11 +573,15 @@ function handleInteriors() {
 }
 
 function getGrabbed(_enemyId) {
-	instance_create_layer(x, y, "Controllers", obj_grabbing_controller, {
-		enemy: _enemyId
-	});
+    if (grabCooldownTimer > 0 || currentState == playerGetGrabbedState) {
+        return; 
+    }
+
+    instance_create_layer(x, y, "Controllers", obj_grabbing_controller, {
+        enemy: _enemyId
+    });
 	
-	//colocar um timeout quando acarrado;
+    grabCooldownTimer = grabCooldownMax;
 	
-	currentState = playerGetGrabbedState;
+    currentState = playerGetGrabbedState;
 }

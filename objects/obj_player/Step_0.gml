@@ -3,6 +3,10 @@ if (global.timeStopped) {
 	exit;
 }
 
+if (grabCooldownTimer > 0) {
+    grabCooldownTimer--;
+}
+
 loadInputs();
 updateEquipedItems();
 updateQuickUseBar();
@@ -24,7 +28,7 @@ var _keyDown = keyboard_check_pressed(vk_down);
 var _keyLeft = keyboard_check_pressed(vk_left);
 var _keyRight = keyboard_check_pressed(vk_right);
 
-if (_keyUp or _keyDown) {
+if (_keyUp || _keyDown) {
     var _currentId = global.player.hair.hairId;
     var _totalOptions = array_length(global.hairOptions);
     var _move = _keyDown - _keyUp;
@@ -41,7 +45,7 @@ if (_keyUp or _keyDown) {
     global.player.hair.hairId = global.hairOptions[_newId].hairId;
 }
 
-if (_keyLeft or _keyRight) {
+if (_keyLeft || _keyRight) {
     var _currentEyeId = global.player.eyeId;
     var _totalEyeOptions = array_length(global.EYE_OPTIONS);
     
