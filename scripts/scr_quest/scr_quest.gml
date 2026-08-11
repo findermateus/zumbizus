@@ -107,13 +107,11 @@ function Quest(_id, _name) constructor {
 			
 			var _result = addItemToGrid(global.inventory, _buildedItem);
 			
-			if (_result == true) {
-				createIndicatorForQuestItem(_buildedItem, _quantity);
-				
-				continue;
+			if (_result != true) {
+				createItem(_buildedItem, true);	
 			}
 			
-			show_message("não connseguiu por tudo no inventory: " + _itemConfig.name);
+			createIndicatorForQuestItem(_buildedItem, _quantity);
 		}
 	};
 	

@@ -42,7 +42,7 @@ function drawTitle(_x, _y, _text){
 }
 
 function createNpcs() {
-	var _npcListSize = array_length(global.npcList);
+	var _npcListSize = array_length(global.baseResidents);
 	if (!_npcListSize) return;
 	
 	var _existingNpcs = [];
@@ -52,7 +52,7 @@ function createNpcs() {
 	}
 	
 	for (var i = 0; i < _npcListSize; i ++) {
-		var _npcData = global.npcList[i];
+		var _npcData = global.baseResidents[i];
 		
 		if (!is_struct(_npcData)) continue;
 		

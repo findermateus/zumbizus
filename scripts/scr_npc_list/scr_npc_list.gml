@@ -36,5 +36,4 @@ function NPC(_name, _id, _gender, _skinColor, _hair, _eyeId) constructor {
 	attributes[sectorList.trade] = new NpcAttribute(sectorList.trade);
 }
 
-
-global.npcList = [];
+global.baseResidents = [];

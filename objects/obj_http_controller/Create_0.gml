@@ -9,7 +9,7 @@ function loadNpcFromDatabase(_data){
 
 function setNpc(_npcData) {
 	/*
-	global.npcList[_npcData.npcId] = new NPC(
+	global.baseResidents[_npcData.npcId] = new NPC(
 		_npcData.npcName,
 		_npcData.npcId,
 		_npcData.gender.id,
@@ -17,7 +17,7 @@ function setNpc(_npcData) {
 		_npcData.hairColor
 	);
 	
-	var _npc = global.npcList[_npcData.npcId];
+	var _npc = global.baseResidents[_npcData.npcId];
 	var _mappedAttributes = ds_map_create();
 	_mappedAttributes[? "defense"] = baseAttribute.battle;
 	_mappedAttributes[? "creation"] = baseAttribute.crafting;

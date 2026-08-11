@@ -87,8 +87,6 @@ hoverUiFurnitureIndicator =  {
 	isHoveringTarget: false
 };
 
-// --- FUNÇÕES DE CARREGAMENTO ---
-
 function loadNpcMock() {
     return [
         new NPC("Alice The Brave of the Northern Lands", 1, genders.female, "#FFDAB9", new PersonHair(HairOption.AFRO, "#A52A2A"), Eye.WITH_EYEBROW),
@@ -115,19 +113,10 @@ function loadNpcMock() {
 }
 
 function loadResidentList(){
-	if (array_length(global.npcList) == 0) {
-		residentList = loadNpcMock();
-		for (var i = 0; i < array_length(residentList); i ++) {
-			var _resident = residentList[i];
-			global.npcList[_resident.id] = _resident;
-		}
-		return;
-	}
-	
 	residentList = [];
-	for (var i = 0; i < array_length(global.npcList); i++) {
-		if (!is_struct(global.npcList[i])) continue;
-		array_push(residentList, global.npcList[i]);
+	for (var i = 0; i < array_length(global.baseResidents); i++) {
+		if (!is_struct(global.baseResidents[i])) continue;
+		array_push(residentList, global.baseResidents[i]);
 	}
 }
 
@@ -639,7 +628,7 @@ function drawFurnitureWorker(_x, _y, _size, _furnitureId, _objectId, _index){
 		draw_text_scribble(_x, _y + _size / 2, "[fa_center][fa_middle][scale," + string(_scale) + "]Lv " + string(_lvl));
 		return;
 	}
-	var _npc = global.npcList[_worker.id];
+	var _npc = global.baseResidents[_worker.id];
 	drawNpcHead(_x, _y, _size * .6, _size, _npc.hair, getHexFromString(_npc.skinColor), _npc.gender, _npc.eyeId);
 }
 

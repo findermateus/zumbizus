@@ -984,8 +984,8 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
-    {"roomId":{"name":"rm_tutorial_corridor","path":"rooms/rm_tutorial_corridor/rm_tutorial_corridor.yy",},},
     {"roomId":{"name":"rm_boot","path":"rooms/rm_boot/rm_boot.yy",},},
+    {"roomId":{"name":"rm_tutorial_corridor","path":"rooms/rm_tutorial_corridor/rm_tutorial_corridor.yy",},},
     {"roomId":{"name":"rm_tutorial_intro","path":"rooms/rm_tutorial_intro/rm_tutorial_intro.yy",},},
     {"roomId":{"name":"rm_player_base","path":"rooms/rm_player_base/rm_player_base.yy",},},
     {"roomId":{"name":"RoomBase","path":"rooms/RoomBase/RoomBase.yy",},},

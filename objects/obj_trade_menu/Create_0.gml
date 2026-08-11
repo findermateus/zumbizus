@@ -290,16 +290,29 @@ function drawTradingMenu() {
 		var _name = _itemData.name;
 		var _quantity = _tradeItem.quantity;
 		
-		var _totalPrice = getBuyItemValue(
-			_tradeItem.itemId,
-			_tradeItem.type,
-			_tradeItem.quantity
-		);
+		var _totalPrice = 0;
+		var _priceText = "";
+		
+		if (currentTab == "BUY") {
+			_totalPrice = getBuyItemValue(
+				_tradeItem.itemId,
+				_tradeItem.type,
+				_tradeItem.quantity
+			);
+			_priceText = "$" + string(_totalPrice);
+		} 
+		
+		if (currentTab == "SELL") {
+			_totalPrice = getSellItemValue(_itemData, _tradeItem.quantity);
+			var _unitPrice = getSellItemValue(_itemData, 1);
+			
+			_priceText = _tradeItem.quantity > 1 ? "$" + string(_totalPrice) + " ($" + string(_unitPrice) + "/un)" : _priceText = "$" + string(_totalPrice);
+		}
 		
 		var _icon = _itemData.sprite;
-
 		var _quantityText = "x" + string(_quantity);
-		var _priceText = "$" + string(_totalPrice);
+		
+		var _icon = _itemData.sprite;
 
 		var _isHovering = mouseIsOnRectangle(_initialX, _rowY, _initialX + _rowWidth, _rowY + _barHeight);
 		

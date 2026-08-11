@@ -362,7 +362,7 @@ function drawWorkerList(_x, _x2, _y, _size, _workerList) {
 			continue;	
 		}
 
-		var _npc = global.npcList[_worker.id];
+		var _npc = global.baseResidents[_worker.id];
 		drawNpcInsideBlock(_posX, _y, _size, _npc.hair, _npc.skinColor, _npc.gender, 1, _npc.eyeId);
 
 		_posX += _size + _gap;

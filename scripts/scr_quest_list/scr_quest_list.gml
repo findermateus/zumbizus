@@ -4,6 +4,25 @@ function getCreateCampfireQuest() {
 	_quest.onComplete = method(_quest, function () {
 		self.applyReward();
 	});
+	
+	var _goToForestStep = new QuestStep("go_to_forest", "Vá até a floresta");
+	
+	_goToForestStep.area = rm_forest;
+	
+	_goToForestStep.onStart = method(_goToForestStep, function () {
+		if (room == self.area) {
+			self.quest.completeCurrentStep();
+		}
+	});
+	
+	_goToForestStep.onEvent = method(_goToForestStep, function (_event, _data) {
+		if (_event != QuestEvent.AreaEntered) return;
+		if (_data.area != self.area) return;
+
+		self.quest.completeCurrentStep();
+	});
+	
+	_quest.addStep(_goToForestStep);
 
 	var _step = createCollectItemsStep("gather_resources", "Colete os itens necesários", [
 		{ itemId: trashItems.wood_log, type: itemType.trash, count: 0, target: 6 },
@@ -58,7 +77,26 @@ function getCreateAxeQuest(_npc) {
 		}
 	}); 
 
-	var _step = createCollectItemsStep(
+	var _goToForestStep = new QuestStep("go_to_forest", "Vá até a floresta");
+	
+	_goToForestStep.area = rm_forest;
+	
+	_goToForestStep.onStart = method(_goToForestStep, function () {
+		if (room == self.area) {
+			self.quest.completeCurrentStep();
+		}
+	});
+	
+	_goToForestStep.onEvent = method(_goToForestStep, function (_event, _data) {
+		if (_event != QuestEvent.AreaEntered) return;
+		if (_data.area != self.area) return;
+
+		self.quest.completeCurrentStep();
+	});
+	
+	_quest.addStep(_goToForestStep);
+
+	var _collectMaterialsStep = createCollectItemsStep(
 		"collect_axe_materials",
 		"Colete os itens necessários",
 		[
@@ -67,7 +105,7 @@ function getCreateAxeQuest(_npc) {
 		]
 	);
 
-	_quest.addStep(_step);
+	_quest.addStep(_collectMaterialsStep);
 
 	var _secondStep = new QuestStep("return_to_base", "Volte para a base");
 

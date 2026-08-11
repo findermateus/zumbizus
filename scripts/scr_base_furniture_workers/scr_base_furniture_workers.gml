@@ -81,7 +81,7 @@ function addWorkerToFurniture(_furnitureId, _objectId, _workerSlot, _workerId, _
 	if (_furnitureData == undefined) return -1;
 	
 	if (_workerLevel == undefined) {
-		var _npc = global.npcList[_workerId];
+		var _npc = global.baseResidents[_workerId];
 		var _furnitureAttribute = _furniturePreset.attribute;
 		_workerLevel = _npc.attributes[_furnitureAttribute].level;
 	}
