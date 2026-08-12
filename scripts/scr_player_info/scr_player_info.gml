@@ -187,7 +187,7 @@ function handleHoldingOverItem(_indicatorType){
 function equipEquipment(_type, _inventoryItem) {
 	playEquipEquipmentSound();
 	variable_struct_set(global.equipments, _type, _inventoryItem);
-	handleEquipmentSwitch();
+	handleEquipmentSwitch(_type);
 	
 	obj_quest_manager.notifyEvent(QuestEvent.ItemEquiped, {
 		type: _type,
@@ -204,7 +204,7 @@ function storeEquipment(){
 	if (_inventorySpace != BLANK_INVENTORY_SPACE) return;
 	global.activeInventoryAction[# hoverItem.j, hoverItem.i] = variable_struct_get(global.equipments, indicatorToWhereItemShouldBePut);
 	variable_struct_set(global.equipments, indicatorToWhereItemShouldBePut, BLANK_INVENTORY_SPACE);
-	handleEquipmentSwitch();
+	handleEquipmentSwitch(indicatorToWhereItemShouldBePut);
 }
 
 function handleEquipmentDropping(){
@@ -219,7 +219,7 @@ function handleEquipmentDropping(){
 	var _droppedItem = instance_create_layer(obj_player.x, obj_player.y, "Items", obj_item);
 	_droppedItem.item = activeHoldingItem;
 	variable_struct_set(global.equipments, indicatorToWhereItemShouldBePut, BLANK_INVENTORY_SPACE);
-	handleEquipmentSwitch();
+	handleEquipmentSwitch(indicatorToWhereItemShouldBePut);
 }
 
 function drawItemInGrid(_item, _grid, _x, _y){

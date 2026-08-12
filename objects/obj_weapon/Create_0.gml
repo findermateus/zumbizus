@@ -89,10 +89,14 @@ function weaponAimState(){
 		return;
 	}
 	
-	setAimingCursor();
-	
 	if(weaponAction.item.type == weaponTypes.shoot){
+		obj_cursor_controller.setCursor(CursorType.PreciseAim);
+		
 		handleStepsForFireWeapon();
+	}
+	
+	if (array_contains([weaponTypes.bladed, weaponTypes.impact, weaponTypes.piercing], weaponAction.item.type)) {
+		obj_cursor_controller.setCursor(CursorType.Aim);
 	}
 }
 
@@ -112,7 +116,7 @@ function reloadingState() {
 
 function setStateIdle(){
     if (drawState != drawNothing) {
-        obj_controller.setDefaultCursor();
+        obj_cursor_controller.setCursor(CursorType.Default);
     }
 
     currentState = weaponIdleState;
@@ -191,6 +195,8 @@ function attackWithPlayer(){
 		return false;
 	}
 	
+	obj_cursor_controller.triggerRecoil();
+	
 	handleWeaponAnimation();
 	handleWeaponHitBox();
 	handleInitialAttackVariables();
@@ -217,11 +223,6 @@ function resetActiveItem() {
 	global.activeEquipedItem = BLANK_INVENTORY_SPACE;
 	weaponAction.item = BLANK_INVENTORY_SPACE;
 	weaponAction.info = BLANK_INVENTORY_SPACE;
-}
-
-function setAimingCursor() {
-	cursor_sprite = spr_cursor_aiming;
-	window_set_cursor(cr_none);
 }
 
 function finishReloading(){

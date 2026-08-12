@@ -372,7 +372,43 @@ function executeItemMethod(
 		case "dismantle":
 			dismantle(_inventoryJ, _inventoryI);
 			break;
+		case "wear":
+			wear(_item, _inventory, _inventoryJ, _inventoryI);
+			break;
 	}
+}
+
+function wear(_item, _inventory, _j, _i) {
+	var _equipType = "";
+	
+	switch (_item.equipType) {
+		case equipmentType.armor: 
+			_equipType = "armor"; 
+			
+			break; 
+		case equipmentType.bag: 
+			_equipType = "bag"; 
+			
+			break; 
+		case equipmentType.head: 
+			_equipType = "head";			
+			
+			break;
+	}
+	
+	if (_equipType == "") return;
+	
+	var _equipedItem = global.equipments[$ _equipType];
+	
+	if (_equipedItem == BLANK_INVENTORY_SPACE) {
+		cleanInventoryGrid(_inventory, _j, _i);
+		equipEquipment(_equipType, _item);
+		
+		return;
+	}
+	
+	_inventory[# _j, _i] =  _equipedItem;
+	equipEquipment(_equipType, _item)
 }
 
 function use(_item, _comingFromInventory, _inventory, _j, _i) {

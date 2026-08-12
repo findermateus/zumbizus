@@ -44,6 +44,7 @@ function endDialogue() {
 
 function drawDialogueBox() {
     animationProgress = lerp(animationProgress, 100, 0.07);
+	
     var _normProg = animationProgress / 100;
 
     var _guiWidth  = display_get_gui_width();
@@ -88,7 +89,7 @@ function drawDialogueBox() {
 
     if (textIndex <= _textSize) textIndex += dialogue.textSpeed;
 
-    if (keyboard_check_pressed(vk_space)) {
+    if (keyboard_check_pressed(vk_space) || (animationProgress > 50 && mouse_check_button_released(mb_left))) {
         if (textIndex < _textSize) {
             textIndex = _textSize;
         } else if (currentPage < _pageQuantity - 1) {

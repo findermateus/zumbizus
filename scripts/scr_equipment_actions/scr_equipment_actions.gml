@@ -1,12 +1,12 @@
 
 
-function handleEquipmentSwitch(){
+function handleEquipmentSwitch(_type){
 	var _handleMethods = {
 		"bag": handleBagSwitch,
 		"armor": handleArmorSwitch,
 		"head": handleHeadSwitch
 	}
-	_handleMethods[$ indicatorToWhereItemShouldBePut]();
+	_handleMethods[$ _type]();
 }
 
 function handleBagSwitch(){
