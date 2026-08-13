@@ -5,7 +5,8 @@ var _dependencies = [
 	obj_xp_controller,
 	obj_damage_controller,
 	obj_player_stats,
-	obj_quest_manager
+	obj_quest_manager,
+	obj_rain_controller
 ];
 
 array_foreach(_dependencies, function (_dep) {

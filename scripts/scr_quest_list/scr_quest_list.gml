@@ -424,7 +424,7 @@ function getFindSafePlaceQuest() {
 	
 				instance_create_layer(0, 0, "Controllers", obj_map_transition, {
 					destination: rm_tutorial_corridor,
-					mapName: "Cidade abandonada"
+					mapName: "Estrada abandonada"
 				});
 			})
 			

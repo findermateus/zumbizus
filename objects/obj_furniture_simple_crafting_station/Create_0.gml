@@ -179,10 +179,10 @@ function drawSimpleCraftingStationUI() {
         category_scales[i] = lerp(category_scales[i], (_isHover || _isActive) ? 1.2 : 1.0, 0.2);
         var _s = category_scales[i];
         
-        var _drawH = 50 * _s;
+        var _drawH = 60 * _s;
         var _yOffset = (_isHover || _isActive) ? -5 : 0;
         
-        draw_sprite_stretched_ext(spr_map_button, _isHover || _isActive, _tx, _cy - (_drawH / 2) + _yOffset, _tabWidth, _drawH, c_white, _uiAlpha);
+        draw_sprite_stretched_ext(spr_inventory_box, _isHover || _isActive, _tx, _cy - (_drawH / 2) + _yOffset, _tabWidth, _drawH, c_white, _uiAlpha);
         
         draw_set_font(fnt_gui_default);
         draw_text_scribble(_tx + _tabWidth/2, _cy + _yOffset, "[fa_center][fa_middle]" + _cat.title);

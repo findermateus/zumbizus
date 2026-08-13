@@ -13,8 +13,11 @@ activationMethod = function () {
 	
 	playClickSound();
 	
+	var _map = global.maps.playerBase;
+	
 	instance_create_layer(0, 0, "Controllers", obj_map_transition, {
-		destination: rm_player_base,
-		mapName: "Base"
+		destination: _map.room,
+		mapName: _map.name,
+		mapId: _map.id
 	});
 }

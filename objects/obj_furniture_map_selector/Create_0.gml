@@ -64,7 +64,7 @@ function drawUI() {
     draw_text_scribble(_middlePoint, _titleY, _selectDestinyText);
 
     var _maps = global.maps;
-    var _mapKeys = struct_get_names(_maps);
+    var _mapKeys = global.unlockedMaps;
     var _mapsBlockWidth = _guiWidth * .2;
     var _mapListX = (_guiWidth / 2) - _mapsBlockWidth - 100;
     var _menuBoxY = menuYPosition - 20;
@@ -104,7 +104,7 @@ function drawUI() {
             if (mouse_check_button_pressed(mb_left) && !hasSelected) {
                 hide();
                 playClickSound();
-                instance_create_layer(0, 0, "Controllers", obj_map_transition, { destination: _map.room, mapName: _map.name });
+                instance_create_layer(0, 0, "Controllers", obj_map_transition, { destination: _map.room, mapName: _map.name, mapId: _mapKeys[i] });
             }
         }
     }

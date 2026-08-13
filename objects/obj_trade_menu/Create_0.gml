@@ -306,7 +306,7 @@ function drawTradingMenu() {
 			_totalPrice = getSellItemValue(_itemData, _tradeItem.quantity);
 			var _unitPrice = getSellItemValue(_itemData, 1);
 			
-			_priceText = _tradeItem.quantity > 1 ? "$" + string(_totalPrice) + " ($" + string(_unitPrice) + "/un)" : _priceText = "$" + string(_totalPrice);
+			_priceText = (_tradeItem.quantity > 1) ? "$" + string(_totalPrice) + " ($" + string(_unitPrice) + "/un)" : "$" + string(_totalPrice);
 		}
 		
 		var _icon = _itemData.sprite;

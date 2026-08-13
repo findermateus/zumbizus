@@ -69,7 +69,7 @@ function followTarget(){
 	var _viewHeight = camera_get_view_height(view_camera[0]);
 	var _viewWidth = camera_get_view_width(view_camera[0]);
 	
-	if (mouse_check_button(mb_right) && !global.activeInventory && followMouse){
+	if (mouse_check_button(mb_right) && !isMenuOpen() && followMouse){
 		adjustCameraWithMouse();
 	} else {
 		var _targetMiddleXPoint = getMiddlePoint(target.bbox_left, target.bbox_right);
