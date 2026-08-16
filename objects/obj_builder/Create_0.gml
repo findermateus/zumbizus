@@ -59,7 +59,7 @@ function nothing(){
 }
 
 function verifyConditionsToAimFurniture(){
-	if(!keyboard_check_released(ord("T"))) return false;
+	if(!keyboard_check_released(ord("T")) || global.blockMenus) return false;
 	selectLateralMenuOption(menu.builder);
 }
 
@@ -75,7 +75,7 @@ function setUpModal(){
 }
 
 function verifyConditionsToStopAimFurniture(){
-	if(keyboard_check_released(ord("T"))){
+	if(keyboard_check_released(ord("T")) || global.blockMenus){
 		deactivateLateralMenuOption(menu.builder);
 		return true;
 	}

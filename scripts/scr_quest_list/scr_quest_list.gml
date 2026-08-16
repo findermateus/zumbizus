@@ -49,14 +49,81 @@ function getCreateCampfireQuest() {
 	array_push(
 		_reward.items,
 		{
-			itemId: consumableItems.watter_bottle,
-			itemType: itemType.consumables
-		},
-		{
-			itemId: consumableItems.canned_pineapple,
+			itemId: consumableItems.raw_meat_1,
 			itemType: itemType.consumables
 		}
 	);
+
+	_quest.setReward(_reward);
+
+	_quest.onComplete = method(_quest, function () {
+		self.applyReward();
+
+		var _nextQuest = getCookMeatQuest();
+
+		with (obj_quest_manager) {
+			addQuest(_nextQuest);
+			startQuest(_nextQuest);
+		}
+	});
+
+	return _quest;
+}
+
+function getCookMeatQuest() {
+	var _quest = new Quest(Quests.CookMeat, "Uma Refeição Quente");
+
+	var _cookMeatStep = new QuestStep(
+		"cook_meat",
+		"Cozinhe a carne"
+	);
+
+	_cookMeatStep.onStart = method(_cookMeatStep, function () {
+		var _dialogue = new Dialogue(
+			[
+				new DialogueText("Agora que temos uma fogueira, podemos preparar alguma coisa para comer.", false),
+				new DialogueText("Espera... eu encontrei um pedaço de carne antes.", false),
+				new DialogueText("Podemos aproveitar ela.", false),
+				new DialogueText("Carne crua não vai nos ajudar muito. Vou colocar ela na fogueira para cozinhar.", false),
+				new DialogueText("Boa ideia. Depois podemos comer.", true)
+			],
+			new DialogueParticipant(
+				npc_tutorial_2.name,
+				npc_tutorial_2.genderId,
+				npc_tutorial_2.skinColor,
+				npc_tutorial_2.hairColor,
+				npc_tutorial_2.hairOption,
+				npc_tutorial_2.eyeId,
+				npc_tutorial_2.outfitId,
+				npc_tutorial_2.helmetId,
+				npc_tutorial_2.bagId
+			)
+		);
+
+		instance_create_layer(0, 0, "Controllers", obj_dialogue, {
+			target: npc_tutorial,
+			dialogue: _dialogue
+		});
+	});
+
+	_cookMeatStep.onEvent = method(_cookMeatStep, function (_event, _data) {
+		if (_event != QuestEvent.ItemCrafted) return;
+
+		if (
+			_data.itemType != itemType.consumables
+			|| _data.itemId != consumableItems.cooked_meat_1
+		) return;
+
+		self.quest.completeCurrentStep();
+	});
+
+	_quest.addStep(_cookMeatStep);
+
+	_quest.onComplete = method(_quest, function () {
+		self.applyReward();
+	});
+
+	var _reward = new QuestReward(15);
 
 	_quest.setReward(_reward);
 

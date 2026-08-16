@@ -140,7 +140,8 @@ enum Quests {
 	FindSafePlace,
 	BecomeALumberjack,
 	CraftACampfire,
-	KillingInTheNameOfLove
+	KillingInTheNameOfLove,
+	CookMeat
 }
 
 enum QUEST_POPUP_TYPE {

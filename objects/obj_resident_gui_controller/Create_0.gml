@@ -121,16 +121,24 @@ function loadResidentList(){
 }
 
 function verifyMenuInput(){
+	var _isMenuActive = global.currentBaseMenuOption == menu.resident
 	var _keyPressed = keyboard_check_pressed(ord("M"));
-	if (!_keyPressed) return;
-	if (global.currentBaseMenuOption == menu.resident) {
+	
+	if (_isMenuActive && global.blockMenus) {
+		deactivateLateralMenuOption(menu.resident);
+		
+		return;
+	}
+	
+	if (!_keyPressed || global.blockMenus) return;
+	
+	if (_isMenuActive) {
 		deactivateLateralMenuOption(menu.resident);
 		return;
 	}
+	
 	selectLateralMenuOption(menu.resident);
 }
-
-// --- CONTROLE DO MODAL ---
 
 function hideMenu() {
 	playSwiiimmmSound();
