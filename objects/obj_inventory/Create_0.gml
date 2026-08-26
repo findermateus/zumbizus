@@ -65,9 +65,11 @@ mouseIsOnOtherMenu = false;
 
 function hide(){
 	instance_destroy(obj_menu_option);
+	
 	var _animationSpeed = (delta_time/1000000);
 	curveAnimationIndex -= _animationSpeed * 1.1;
 	animationCurveInventoryShow = animcurve_get_channel(ac_inventory, "inventory_hide");
+	
 	if(curveAnimationIndex < .1){
 		curveAnimationIndex = 0;
 		global.activeInventory = false;
@@ -464,7 +466,11 @@ function holdItem(){
 	
 	if(mouse_check_button_released(mb_left) && activeHoldingItem != BLANK_INVENTORY_SPACE){
 		dropInventoryItem();
-		currentState = nothing;
+		
+		if (currentState != hide) {
+			currentState = nothing;
+		}
+		
 		return;
 	}
 	

@@ -63,13 +63,6 @@ if (_keyLeft || _keyRight) {
     global.player.eyeId = _newEyeId;
 }
 
-if (keyboard_check_pressed(vk_backspace)) {
-	var _direction = irandom(365);
-	var _damage = irandom(25);
-	playerGetHit(_direction, _damage, irandom_range(5, 15));
-}
-
-
 if (keyboard_check_pressed(ord("U"))) {
 	var _item = global.items[itemType.consumables][consumableItems.canned_food]
 	createItem(constructItem(itemType.consumables, _item), true);

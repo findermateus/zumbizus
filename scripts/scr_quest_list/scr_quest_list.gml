@@ -266,6 +266,10 @@ function getFindSafePlaceQuest() {
 		}
 	];
 
+	_eatAndDrinkStep.onStart = method(_eatAndDrinkStep, function () {
+		createTextInputTutorial("[TAB] Para abrir o inventário", [vk_tab]);
+	});
+
 	_eatAndDrinkStep.onEvent = method(_eatAndDrinkStep, function(_event, _data) {
 		if (_event != QuestEvent.ItemConsumed) return;
 
@@ -299,6 +303,10 @@ function getFindSafePlaceQuest() {
 			self.quest.completeCurrentStep();
 		}
 	});
+	
+	_eatAndDrinkStep.onComplete = function () {
+		closeInventory();
+	}
 
 	_quest.addStep(_eatAndDrinkStep);
 
@@ -322,8 +330,8 @@ function getFindSafePlaceQuest() {
 	);
 
 	_findClothesStep.onEvent = method(_findClothesStep, function(_event, _data) {
-		if (_event != QuestEvent.ObjectInteracted) return;
-		if (_data.tag != "chest") return;
+		if (_event != QuestEvent.ItemCollected) return;
+		if (_data.itemType != itemType.equipment || _data.itemId != equipmentItems.simpleOutfit) return;
 
 		self.quest.completeCurrentStep();
 	});
@@ -331,6 +339,11 @@ function getFindSafePlaceQuest() {
 	_quest.addStep(_findClothesStep);
 
 	var _wearClothesStep = new QuestStep("wear_clothes", "Vista a roupa encontrada");
+
+	_wearClothesStep.onStart = function () {
+		closeInventory();
+		createTextInputTutorial("[TAB] Para abrir o inventário", [vk_tab])
+	};
 
 	_wearClothesStep.onEvent = method(_wearClothesStep, function (_event, _data) {
 		if (_event != QuestEvent.ItemEquiped) return;
@@ -359,6 +372,10 @@ function getFindSafePlaceQuest() {
 		"get_weapon",
 		"Equipe a arma"
 	);
+
+	_equipWeaponStep.onStart = method(_equipWeaponStep, function () {
+		createTextInputTutorial("[TAB] Para abrir o inventário", [vk_tab])
+	});
 
 	_equipWeaponStep.onEvent = method(_equipWeaponStep, function(_event, _data) {
 		if (_event != QuestEvent.ItemEquiped) return;

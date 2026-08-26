@@ -23,6 +23,7 @@ function closeInventory(){
 	
 	obj_camera.setDefaultValues();
 	obj_camera.target = obj_player;
+	
 	with (obj_inventory) {
 		currentState = hide;
 	}

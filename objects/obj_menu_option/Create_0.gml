@@ -83,7 +83,13 @@ function execute(){
 
 function cleanScreen(){
 	cleanMenuOptions();
-	if(option.comesFromInventory && instance_exists(obj_inventory)){
+	
+	if (obj_inventory.currentState == obj_inventory.hide) {
+		
+		return;
+	}
+	
+	if(option.comesFromInventory){
 		with obj_inventory{
 			currentState = nothing;
 		}

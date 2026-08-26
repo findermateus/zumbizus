@@ -33,6 +33,8 @@ function startIntroPlayerDialogue() {
 		global.player.currentThirst = global.player.defaultTotalThirst * .2;
 		
 		obj_camera.setDefaultValues();
+		
+		createTextInputTutorial("Use WASD para andar", [ord("W"), ord("A"), ord("S"), ord("D")]);
 	}));
 
 	instance_create_layer(0, 0, "Controllers", obj_dialogue, {
