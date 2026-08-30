@@ -34,6 +34,10 @@ function getCreateCampfireQuest() {
 
 	var _craftCampfireStep = new QuestStep("craft_campfire", "Construa a fogueira");
 
+	_craftCampfireStep.onStart = method(_craftCampfireStep, function () {
+		createTextInputTutorial("[T] Para abrir o menu de criação", [ord("T")])
+	});
+
 	_craftCampfireStep.onEvent = method(_craftCampfireStep, function (_event, _data) {
 		if (_event != QuestEvent.FurnitureCrafted) return;
 
@@ -390,6 +394,10 @@ function getFindSafePlaceQuest() {
 		"destroy_barricate",
 		"Destrua o bloqueio da porta"
 	);
+	
+	_destroyBarricateStep.onStart = method(_destroyBarricateStep, function () {
+		createCombatTutorial();
+	});
 
 	_destroyBarricateStep.onEvent = method(_destroyBarricateStep, function(_event, _data) {
 		if (_event != QuestEvent.ObjectDestroyed) return;
@@ -419,14 +427,19 @@ function getFindSafePlaceQuest() {
 		2
 	);
 
+	_defeatZombiesStep.onStart = method(_defeatZombiesStep, function () {
+		createCombatTutorial();
+	});
+
 	_quest.addStep(_defeatZombiesStep);
 
 	var _destroyNpcBarricadeStep = new QuestStep(
 		"destroy_npc_barricade",
 		"Destrua a bancada que está prendendo o rapaz"
 	);
-
+	
 	_destroyNpcBarricadeStep.onStart = method(_destroyNpcBarricadeStep, function () {
+		createCombatTutorial();
 		var _alreadyDestroyedBarricate = true;
 		
 		with (obj_breakable_empty_wooden_shelf) {

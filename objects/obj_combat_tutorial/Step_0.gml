@@ -1,3 +1,5 @@
+if (global.pause) exit;
+
 updateJuice();
 
 switch (fadeState) {

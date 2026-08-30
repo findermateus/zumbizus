@@ -266,7 +266,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.6.1.160",
+    "IDEVersion":"2024.6.0.157",
   },
   "name":"zumbizus",
   "resources":[
@@ -304,6 +304,7 @@
     {"id":{"name":"obj_circle","path":"objects/obj_circle/obj_circle.yy",},},
     {"id":{"name":"obj_collected_item_indicator","path":"objects/obj_collected_item_indicator/obj_collected_item_indicator.yy",},},
     {"id":{"name":"obj_collision","path":"objects/obj_collision/obj_collision.yy",},},
+    {"id":{"name":"obj_combat_tutorial","path":"objects/obj_combat_tutorial/obj_combat_tutorial.yy",},},
     {"id":{"name":"obj_controller","path":"objects/obj_controller/obj_controller.yy",},},
     {"id":{"name":"obj_cursor_controller","path":"objects/obj_cursor_controller/obj_cursor_controller.yy",},},
     {"id":{"name":"obj_damage_controller","path":"objects/obj_damage_controller/obj_damage_controller.yy",},},

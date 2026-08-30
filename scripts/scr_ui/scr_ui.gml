@@ -17,3 +17,7 @@ function createSpriteInputTutorial(_sprite, _keys, _requireAll = false) {
         requireAll: _requireAll
     });
 }
+
+function createCombatTutorial() {
+    return instance_create_layer(0, 0, "Controllers", obj_combat_tutorial);
+}
