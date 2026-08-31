@@ -214,7 +214,9 @@ function switchToAttack(){
 }
 
 function getKilled(_force, _direction, _damage) {
-	obj_quest_manager.notifyEvent(QuestEvent.EnemyKilled, {enemyType: obj_spitter_enemy_entity})
+	defeated = true;
+	
+	obj_quest_manager.notifyEvent(QuestEvent.EnemyKilled, {enemyType: obj_spitter_enemy_entity, enemyId: id})
 	
 	createBloodEffect(_force, _direction, getMiddlePoint(bbox_left, bbox_right), getMiddlePoint(bbox_top, bbox_bottom), 50);
 	

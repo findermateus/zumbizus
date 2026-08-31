@@ -1,9 +1,9 @@
 {
   "$GMScript":"v1",
-  "%Name":"scr_quest_list",
+  "%Name":"scr_tutorial_quests",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"scr_quest_list",
+  "name":"scr_tutorial_quests",
   "parent":{
     "name":"Quest",
     "path":"folders/Scripts/Quest.yy",

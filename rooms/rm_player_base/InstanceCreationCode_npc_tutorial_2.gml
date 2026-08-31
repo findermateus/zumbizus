@@ -80,6 +80,47 @@ getCurrentDialogue = function() {
 		}
 	}
 
+	if (
+		obj_quest_manager.hasCompletedQuest(Quests.CraftACampfire)
+		&&
+		!obj_quest_manager.hasActiveQuest(Quests.ExploreDump)
+		&&
+		!obj_quest_manager.hasCompletedQuest(Quests.ExploreDump)
+	) {
+		var _dialogue = new Dialogue(
+			[
+				new DialogueText("Enquanto você estava procurando os materiais e montando a fogueira...", false),
+				new DialogueText("...eu percebi que tem alguns zumbis bem perto daqui.", false),
+				new DialogueText("Talvez não fosse uma má ideia acabar com eles.", false),
+				new DialogueText("Assim podemos explorar a região com mais segurança e pegar qualquer coisa útil que encontrarmos.", false),
+				new DialogueText("É... matar alguns zumbis e ainda sair de lá com recursos. Parece um bom negócio.", true),
+				new DialogueText("Exatamente. Só não se afaste demais.", false),
+				new DialogueText("Se encontrar alguma coisa útil, traz pra cá.", false),
+				new DialogueText("Pode deixar. Vou dar uma olhada por lá.", true)
+			],
+			new DialogueParticipant(
+				name,
+				genderId,
+				skinColor,
+				hairColor,
+				hairOption,
+				eyeId,
+				outfitId,
+				helmetId,
+				bagId
+			)
+		);
+
+		_dialogue.onEnd = function () {
+			var _quest = getExploreDumpQuest();
+
+			obj_quest_manager.addQuest(_quest);
+			obj_quest_manager.startQuest(_quest);
+		};
+
+		return _dialogue;
+	}
+
 	return noone;
 };
 

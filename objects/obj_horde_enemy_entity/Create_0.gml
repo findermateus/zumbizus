@@ -121,19 +121,27 @@ function enemyWalkToRandomDirectionState() {
 	enemyColision(obj_collision);
 	switchFromDifferentStatesWhenNotAttacking();
 	handlePositionWithPathHandler(true);
+	
 	if (state != states.walkRandomDirection) {
 		iddleDirection = irandom(365);
 		iddleSpeed = irandom_range(1, maxIddleVel);
 	}
 	updateSpriteWithState(sprites.running, states.walkRandomDirection);
+	
 	var _hMovementSpeed = lengthdir_x(iddleSpeed, iddleDirection);
 	var _vMovementSpeed = lengthdir_y(iddleSpeed, iddleDirection);
-	var _horizontalCollision = genericCollision(x + _hMovementSpeed, y)
-	var _verticalCollision = genericCollision(x, y + _vMovementSpeed);
+	
+	var _padding = 5;
+	
+	var _horizontalCollision = genericCollision(x + _hMovementSpeed, y) || (bbox_left + _hMovementSpeed < _padding) || (bbox_right + _hMovementSpeed > room_width - _padding);
+	var _verticalCollision = genericCollision(x, y + _vMovementSpeed) || (bbox_top + _vMovementSpeed < _padding) || (bbox_bottom + _vMovementSpeed > room_height - _padding);
+	
 	adjustDirection(_hMovementSpeed);
+	
 	if (_horizontalCollision) {
 		iddleDirection = 180 - iddleDirection;
 	}
+	
 	if (_verticalCollision) {
 		iddleDirection = 360 - iddleDirection;
 	} 
@@ -237,8 +245,9 @@ function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weapo
 
 function getKilled() {
 	currentState = getKilledState;
+	defeated = true;
 	
-	obj_quest_manager.notifyEvent(QuestEvent.EnemyKilled, {enemyType: obj_horde_enemy_entity});
+	obj_quest_manager.notifyEvent(QuestEvent.EnemyKilled, {enemyType: obj_horde_enemy_entity, enemyId: id});
 	
 	xpAdd(choose(1, 2, 3));
 	

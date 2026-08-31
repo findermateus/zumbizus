@@ -558,3 +558,62 @@ function getFindSafePlaceQuest() {
 
 	return _quest;
 }
+
+function getExploreDumpQuest() {
+	var _quest = new Quest(
+		Quests.ExploreDump,
+		"Uma Limpeza Necessária"
+	);
+
+	_quest.mapId = "junkyard";
+
+	var _exploreDumpStep = new QuestStep(
+		"explore_dump",
+		"Explore o lixão"
+	);
+
+	_exploreDumpStep.area = rm_dump;
+
+	_exploreDumpStep.onStart = method(_exploreDumpStep, function () {
+		unlockMap(self.quest.mapId);
+	});
+	
+	_exploreDumpStep.onEvent = method(_exploreDumpStep, function (_event, _data) {
+		if (_event != QuestEvent.AreaEntered) return;
+		if (_data.area != self.area) return;
+
+		self.quest.completeCurrentStep();
+	})
+
+	_quest.addStep(_exploreDumpStep);
+	
+	var _killTheZombiesStep = new QuestStep("kill_dump_zombies", "Elimine os Zumbis da Área");
+
+	_killTheZombiesStep.enemyQuestTag = "kill_dump_zombies";
+
+	_killTheZombiesStep.onEvent = method(_killTheZombiesStep, function (_event, _data) {
+	    if (_event != QuestEvent.EnemyKilled) return;
+    
+	    var _killedAll = true;
+	    var _tagToMatch = enemyQuestTag;
+    
+	    with(obj_enemy) {
+	        if (questTag == _tagToMatch && !defeated) {
+	            _killedAll = false;
+	            break;
+	        }
+	    }
+    
+	    if (_killedAll) {
+	        self.quest.completeCurrentStep();
+	    }
+	});
+	
+	_quest.addStep(_killTheZombiesStep);
+	
+	_quest.onComplete = method(_quest, function () {
+		lockMap(self.mapId)
+	})
+
+	return _quest;
+}

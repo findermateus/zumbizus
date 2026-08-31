@@ -133,15 +133,15 @@ function QuestStep(_id, _description) constructor {
 
 function QuestReward(_xp) constructor {
 	xp = _xp;
-	items = []; // {itemId, itemType, quantity}
+	items = [];
 }
 
 enum Quests {
 	FindSafePlace,
 	BecomeALumberjack,
 	CraftACampfire,
-	KillingInTheNameOfLove,
-	CookMeat
+	CookMeat,
+	ExploreDump
 }
 
 enum QUEST_POPUP_TYPE {
