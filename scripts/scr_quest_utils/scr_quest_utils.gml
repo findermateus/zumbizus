@@ -77,7 +77,6 @@ function createDefeatEnemiesStep(_id, _description, _enemyType, _killTarget) {
 		) {
 			self.killCount += 1;
 
-			// Verifica se atingiu a meta
 			if (self.killCount >= self.killTarget) {
 				self.killCount = self.killTarget;
 				self.quest.completeCurrentStep();
@@ -85,5 +84,26 @@ function createDefeatEnemiesStep(_id, _description, _enemyType, _killTarget) {
 		}
 	});
 
+	return _step;
+}
+
+function createReturnToBaseStep() {
+	var _step = new QuestStep("return_to_base", "Volte para a base");
+
+	_step.area = rm_player_base;
+	
+	_step.onStart = method(_step, function () {
+		if (room == self.area) {
+			self.quest.completeCurrentStep();
+		}
+	});
+
+	_step.onEvent = method(_step, function(_event, _data) {
+		if (_event != QuestEvent.AreaEntered) return;
+		if (_data.area != self.area) return;
+
+		self.quest.completeCurrentStep();
+	});
+	
 	return _step;
 }

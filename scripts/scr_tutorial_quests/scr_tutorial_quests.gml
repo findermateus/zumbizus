@@ -32,6 +32,8 @@ function getCreateCampfireQuest() {
 
 	_quest.addStep(_step);
 
+	_quest.addStep(createReturnToBaseStep());
+
 	var _craftCampfireStep = new QuestStep("craft_campfire", "Construa a fogueira");
 
 	_craftCampfireStep.onStart = method(_craftCampfireStep, function () {
@@ -177,25 +179,8 @@ function getCreateAxeQuest(_npc) {
 	);
 
 	_quest.addStep(_collectMaterialsStep);
-
-	var _secondStep = new QuestStep("return_to_base", "Volte para a base");
-
-	_secondStep.area = rm_player_base;
 	
-	_secondStep.onStart = method(_secondStep, function () {
-		if (room == self.area) {
-			self.quest.completeCurrentStep();
-		}
-	});
-
-	_secondStep.onEvent = method(_secondStep, function(_event, _data) {
-		if (_event != QuestEvent.AreaEntered) return;
-		if (_data.area != self.area) return;
-
-		self.quest.completeCurrentStep();
-	});
-	
-	_quest.addStep(_secondStep);
+	_quest.addStep(createReturnToBaseStep());
 
 	var _thirdStep = new QuestStep("craft_axe", "Faça o machado");
 

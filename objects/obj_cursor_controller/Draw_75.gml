@@ -17,5 +17,5 @@ draw_sprite_ext(
 	_final_scale,
 	0,
 	c_white,
-	draw_get_alpha() * .8
+	1
 );

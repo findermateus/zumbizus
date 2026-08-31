@@ -184,8 +184,9 @@ addQuest = function(_quest) {
 
 startQuest = function(_quest) {
 	_quest.start();
-	array_push(activeQuests, _quest);
 	
+	array_push(activeQuests, _quest);
+
 	instance_create_layer(0, 0, "Alert", obj_quest_popup, {
 		textContent: _quest.name,
 		popupType: QUEST_POPUP_TYPE.QUEST_ADDED
@@ -213,7 +214,13 @@ completeQuest = function(_quest) {
 		popupType: QUEST_POPUP_TYPE.QUEST_COMPLETED
 	});
 	
-	array_push(completedQuests, _quest.id);
+	array_push(
+		completedQuests, 
+		{
+			id: _quest.id,
+			name: _quest.name
+		}
+	);
 };
 
 notifyEvent = function(_event, _data) {
@@ -247,7 +254,7 @@ function hasCompletedQuest(_questId) {
 	for (var i = 0; i < array_length(completedQuests); i++) {
 		var _quest = completedQuests[i];
 		
-		if (_questId == _quest) {
+		if (_questId == _quest.id) {
 			return true;
 		}
 	}

@@ -44,11 +44,15 @@ var _spriteList = [
 
 sprites = _spriteList[irandom(array_length(_spriteList)-1)];
 state = states.unoccupied;
-maxIddleVel = 4;
-chasingVel = irandom_range(maxIddleVel, maxIddleVel + 3);
+maxIddleVel = 2;
+chasingVel = irandom_range(4, 7);
 distanceToChase = 500;
 iddleDirection = 0;
 iddleSpeed = 0;
+
+startPointX = x;
+startPointY = y;
+maxWalkDistance = 200;
 
 #region combat
 velh = 0;
@@ -131,10 +135,18 @@ function enemyWalkToRandomDirectionState() {
 	var _hMovementSpeed = lengthdir_x(iddleSpeed, iddleDirection);
 	var _vMovementSpeed = lengthdir_y(iddleSpeed, iddleDirection);
 	
+	var _nextX = x + _hMovementSpeed;
+	var _nextY = y + _vMovementSpeed;
+	
+	if (point_distance(startPointX, startPointY, _nextX, _nextY) > maxWalkDistance) {
+		iddleDirection = point_direction(x, y, startPointX, startPointY) + random_range(-20, 20);
+		return;
+	}
+	
 	var _padding = 5;
 	
-	var _horizontalCollision = genericCollision(x + _hMovementSpeed, y) || (bbox_left + _hMovementSpeed < _padding) || (bbox_right + _hMovementSpeed > room_width - _padding);
-	var _verticalCollision = genericCollision(x, y + _vMovementSpeed) || (bbox_top + _vMovementSpeed < _padding) || (bbox_bottom + _vMovementSpeed > room_height - _padding);
+	var _horizontalCollision = genericCollision(_nextX, y) || (bbox_left + _hMovementSpeed < _padding) || (bbox_right + _hMovementSpeed > room_width - _padding);
+	var _verticalCollision = genericCollision(x, _nextY) || (bbox_top + _vMovementSpeed < _padding) || (bbox_bottom + _vMovementSpeed > room_height - _padding);
 	
 	adjustDirection(_hMovementSpeed);
 	
@@ -323,7 +335,13 @@ function chasePoint(){
 	
 	handlePositionWithPathHandler();
 	switchToChase();
-	if (!_canWalk) {
+	
+	var _reachedDestiny = point_distance(x, y, destinyX, destinyY) < 15;
+	
+	if (!_canWalk || _reachedDestiny) {
+		startPointX = x;
+		startPointY = y;
+		
 		currentState = enemyWalkToRandomDirectionState;
 		return;
 	}

@@ -41,11 +41,27 @@ function Quest(_id, _name) constructor {
 	
 	start = function() {
 		isActive = true;
+		
+		onStart();
 	
 		if (array_length(steps) > 0) {
 			steps[0].onStart();
 		}
 	};
+	
+	onStart = function() {};
+	
+	complete = function() {
+		isCompleted = true;
+
+		onComplete();
+
+		var _data = self;
+
+		with (obj_quest_manager) {
+			completeQuest(_data);
+		}
+	}
 	
 	onComplete = function () {};
 	
@@ -71,16 +87,8 @@ function Quest(_id, _name) constructor {
 		currentStepIndex++;
 
 		if (currentStepIndex >= array_length(steps)) {
-			isCompleted = true;
-
-			onComplete();
-
-			var _data = self;
-
-			with (obj_quest_manager) {
-				completeQuest(_data);
-			}
-
+			complete();
+			
 			return;
 		}
 
