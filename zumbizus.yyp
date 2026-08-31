@@ -266,7 +266,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.6.1.160",
+    "IDEVersion":"2024.6.2.162",
   },
   "name":"zumbizus",
   "resources":[
@@ -969,6 +969,7 @@
     {"id":{"name":"spr_weapon_sniper_rifle","path":"sprites/spr_weapon_sniper_rifle/spr_weapon_sniper_rifle.yy",},},
     {"id":{"name":"spr_weapon_ump_backup","path":"sprites/spr_weapon_ump_backup/spr_weapon_ump_backup.yy",},},
     {"id":{"name":"spr_weapon_ump","path":"sprites/spr_weapon_ump/spr_weapon_ump.yy",},},
+    {"id":{"name":"spr_white_button","path":"sprites/spr_white_button/spr_white_button.yy",},},
     {"id":{"name":"spr_wood_board","path":"sprites/spr_wood_board/spr_wood_board.yy",},},
     {"id":{"name":"spr_wood_log","path":"sprites/spr_wood_log/spr_wood_log.yy",},},
     {"id":{"name":"spr_wooden_crate","path":"sprites/spr_wooden_crate/spr_wooden_crate.yy",},},

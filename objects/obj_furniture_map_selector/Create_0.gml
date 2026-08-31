@@ -13,15 +13,12 @@ menuId = Menus.MapSelector;
 
 activationMethod = function () {
 	
-	//sons
 	playClickSound();
 	audio_play_sound(snd_open_crafting_station, 0, false);
 	
-	//padrão e obrigatório
 	openMenu(menuId);
 	setVariablesOpenFurniture();
 	
-	//do objeto
 	isUsing = true;
 	menuYPosition = defaultMenuYPosition;
 }
@@ -77,6 +74,7 @@ function drawUI() {
 
     for (var i = 0; i < array_length(_mapKeys); i++) {
         var _map = _maps[$ _mapKeys[i]];
+		var _isPermanent  = _map.accessType == MapAccessType.Permanent;
         
         if (i >= array_length(map_hover_scales)) map_hover_scales[i] = 1;
         
@@ -94,8 +92,14 @@ function drawUI() {
         var _offX = (_mapsBlockWidth - _bW) / 2;
         var _offY = (_buttonHeight - _bH) / 2;
 
-        draw_sprite_stretched_ext(spr_map_button, _mouseIsHovering, _mapListX + _offX, _buttonY + _offY, _bW, _bH, c_white, titleAlpha);
+		draw_sprite_stretched_ext(spr_white_button, 0, _mapListX + _offX, _buttonY + _offY, _bW, _bH,  c_gray, titleAlpha);
         
+		if (!_isPermanent || _mouseIsHovering) {
+			var _borderColor = _isPermanent ? c_white : c_yellow;
+			
+			draw_sprite_stretched_ext(spr_white_button, 1, _mapListX + _offX, _buttonY + _offY, _bW, _bH,  _borderColor, titleAlpha);
+		}
+		
 		draw_set_font(fnt_gui_default);
         draw_text_scribble(_mapListX + _mapsBlockWidth/2, _buttonY + _buttonHeight/2, "[fa_center][fa_middle]" + _map.name);
         
@@ -141,7 +145,12 @@ function drawUI() {
         draw_sprite_stretched(hoverMap.image, 0, _midX - _imgW/2, _contentY + 60, _imgW, _imgH);
         
         draw_set_font(fnt_gui_long_text);
-        draw_text_ext(_descX + 40, _contentY + 60 + _imgH + 40, hoverMap.description, -1, _descW - 80);
+		
+		var _descriptionX = _descX + 40;
+		var _descriptionY = _contentY + 60 + _imgH + 40;
+		
+		drawTextExtShadow(_descriptionX, _descriptionY, hoverMap.description, -1, _descW -80, _drawAlpha);
+        draw_text_ext(_descriptionX, _descriptionY, hoverMap.description, -1, _descW - 80);
     }
     
 	draw_set_font(fnt_gui_default);
