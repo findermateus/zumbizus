@@ -18,3 +18,6 @@ if(global.debug){
 	    draw_text(display_get_gui_width()/2, startY + (i * offset), _debugInfo[i]);
 	}	
 }
+
+
+draw_text(20, 20, "Currency: " + string(global.player.money));

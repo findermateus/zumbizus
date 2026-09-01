@@ -26,6 +26,8 @@ defaultGreetingOptions = [
 greetingOptions = defaultGreetingOptions;
 
 canTrade = false;
+tradeItems = [];
+
 isInteracting = false;
 
 function canPlayerTalk() {
@@ -76,7 +78,11 @@ function getCurrentDialogue() {
 function handleInteract(_options) {
 	if (!array_length(_options)) {
 		greet();
-		
+		return;
+	}
+
+	if (array_length(_options) == 1) {
+		handleNPCOption(_options[0].action);
 		return;
 	}
 	
@@ -88,26 +94,40 @@ function handleInteract(_options) {
 
 function closeInteractOptions() {
 	activeInteraction = false;
-	if (global.activeMenu == menuId) closeMenu();
+	if (isCurrentMenu(menuId)) closeMenu();
 }
 
 function handleNPCOption(option) {
+	if (isInteracting) return;
+
 	playClickSound();	
-	isInteracting = true;
+	
 	switch (option) {
 
 		case "talk":
+			var _dialogue = getCurrentDialogue();
+
+			if (!is_struct(_dialogue)) return;
+
+			isInteracting = true;
 			closeInteractOptions();
 
 			instance_create_layer(0, 0, "Controllers", obj_dialogue, {
 				target: id,
-				dialogue: getCurrentDialogue()
+				dialogue: _dialogue
 			});
 		break;
 
 		case "trade":
-			show_message("Negociando");
-			//openTrade(npc);
+			if (!canTrade) return;
+			if (isInteracting) return;
+
+			isInteracting = true;
+			closeInteractOptions();
+
+			instance_create_layer(0, 0, "Controllers", obj_trade_menu, {
+				target: id
+			});
 		break;
 	}
 }

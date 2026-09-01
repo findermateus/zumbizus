@@ -61,6 +61,8 @@ function createIndicatorForDroppedItems(_item, _quantity = 1){
 	_indicatorModal.box.quantity = _quantity;
 }
 
+
+// _item aceita tanto a configuração quanto o item construído
 function createIndicatorModal(_item, _quantity = 1){
 	var _indicatorModal = instance_create_layer(0, 0, "Alert", obj_collected_item_indicator);
 	_indicatorModal.box.textContent = _item.name;

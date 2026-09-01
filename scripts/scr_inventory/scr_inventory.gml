@@ -19,7 +19,7 @@ function openInventoryWithContainer(_target, _sound, _containerData){
 
 function closeInventory(){
 	if (!global.activeInventory) return;
-	if (global.activeMenu == Menus.Inventory) closeMenu();
+	if (isCurrentMenu(Menus.Inventory)) closeMenu();
 	
 	obj_camera.setDefaultScale();
 	obj_camera.target = obj_player;

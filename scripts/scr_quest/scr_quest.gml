@@ -5,7 +5,9 @@ enum QuestEvent {
 	ItemCrafted,
 	FurnitureCrafted,
 	DialogueEnded,
-	DialogueStarted
+	DialogueStarted,
+	ItemBought,
+	ItemSold
 }
 
 function Quest(_id, _name) constructor {

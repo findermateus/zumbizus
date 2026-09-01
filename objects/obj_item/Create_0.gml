@@ -63,10 +63,7 @@ function active(){
 	var _result = addItemToGrid(global.inventory, item);
 	
 	if(_result == false){
-		var _alert = instance_create_layer(x, y, "Alert", obj_alert, {
-			y: (y - sprite_get_height(item.sprite) - 32)
-		});
-		_alert.textAlert = "Inventário cheio!";
+		createRoomNotifyIndicator("Inventário cheio!", x, y)
 		playFailSound();
 		curveAnimationIndex = 0;
 		currentState = inventoryFull;	

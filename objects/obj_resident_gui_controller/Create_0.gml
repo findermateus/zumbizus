@@ -458,7 +458,7 @@ function drawPaginationButton(_gui, _button1Y, _button2Y, _actionUp, _actionDown
 		if (mouse_check_button_released(mb_left)) { playClickSound(); _actionUp(); }
 	}
 	draw_sprite_stretched(spr_selectable_grid, _hUp, _gui.x, _button1Y, _buttonWidth, _buttonHeight);
-	draw_sprite_ext(spr_builder_arrow_indicator, 0, _gui.x + _buttonWidth/2, _button1Y + _buttonHeight/2, _hUp ? 1.4 : 1.2, _hUp ? 1.4 : 1.2, 0, c_white, 1);
+	draw_sprite_ext(spr_arrow_indicator, 0, _gui.x + _buttonWidth/2, _button1Y + _buttonHeight/2, _hUp ? 1.4 : 1.2, _hUp ? 1.4 : 1.2, 0, c_white, 1);
 	
 	// Botão Down
 	var _hDown = mouseIsOnRectangle(_gui.x, _button2Y, _gui.x + _buttonWidth, _button2Y + _buttonHeight + MARGIN_WHEN_HOVER);
@@ -468,7 +468,7 @@ function drawPaginationButton(_gui, _button1Y, _button2Y, _actionUp, _actionDown
 		if (mouse_check_button_released(mb_left)) { playClickSound(); _actionDown(); }
 	}
 	draw_sprite_stretched(spr_selectable_grid, _hDown, _gui.x, _button2Y, _buttonWidth, _buttonHeight);
-	draw_sprite_ext(spr_builder_arrow_indicator, 0, _gui.x + _buttonWidth/2, _button2Y + _buttonHeight/2, _hDown ? 1.4 : 1.2, _hDown ? -1.4 : -1.2, 0, c_white, 1);
+	draw_sprite_ext(spr_arrow_indicator, 0, _gui.x + _buttonWidth/2, _button2Y + _buttonHeight/2, _hDown ? 1.4 : 1.2, _hDown ? -1.4 : -1.2, 0, c_white, 1);
 	
 	_gui.x += _buttonWidth + 30;
 	return _isHovering;

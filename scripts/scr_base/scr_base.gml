@@ -68,14 +68,14 @@ function deactivateLateralMenuOption(_option) {
 	
 	if (_option == menu.builder) {
 		with obj_builder {
-			if (global.activeMenu == Menus.Builder) closeMenu();
+			if (isCurrentMenu(Menus.Builder)) closeMenu();
 			hideMenu();
 		}
 	}
 	
 	if (_option == menu.resident) {
 		with obj_resident_gui_controller {
-			if (global.activeMenu == Menus.ResidentController) closeMenu();
+			if (isCurrentMenu(Menus.ResidentController)) closeMenu();
 			hideMenu();
 		}
 	}

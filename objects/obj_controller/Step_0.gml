@@ -32,6 +32,10 @@ if (global.debug && keyboard_check_released(ord("Z"))) {
 	instance_create_layer(mouse_x, mouse_y, "Instances", obj_horde_enemy_entity)
 }
 
+if (keyboard_check_pressed(ord("C"))) {
+	global.player.money += 100;
+}
+
 if (keyboard_check_pressed(vk_escape)) {
 	if (!isGamePaused) {
 		pauseGame();
