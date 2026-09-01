@@ -155,6 +155,8 @@ function getCreateAxeQuest(_npc) {
 	_goToForestStep.area = rm_forest;
 	
 	_goToForestStep.onStart = method(_goToForestStep, function () {
+		unlockMap("forest");
+		
 		if (room == self.area) {
 			self.quest.completeCurrentStep();
 		}
@@ -560,7 +562,7 @@ function getExploreDumpQuest() {
 	_exploreDumpStep.area = rm_dump;
 
 	_exploreDumpStep.onStart = method(_exploreDumpStep, function () {
-		unlockMap(self.quest.mapId);
+		unlockMap(self.quest.mapId, MapAccessType.Quest, self.quest.id, self.quest.name);
 	});
 	
 	_exploreDumpStep.onEvent = method(_exploreDumpStep, function (_event, _data) {

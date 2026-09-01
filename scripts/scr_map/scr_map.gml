@@ -70,33 +70,47 @@ global.maps = {
 
 global.unlockedMaps = [];
 
-function unlockMap(_mapKey) {
-    if (!variable_struct_exists(global.maps, _mapKey)) {
+function unlockMap(_mapKey, _accessType = MapAccessType.Permanent, _questId = undefined, _questName = undefined) {
+	if (!variable_struct_exists(global.maps, _mapKey)) {
 		return;
 	}
         
-    var _alreadyUnlocked = false;
+    var _index = -1;
     
 	for (var i = 0; i < array_length(global.unlockedMaps); i++) {
-        if (global.unlockedMaps[i] == _mapKey) {
-            _alreadyUnlocked = true;
+        if (global.unlockedMaps[i].key == _mapKey) {
+            _index = i;
             break;
         }
     }
         
-    if (!_alreadyUnlocked) {
-        array_push(global.unlockedMaps, _mapKey);
+    if (_index == -1) {
+        array_push(global.unlockedMaps, {
+			key: _mapKey,
+			accessType: _accessType,
+			questId: _questId,
+			questName: _questName
+		});
+		
+		return;
     }
+	
+	global.unlockedMaps[_index].accessType = _accessType;
+	global.unlockedMaps[_index].questId = _questId;
+	global.unlockedMaps[_index].questName = _questName;
 }
 
 function lockMap(_mapKey) {
-	var _index = array_get_index(global.unlockedMaps, _mapKey);
+	var _index = -1;
+	
+	for (var i = 0; i < array_length(global.unlockedMaps); i++) {
+        if (global.unlockedMaps[i].key == _mapKey) {
+            _index = i;
+            break;
+        }
+    }
 
-	if (_index == -1) {
-		return;
+	if (_index != -1) {
+		array_delete(global.unlockedMaps, _index, 1);
 	}
-
-	array_delete(global.unlockedMaps, _index, 1);
 }
-
-unlockMap("forest");

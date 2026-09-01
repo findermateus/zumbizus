@@ -1,4 +1,3 @@
-// Percorrendo de trás para frente para evitar bugs ao deletar itens
 for (var i = array_length(damageList) - 1; i >= 0; i--) {
     var _damage = damageList[i];
     
@@ -12,7 +11,7 @@ for (var i = array_length(damageList) - 1; i >= 0; i--) {
     var _gx = roomToGuiX(_damage.x);
     var _gy = roomToGuiY(_damage.y);
     
-    var _str = "[fa_center][fa_middle][outline, c_black][scale," + string(_damage.scale) + "]" + string(_damage.value);
+    var _str = "[fa_center][fa_middle][scale," + string(_damage.scale) + "]" + string(_damage.value);
     
     draw_set_alpha(_damage.alpha);
 	drawTextShadowScribble(_gx, _gy, _str, _damage.alpha * .6);

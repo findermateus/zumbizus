@@ -3,6 +3,7 @@ actionDescription = "Iniciar Expedição";
 isUsing = false;
 hasSelected = false;
 hoverMap = undefined;
+hoverUnlock = undefined;
 defaultMenuYPosition = display_get_gui_height() + 100;
 menuYPosition = defaultMenuYPosition;
 titleAlpha = 0;
@@ -61,7 +62,7 @@ function drawUI() {
     draw_text_scribble(_middlePoint, _titleY, _selectDestinyText);
 
     var _maps = global.maps;
-    var _mapKeys = global.unlockedMaps;
+    var _unlockedMaps = global.unlockedMaps;
     var _mapsBlockWidth = _guiWidth * .2;
     var _mapListX = (_guiWidth / 2) - _mapsBlockWidth - 100;
     var _menuBoxY = menuYPosition - 20;
@@ -71,10 +72,12 @@ function drawUI() {
     
     var _mapListY = menuYPosition + 10;
     var _currentHovered = undefined;
+	var _currentHoveredUnlock = undefined;
 
-    for (var i = 0; i < array_length(_mapKeys); i++) {
-        var _map = _maps[$ _mapKeys[i]];
-		var _isPermanent  = _map.accessType == MapAccessType.Permanent;
+    for (var i = 0; i < array_length(_unlockedMaps); i++) {
+       var _unlockedMap = _unlockedMaps[i];
+	   var _map = _maps[$ _unlockedMap.key];
+		var _isPermanent  = _unlockedMap.accessType == MapAccessType.Permanent;
         
         if (i >= array_length(map_hover_scales)) map_hover_scales[i] = 1;
         
@@ -83,9 +86,9 @@ function drawUI() {
         
         var _mouseIsHovering = mouseIsOnRectangle(_mapListX, _buttonY, _mapListX + _mapsBlockWidth, _buttonY + _buttonHeight) && isUsing;
         
-        var _targetScale = _mouseIsHovering ? 1.1 : 1.0;
+        var _targetScale = _mouseIsHovering ? 1.05 : 1.0;
         map_hover_scales[i] = lerp(map_hover_scales[i], _targetScale, 0.2);
-        
+		
         var _scale = map_hover_scales[i];
         var _bW = _mapsBlockWidth * _scale;
         var _bH = _buttonHeight * _scale;
@@ -95,20 +98,24 @@ function drawUI() {
 		draw_sprite_stretched_ext(spr_white_button, 0, _mapListX + _offX, _buttonY + _offY, _bW, _bH,  c_gray, titleAlpha);
         
 		if (!_isPermanent || _mouseIsHovering) {
-			var _borderColor = _isPermanent ? c_white : c_yellow;
+			var _borderColor = _isPermanent ? c_white : #afaf00;
+			
+			_borderColor = !_isPermanent && _mouseIsHovering ? c_yellow : _borderColor
 			
 			draw_sprite_stretched_ext(spr_white_button, 1, _mapListX + _offX, _buttonY + _offY, _bW, _bH,  _borderColor, titleAlpha);
 		}
 		
 		draw_set_font(fnt_gui_default);
-        draw_text_scribble(_mapListX + _mapsBlockWidth/2, _buttonY + _buttonHeight/2, "[fa_center][fa_middle]" + _map.name);
+        draw_text_scribble(_mapListX + _mapsBlockWidth/2, _buttonY + _buttonHeight/2, "[fa_center][fa_middle][scale, " + string(_scale) + "]" + _map.name);
         
         if (_mouseIsHovering) {
             _currentHovered = _map;
+			_currentHoveredUnlock = _unlockedMap;
+			
             if (mouse_check_button_pressed(mb_left) && !hasSelected) {
                 hide();
                 playClickSound();
-                instance_create_layer(0, 0, "Controllers", obj_map_transition, { destination: _map.room, mapName: _map.name, mapId: _mapKeys[i] });
+                instance_create_layer(0, 0, "Controllers", obj_map_transition, { destination: _map.room, mapName: _map.name, mapId: _unlockedMap.key });
             }
         }
     }
@@ -116,12 +123,14 @@ function drawUI() {
     if (_currentHovered != undefined) {
         if (hoverMap == undefined || _currentHovered.name != hoverMap.name) {
             hoverMap = _currentHovered;
+			hoverUnlock = _currentHoveredUnlock;
+			
             content_alpha = 0;
             playHoverSound();
         }
     }
 
-    if (hoverMap != undefined) {
+	if (hoverMap != undefined) {
         content_alpha = lerp(content_alpha, 1, 0.1);
         var _descX = _guiWidth / 2 - 50;
         var _descW = 600;
@@ -149,8 +158,26 @@ function drawUI() {
 		var _descriptionX = _descX + 40;
 		var _descriptionY = _contentY + 60 + _imgH + 40;
 		
-		drawTextExtShadow(_descriptionX, _descriptionY, hoverMap.description, -1, _descW -80, _drawAlpha);
+		drawTextExtShadow(_descriptionX, _descriptionY, hoverMap.description, -1, _descW - 80, _drawAlpha);
         draw_text_ext(_descriptionX, _descriptionY, hoverMap.description, -1, _descW - 80);
+
+		if (hoverUnlock != undefined && hoverUnlock.accessType == MapAccessType.Quest) {
+			    var _descHeight = string_height_ext(hoverMap.description, -1, _descW - 80);
+			    var _questY = _descriptionY + _descHeight + 30;
+    
+			    var _titleText = "Missão Vinculada:";
+			    var _questNameText = hoverUnlock.questName;
+    
+			    draw_set_color(c_yellow);
+			    drawTextExtShadow(_descriptionX, _questY, _titleText, -1, _descW - 80, _drawAlpha);
+			    draw_text_ext(_descriptionX, _questY, _titleText, -1, _descW - 80);
+    
+			    var _titleHeight = string_height(_titleText) + 4; 
+    
+			    draw_set_color(c_white);
+			    drawTextExtShadow(_descriptionX, _questY + _titleHeight, _questNameText, -1, _descW - 80, _drawAlpha);
+			    draw_text_ext(_descriptionX, _questY + _titleHeight, _questNameText, -1, _descW - 80);
+			}
     }
     
 	draw_set_font(fnt_gui_default);
