@@ -21,6 +21,22 @@ function setUpWeaponCraftingGlobals() {
 	];
 }
 
+function getItemRecipee(_itemCategory, _itemId) {
+	if (!arrayKeyExists(global.craftingItems, _itemCategory)) {
+		return undefined;
+	}
+	
+	var _recipees = global.craftingItems[_itemCategory];
+	
+	for (var i = 0; i < array_length(_recipees); i++) {
+		if (_recipees[i].itemId == _itemId) {
+			return _recipees[i];
+		}
+	}
+	
+	return undefined;
+}
+
 function setUpWeaponRepairGlobals() {
 	var _nailBoardRepairRequirements = [
 		new RequirementBuilder(trashItems.nail, 5, itemType.trash)

@@ -71,7 +71,7 @@ function getAvailableCraftingItemsByCategoryAndLevel(_category, _level) {
 }
 
 
-function getItemRequirements(_type, _id) {
+function getCraftingItem(_type, _id) {
 	var _category = craftingCategories.cooking;
 	
 	if (_type == itemType.weapons) {

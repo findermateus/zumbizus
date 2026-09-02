@@ -240,7 +240,7 @@ function drawSimpleCraftingStationUI() {
     
     if (req_panel_alpha > 0.05 && hoverIndex != -1) {
         var _hIt = _items[hoverIndex];
-        var _craft = getItemRequirements(_hIt.type, _hIt.id);
+        var _craft = getCraftingItem(_hIt.type, _hIt.id);
         var _conf = global.items[_hIt.type][_hIt.id];
         
         hoverCraftingForUI.x = lerp(hoverCraftingForUI.x, hoverCraftingForUI.dX, 0.2);
@@ -275,7 +275,7 @@ function handleClick(_items, _hoverIndex, _xMouse, _yMouse) {
     if (_hoverIndex == -1 || !arrayKeyExists(_items, _hoverIndex)) return;
     
     var _hIt = _items[_hoverIndex];
-    var _craft = getItemRequirements(_hIt.type, _hIt.id);
+    var _craft = getCraftingItem(_hIt.type, _hIt.id);
     var _conf = global.items[_hIt.type][_hIt.id];
 
     if (!verifyIfHasAllItems(_craft)) {

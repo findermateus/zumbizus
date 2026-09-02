@@ -10,6 +10,8 @@ function getCreateCampfireQuest() {
 	_goToForestStep.area = rm_forest;
 	
 	_goToForestStep.onStart = method(_goToForestStep, function () {
+		unlockMap("forest");
+		
 		if (room == self.area) {
 			self.quest.completeCurrentStep();
 		}
@@ -150,34 +152,19 @@ function getCreateAxeQuest(_npc) {
 		}
 	}); 
 
-	var _goToForestStep = new QuestStep("go_to_forest", "Vá até a floresta");
-	
-	_goToForestStep.area = rm_forest;
-	
-	_goToForestStep.onStart = method(_goToForestStep, function () {
-		unlockMap("forest");
-		
-		if (room == self.area) {
-			self.quest.completeCurrentStep();
-		}
-	});
-	
-	_goToForestStep.onEvent = method(_goToForestStep, function (_event, _data) {
-		if (_event != QuestEvent.AreaEntered) return;
-		if (_data.area != self.area) return;
-
-		self.quest.completeCurrentStep();
-	});
-	
-	_quest.addStep(_goToForestStep);
+	var _axeRecipee = getItemRecipee(craftingCategories.weapons, weaponItems.axe);
 
 	var _collectMaterialsStep = createCollectItemsStep(
 		"collect_axe_materials",
 		"Colete os itens necessários",
-		[
-			{ itemId: trashItems.twig, type: itemType.trash, count: 0, target: 3 },
-			{ itemId: trashItems.rock, type: itemType.trash, count: 0, target: 2 }
-		]
+		array_map(_axeRecipee.requirements, function(_requirement) {
+			return {
+				itemId: _requirement.itemId,
+				type: _requirement.type,
+				count: 0,
+				target: _requirement.quantity
+			};
+		})
 	);
 
 	_quest.addStep(_collectMaterialsStep);
