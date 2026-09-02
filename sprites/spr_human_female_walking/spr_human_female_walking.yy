@@ -28,8 +28,8 @@
   "nineSlice":null,
   "origin":7,
   "parent":{
-    "name":"Iddle",
-    "path":"folders/Sprites/Entities/Human/Player/Iddle.yy",
+    "name":"Human",
+    "path":"folders/Sprites/Entities/Human.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

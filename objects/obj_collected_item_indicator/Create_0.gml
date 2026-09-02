@@ -49,6 +49,8 @@ function drawItemIndicator(){
 	xPosition = lerp(xPosition, destinyXPosition, .1);
 	yPosition = lerp(yPosition, destinyYPosition, .1);
 
+	draw_set_font(fnt_gui_default);
+
 	var _quantityText = box.quantity != -1 ? "(x" + string(box.quantity) + ") " : "";
 	var _textContent = _quantityText + box.textContent;
 	var _textWidth = string_width(_textContent);

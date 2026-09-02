@@ -1,5 +1,3 @@
-loadPlayerData();
-
 var _roomWidth = room_width;
 var _roomHeight = room_height;
 var _grassSprite = tg_sGrass;

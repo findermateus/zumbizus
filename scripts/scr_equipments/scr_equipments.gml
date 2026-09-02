@@ -3,7 +3,8 @@ enum equipmentItems {
 	simpleOutfit,
 	simpleCap,
 	leatherJacket,
-	boonieHat
+	boonieHat,
+	tornLabCoat
 }
 
 enum equipmentType {

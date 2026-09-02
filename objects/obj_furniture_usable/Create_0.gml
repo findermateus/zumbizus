@@ -1,5 +1,6 @@
 event_inherited();
 
+tag = "usable_furniture";
 actionDescription = "";
 curveAnimationIndex = 0;
 animationCurveItemDescription = animcurve_get_channel(ac_inventory,"item_description");

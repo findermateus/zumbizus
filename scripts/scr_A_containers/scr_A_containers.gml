@@ -65,8 +65,8 @@ function initializeContainerList() {
 	{
 		var config = containerConfig();
 		config.id = global.furnitureIds.metalCabinetDoubleDoors;
-		config.gridWidth = 2;
-		config.gridHeight = 14;
+		config.gridWidth = 5;
+		config.gridHeight = 5;
 		config.sprite = spr_metal_cabinet_double_doors;
 
 		global.containerList[? config.id] = config;

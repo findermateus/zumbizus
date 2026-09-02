@@ -8,6 +8,12 @@ enum TradeResult {
 	InvalidQuantity
 }
 
+function TradeItem(_id, _type, _quantity) constructor {
+	itemId = _id;
+	type = _type;
+	quantity = _quantity;
+}
+
 function buildTradeItem(_tradeItem) {
 	var _itemData = global.items[_tradeItem.type][_tradeItem.itemId];
 	var _item = constructItem(_tradeItem.type, _itemData);

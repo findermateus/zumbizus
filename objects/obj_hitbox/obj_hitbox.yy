@@ -32,8 +32,8 @@
   "resourceVersion":"2.0",
   "solid":false,
   "spriteId":{
-    "name":"spr_hitbox_weapon_sword",
-    "path":"sprites/spr_hitbox_weapon_sword/spr_hitbox_weapon_sword.yy",
+    "name":"spr_hitbox_weapon_machete",
+    "path":"sprites/spr_hitbox_weapon_machete/spr_hitbox_weapon_machete.yy",
   },
   "spriteMaskId":null,
   "visible":true,

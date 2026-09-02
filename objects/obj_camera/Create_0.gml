@@ -1,15 +1,29 @@
+#macro DEFAULT_CAM_SCALE 1
+#macro DEFAULT_CAM_SCALE_SPEED .07
+#macro DEFAULT_CAM_SPEED .07
+
 x = 0;
 y = 0;
+
 cameraX = x;
 cameraY = y;
+
 target = noone;
+
 currentShakeEffect = 0;
+
 setGuiSize(1920, 1080);
-cameraScale = 1;
-destinyCameraScale = 1;
-cameraScaleVelocity = .01;
+window_set_size(1920, 1080)
+
+cameraScaleSpeed = DEFAULT_CAM_SCALE_SPEED;
+cameraScale = DEFAULT_CAM_SCALE;
+
+destinyCameraScale = DEFAULT_CAM_SCALE;
+
 cameraHeight = DEFAULT_CAM_H;
 cameraWIdth = DEFAULT_CAM_W;
+camSpeed = DEFAULT_CAM_SPEED;
+
 followMouse = true;
 
 guiHeight = display_get_gui_height();
@@ -23,18 +37,29 @@ function followPlayer(){
 
 function setInventoryZoom(){
 	destinyCameraScale = .6;
-	cameraScaleVelocity = .1;
+	cameraScaleSpeed = DEFAULT_CAM_SCALE_SPEED;
 	followMouse = false;
 }
 
-function setDefaultScale(){
-	destinyCameraScale = 1;
-	cameraScaleVelocity = .1;
+function setCustomValues(_destinyScale, _scaleSpeed, _followsMouse, _currentScale = undefined) {
+	destinyCameraScale = _destinyScale;
+	cameraScaleSpeed = _scaleSpeed;
+	followMouse = _followsMouse;
+	
+	if (is_numeric(_currentScale)) {
+		cameraScale = _currentScale;
+	}
+}
+
+function setDefaultValues(){
+	destinyCameraScale = DEFAULT_CAM_SCALE;
+	cameraScaleSpeed = DEFAULT_CAM_SCALE_SPEED;
+	camSpeed = DEFAULT_CAM_SPEED;
 	followMouse = true;
 }
 
 function setCameraScale(){
-	cameraScale = lerp(cameraScale, destinyCameraScale, cameraScaleVelocity);
+	cameraScale = lerp(cameraScale, destinyCameraScale, cameraScaleSpeed);
 	var _cameraWidth = DEFAULT_CAM_W * cameraScale;
 	var _cameraHeight = DEFAULT_CAM_H * cameraScale;
 	camera_set_view_size(view_camera[0], _cameraWidth, _cameraHeight);
@@ -44,15 +69,13 @@ function followTarget(){
 	var _viewHeight = camera_get_view_height(view_camera[0]);
 	var _viewWidth = camera_get_view_width(view_camera[0]);
 	
-	var _cameraSpeed = .1;
-	
-	if (mouse_check_button(mb_right) && !global.activeInventory && followMouse){
+	if (mouse_check_button(mb_right) && !isMenuOpen() && followMouse){
 		adjustCameraWithMouse();
 	} else {
 		var _targetMiddleXPoint = getMiddlePoint(target.bbox_left, target.bbox_right);
 		var _targetMiddleYPoint = getMiddlePoint(target.bbox_top, target.bbox_bottom);
-		cameraX = lerp(cameraX, _targetMiddleXPoint, _cameraSpeed);	
-		cameraY = lerp(cameraY, _targetMiddleYPoint, _cameraSpeed);
+		cameraX = lerp(cameraX, _targetMiddleXPoint, camSpeed);	
+		cameraY = lerp(cameraY, _targetMiddleYPoint, camSpeed);
 	}
 	
 	x = cameraX;

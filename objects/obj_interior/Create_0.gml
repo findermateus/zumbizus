@@ -6,8 +6,12 @@ function fade() {
 	isFadingOut = true;
 	alpha = lerp(alpha, 0, .1);
 	
-	if (alpha <= .08) { 
+	if (alpha <= .08 && !hasFadeOut) { 
 		hasFadeOut = true;
 		alpha = 0;
+		
+		onFadeOut();
 	}
 }
+
+onFadeOut = function () {}

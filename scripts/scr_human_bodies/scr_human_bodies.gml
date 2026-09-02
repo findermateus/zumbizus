@@ -9,6 +9,13 @@ enum genders {
 	others
 }
 
+enum Eye {
+	WITH_EYEBROW,
+	SHORT_VERTICAL,
+	LONG_VERTICAL,
+	HORIZONTAL
+}
+
 global.genders = {
 	male: genders.male,
 	female: genders.female,
@@ -27,11 +34,26 @@ global.genderList[global.genders.female] = {
 	id: global.genders.female
 };
 
+function loadEyeOptions() {
+	global.EYE_OPTIONS = [];
+	
+	global.EYE_OPTIONS[Eye.WITH_EYEBROW] = spr_human_eyes_1;
+	global.EYE_OPTIONS[Eye.SHORT_VERTICAL] = spr_human_eyes_2;
+	global.EYE_OPTIONS[Eye.LONG_VERTICAL] = spr_human_eyes_3;
+	global.EYE_OPTIONS[Eye.HORIZONTAL] = spr_human_eyes_4;
+}
+
+loadEyeOptions();
+
 function getBodySprite(_gender, _drawState) {
 	if (_gender == genders.female) {
 		return _drawState == drawStates.iddle ? spr_human_female_iddle : spr_human_female_walking;
 	}
 	return _drawState == drawStates.iddle ? spr_human_male_iddle : spr_human_male_walking;
+}
+
+function resolveEyeSprite(_eyeId) {
+	return global.EYE_OPTIONS[_eyeId];
 }
 
 function drawBackPartOfHair(_hair, _helmet, _x, _y, _direction, _scale, _angle, _alpha) {
@@ -41,13 +63,13 @@ function drawBackPartOfHair(_hair, _helmet, _x, _y, _direction, _scale, _angle, 
 	drawHair(_x, _y, _hair.hairId, _hair.color, _direction, _scale, _angle, _alpha, true);
 }
 
-function drawPersonBody(_x, _y, _gender, _imageIndex, _scale, _angle, _alpha, _skinColor, _hair, _armor = -1, _helmet = -1, _bag = -1, _direction = 1, _drawState = drawStates.iddle) {
+function drawPersonBody(_x, _y, _gender, _imageIndex, _scale, _angle, _alpha, _skinColor, _hair, _eyeId, _armor = -1, _helmet = -1, _bag = -1, _direction = 1, _drawState = drawStates.iddle) {
 	
 	if (_bag != -1) {
 		drawBackPack(_x, _y, _bag, _direction, _scale, _angle, _alpha, 0);
 	}
 	
-	if (_hair.hairId != hairIds.bald) {
+	if (_hair.hairId != HairOption.BALD) {
 		drawBackPartOfHair(_hair, _helmet, _x, _y, _direction, _scale, _angle, _alpha);
 	}
 	
@@ -55,10 +77,14 @@ function drawPersonBody(_x, _y, _gender, _imageIndex, _scale, _angle, _alpha, _s
 	
 	draw_sprite_ext(_sprite, _imageIndex, _x, _y, _scale * _direction, _scale, _angle, _skinColor, _alpha);
 	
+	var _eyeSprite = resolveEyeSprite(_eyeId);
+	
+	draw_sprite_ext(_eyeSprite, 0, _x, _y, _scale * _direction, _scale, _angle, _skinColor, _alpha);
+	
 	if (_armor != -1) {
 		drawArmor(_x, _y, _armor, _direction, _scale, _angle, _alpha, _drawState, _imageIndex, _gender);
 	}
-	if (_helmet == -1 && _hair.hairId != hairIds.bald) {
+	if (_helmet == -1 && _hair.hairId != HairOption.BALD) {
 		drawHair(_x, _y, _hair.hairId, _hair.color, _direction, _scale, _angle, _alpha);
 	}
 	if (_bag != -1) {

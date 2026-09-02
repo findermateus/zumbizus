@@ -1,4 +1,6 @@
 event_inherited();
+
+tag = "chest";
 actionDescription = "Abrir";
 containerData = undefined;
 //for (var i = 0; i < _containerWidth; ++i)
@@ -66,6 +68,10 @@ function active(){
 		containerOpen = true;
 		setSpriteOpen();
 		openInventoryWithContainer(id, sound, containerData);
+		
+		obj_quest_manager.notifyEvent(QuestEvent.ObjectInteracted, {
+			tag: tag
+		})
 		return;
 	}
 }

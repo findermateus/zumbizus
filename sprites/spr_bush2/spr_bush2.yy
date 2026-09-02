@@ -26,7 +26,7 @@
   "origin":7,
   "parent":{
     "name":"Bush",
-    "path":"folders/Sprites/Enviroment/Bush.yy",
+    "path":"folders/Sprites/Enviroment/Assets/Bush.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

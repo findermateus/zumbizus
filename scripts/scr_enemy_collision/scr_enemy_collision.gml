@@ -1,29 +1,21 @@
 function enemyColision(_object){
-	var _dir = velh;
-	var _col = place_meeting(x + velh, y + velv, _object);
-	if (!_col) return;
-	handleEnemyHorizontalColision(_object);
-	handleEnemyVerticalColision(_object);
-	velh = 0;
-	velv = 0;
-}
-
-function handleEnemyHorizontalColision(_object) {
-	for (var i = 0; i < abs(velh); i ++) {
-		if (!place_meeting(x + 1, y, _object)) {
-			x ++;
-			continue
-		}
-		return;
-	}
-}
-
-function handleEnemyVerticalColision(_object) {
-	for (var i = 0; i < abs(velv); i ++) {
-		if (!place_meeting(x, y + 1, _object)) {
-			y ++;
-			continue
-		}
-		return;
-	}
+    if (place_meeting(x + velh, y, _object)) {
+        var _dirH = sign(velh);
+        while (!place_meeting(x + _dirH, y, _object)) {
+            x += _dirH;
+        }
+        
+        velh = 0;
+        endPath(); 
+    }
+    
+    if (place_meeting(x, y + velv, _object)) {
+        var _dirV = sign(velv);
+        while (!place_meeting(x, y + _dirV, _object)) {
+            y += _dirV;
+        }
+        
+        velv = 0;
+        endPath();
+    }
 }

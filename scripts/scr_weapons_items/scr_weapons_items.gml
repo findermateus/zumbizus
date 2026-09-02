@@ -1,6 +1,6 @@
 enum weaponItems {
 	baseballBat,
-	sword,
+	machete,
 	nailBoard,
 	pistol,
 	ump,
@@ -8,7 +8,8 @@ enum weaponItems {
 	assaultRifle,
 	sniperRifle,
 	baseballBatWithNails,
-	axe
+	axe,
+	metalPipe
 }
 
 function WeaponConfig() {
@@ -75,16 +76,16 @@ function WeaponConfig() {
 
 {
 	var _config = WeaponConfig();
-	_config.itemId = weaponItems.sword;
+	_config.itemId = weaponItems.machete;
 	_config.name = "Espada fudida";
 	_config.description = "Espada fudida, mais um pouco e ela quebra";
-	_config.sprite = spr_sword;
+	_config.sprite = spr_machete;
 	_config.sound = snd_sword;
 	_config.durability = 100;
 	_config.maxDurability = 100;
 	_config.durabilityDecrease = 3;
 
-	global.items[itemType.weapons][weaponItems.sword] = _config;
+	global.items[itemType.weapons][weaponItems.machete] = _config;
 }
 
 {
@@ -99,6 +100,20 @@ function WeaponConfig() {
 	_config.durabilityDecrease = 2;
 
 	global.items[itemType.weapons][weaponItems.axe] = _config;
+}
+
+{
+	var _config = WeaponConfig();
+	_config.itemId = weaponItems.metalPipe;
+	_config.name = "Cano de metal";
+	_config.description = "Um cano de aço pesado e resistente. Simples, mas extremamente eficiente contra qualquer coisa que esteja no seu caminho.";
+	_config.sprite = spr_metal_pipe;
+	_config.sound = snd_baseball_bat;
+	_config.durability = 120;
+	_config.maxDurability = 120;
+	_config.durabilityDecrease = 4;
+
+	global.items[itemType.weapons][weaponItems.metalPipe] = _config;
 }
 
 {

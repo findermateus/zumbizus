@@ -75,6 +75,8 @@ function drawNothing() {
 }
 
 function weaponIdleState(){
+	setStateIdle();
+	
 	weapon.xPosition = father.x;
 	weapon.yPosition = father.y;
 }
@@ -87,10 +89,14 @@ function weaponAimState(){
 		return;
 	}
 	
-	setAimingCursor();
-	
 	if(weaponAction.item.type == weaponTypes.shoot){
+		obj_cursor_controller.setCursor(CursorType.PreciseAim);
+		
 		handleStepsForFireWeapon();
+	}
+	
+	if (array_contains([weaponTypes.bladed, weaponTypes.impact, weaponTypes.piercing], weaponAction.item.type)) {
+		obj_cursor_controller.setCursor(CursorType.Aim);
 	}
 }
 
@@ -110,7 +116,7 @@ function reloadingState() {
 
 function setStateIdle(){
     if (drawState != drawNothing) {
-        obj_controller.setDefaultCursor();
+        obj_cursor_controller.setCursor(CursorType.Default);
     }
 
     currentState = weaponIdleState;
@@ -147,7 +153,7 @@ function getWeaponBackDrawData(){
 }
 
 function weaponAim(_comingFromAttack = false){
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
 	
 	if (_comingFromAttack && !mouse_check_button(mb_right)) {
 		setStateIdle();
@@ -189,6 +195,8 @@ function attackWithPlayer(){
 		return false;
 	}
 	
+	obj_cursor_controller.triggerRecoil();
+	
 	handleWeaponAnimation();
 	handleWeaponHitBox();
 	handleInitialAttackVariables();
@@ -217,14 +225,9 @@ function resetActiveItem() {
 	weaponAction.info = BLANK_INVENTORY_SPACE;
 }
 
-function setAimingCursor() {
-	cursor_sprite = spr_cursor_aiming;
-	window_set_cursor(cr_none);
-}
-
 function finishReloading(){
 	adjustPlayerInteractions(true);
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
 	
 	if (mouse_check_button(mb_right) && global.activeEquipedItem != BLANK_INVENTORY_SPACE) {
 		weaponAim(true); 

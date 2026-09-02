@@ -20,7 +20,6 @@ draw_set_font(fnt_gui_title);
 draw_text_scribble(_centerX + _movX, _centerY + _movY, 
     "[alpha," + string(alpha) + "]" +
     "[scale," + string(_pulse) + "]" +
-    "[angle," + string(_angle) + "]" +
     "[fa_center][fa_middle][c_white]?"
 );
 

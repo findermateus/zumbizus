@@ -103,7 +103,7 @@ function reloadItems() {
 
 function hide(){
 	if (!global.activeInventory) {
-		obj_camera.setDefaultScale();
+		obj_camera.setDefaultValues();
 		obj_camera.target = obj_player;
 	}
 	
@@ -489,6 +489,11 @@ function drawRepairPanel(_y, _modal) {
 	var _struct = itemsThatCanBeRepaired[hoverCrafting]
 	var _selectedItem = _struct.item;
 	var _requirements = getItemRepairRequirements(_selectedItem.itemId);
+	
+	if (_requirements == false) {
+		return;
+	}
+	
 	drawRepairRequirements(_requirements.requirements, _selectedItem.name);
 	if (mouse_check_button_released(mb_left)) {
 		repairItem(_struct, _requirements);

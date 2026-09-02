@@ -1,6 +1,10 @@
 if (global.pause) return;
 adjustClosestDepth();
 
+if (global.activeInventory) {
+	adjustDepthToASpecificObject(obj_inventory);
+}
+
 if (state == POPUP_STATE.QUEUED) {
     if (global.quest_popup_active == noone
     &&  global.quest_popup_queue[0] == id) {

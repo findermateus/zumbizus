@@ -94,6 +94,21 @@ function drawQuestTitle(_x, _y, _maxWidth, _quest, _isDraw) {
 	return _h + 5;
 }
 
+function getQuestStepById(_quest, _stepId) {
+	if (!is_struct(_quest)) return undefined;
+	if (!variable_struct_exists(_quest, "steps")) return undefined;
+
+	for (var i = 0; i < array_length(_quest.steps); i++) {
+		var _step = _quest.steps[i];
+
+		if (_step.id == _stepId) {
+			return _step;
+		}
+	}
+
+	return undefined;
+}
+
 function drawQuestStep(_x, _y, _maxWidth, _step, _stepIndex, _isDraw) {
 	var _stepScale = 0.7;
 	var _scaledMaxWidth = _maxWidth / _stepScale; 
@@ -169,8 +184,9 @@ addQuest = function(_quest) {
 
 startQuest = function(_quest) {
 	_quest.start();
-	array_push(activeQuests, _quest);
 	
+	array_push(activeQuests, _quest);
+
 	instance_create_layer(0, 0, "Alert", obj_quest_popup, {
 		textContent: _quest.name,
 		popupType: QUEST_POPUP_TYPE.QUEST_ADDED
@@ -198,7 +214,13 @@ completeQuest = function(_quest) {
 		popupType: QUEST_POPUP_TYPE.QUEST_COMPLETED
 	});
 	
-	array_push(completedQuests, _quest.id);
+	array_push(
+		completedQuests, 
+		{
+			id: _quest.id,
+			name: _quest.name
+		}
+	);
 };
 
 notifyEvent = function(_event, _data) {
@@ -232,7 +254,7 @@ function hasCompletedQuest(_questId) {
 	for (var i = 0; i < array_length(completedQuests); i++) {
 		var _quest = completedQuests[i];
 		
-		if (_questId == _quest) {
+		if (_questId == _quest.id) {
 			return true;
 		}
 	}
