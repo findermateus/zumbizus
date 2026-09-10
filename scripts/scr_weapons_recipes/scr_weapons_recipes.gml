@@ -29,7 +29,7 @@ function getItemRecipee(_itemCategory, _itemId) {
 	var _recipees = global.craftingItems[_itemCategory];
 	
 	for (var i = 0; i < array_length(_recipees); i++) {
-		if (_recipees[i].itemId == _itemId) {
+		if (_recipees[i].id == _itemId) {
 			return _recipees[i];
 		}
 	}

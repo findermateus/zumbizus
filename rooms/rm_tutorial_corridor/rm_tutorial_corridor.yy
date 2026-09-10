@@ -51,7 +51,7 @@
     {"$GMRAssetLayer":"","%Name":"PS","assets":[],"depth":-11000,"effectEnabled":true,"effectType":null,"gridX":32,"gridY":32,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"layers":[],"name":"PS","properties":[],"resourceType":"GMRAssetLayer","resourceVersion":"2.0","userdefinedDepth":true,"visible":true,},
     {"$GMRTileLayer":"","%Name":"ts_above_all_desert","depth":-10900,"effectEnabled":true,"effectType":null,"gridX":32,"gridY":32,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"layers":[],"name":"ts_above_all_desert","properties":[],"resourceType":"GMRTileLayer","resourceVersion":"2.0","tiles":{"SerialiseHeight":37,"SerialiseWidth":73,"TileCompressedData":[
           -2039,-2147483648,5,817,818,819,820,821,-68,-2147483648,5,853,854,855,856,857,-68,-2147483648,5,889,
-          890,891,892,893,-511,-2147483648,
+          890,891,892,893,-215,-2147483648,1,0,-295,-2147483648,
         ],"TileDataFormat":1,},"tilesetId":{"name":"ts_desert","path":"tilesets/ts_desert/ts_desert.yy",},"userdefinedDepth":false,"visible":true,"x":0,"y":0,},
     {"$GMRTileLayer":"","%Name":"ts_above_all_interior","depth":-9999,"effectEnabled":true,"effectType":null,"gridX":32,"gridY":32,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"layers":[],"name":"ts_above_all_interior","properties":[],"resourceType":"GMRTileLayer","resourceVersion":"2.0","tiles":{"SerialiseHeight":74,"SerialiseWidth":146,"TileSerialiseData":[
           254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,244,245,246,247,248,249,
