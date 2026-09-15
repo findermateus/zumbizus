@@ -1,5 +1,26 @@
 event_inherited();
 
+var _treeSprites = [
+    spr_tree,
+    spr_tree2,
+    spr_tree3,
+	spr_tree4,
+	spr_tree5,
+	spr_tree6
+];
+
+var _minTreeSize = 250;
+var _maxTreeSize = 300;
+
+var _randomSprite = _treeSprites[irandom(array_length(_treeSprites) - 1)];
+        
+var _height = irandom_range(_minTreeSize, _maxTreeSize);
+var _scale = getScale(_height, sprite_get_height(_randomSprite));
+		
+sprite_index = _randomSprite;
+image_xscale = _scale;
+image_yscale = _scale;
+
 spriteToDrawShadow = sprite_index
 hp = irandom_range(70, 100);
 required_tool = weaponItems.axe;
