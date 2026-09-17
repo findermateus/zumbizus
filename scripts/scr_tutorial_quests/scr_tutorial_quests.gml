@@ -168,8 +168,6 @@ function getCreateAxeQuest(_npc) {
 	);
 
 	_quest.addStep(_collectMaterialsStep);
-	
-	_quest.addStep(createReturnToBaseStep());
 
 	var _thirdStep = new QuestStep("craft_axe", "Faça o machado");
 
