@@ -1,2 +1,3 @@
-//checkPlaceToExist();
+event_inherited();
+
 adjustObjectDepth();

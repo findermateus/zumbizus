@@ -9,26 +9,28 @@ avatarTransitionProgress = 0;
 avatarTransitionState = "idle";
 lastParticipantIndex = -1;
 
-obj_player.currentState = playerDialogueState;
-
 if (!is_struct(dialogue)) {
 	instance_destroy(id);
 }
 
-if (instance_exists(target)) {
-	obj_camera.setTargetWithZoom(target);
-}
+obj_player.currentState = playerDialogueState;
+
+obj_camera.camSpeed = .05
 
 function endDialogue() {
 	closeMenu();
 	unBlockPlayerMenus();
 	
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
 	obj_camera.target = obj_player;
 	
 	obj_player.currentState = playerIddleState;
 	
-	obj_quest_manager.notifyEvent(QuestEvent.DialogueEnded, { dialogue: dialogue, npc: target});
+	if (instance_exists(target)) {
+		obj_quest_manager.notifyEvent(QuestEvent.DialogueEnded, {
+			npc: target
+		});
+	}
 	
 	if (is_callable(dialogue.onEnd)) {
 		dialogue.onEnd();
@@ -42,6 +44,7 @@ function endDialogue() {
 
 function drawDialogueBox() {
     animationProgress = lerp(animationProgress, 100, 0.07);
+	
     var _normProg = animationProgress / 100;
 
     var _guiWidth  = display_get_gui_width();
@@ -86,7 +89,7 @@ function drawDialogueBox() {
 
     if (textIndex <= _textSize) textIndex += dialogue.textSpeed;
 
-    if (keyboard_check_pressed(vk_space)) {
+    if (keyboard_check_pressed(vk_space) || (animationProgress > 50 && mouse_check_button_released(mb_left))) {
         if (textIndex < _textSize) {
             textIndex = _textSize;
         } else if (currentPage < _pageQuantity - 1) {
@@ -102,7 +105,7 @@ function drawDialogueBox() {
     var _currentTextPart = string_copy(_text, 1, textIndex);
     draw_set_font(fnt_gui_default);
     drawTextShadowScribble(_textX1, _textY1, _currentTextPart, _alpha, 4, _reservedSpaceForText);
-    draw_text_scribble_ext(_textX1, _textY1, _currentTextPart, -1, _reservedSpaceForText);
+    draw_text_scribble_ext(_textX1, _textY1, _currentTextPart, _reservedSpaceForText);
 
     var _personCentralPoint = getMiddlePoint(_avatarBoxX, _avatarBoxX + _avatarBoxW);
     var _expectedBodySize   = _avatarBoxH * 0.65;
@@ -110,6 +113,17 @@ function drawDialogueBox() {
     var _participantY       = _currentDialogTopY;
 
     var _name = "";
+	
+	if (lastParticipantIndex != _isPlayer) {
+        lastParticipantIndex = _isPlayer;
+        
+        if (_isPlayer) {
+            obj_camera.setTargetWithZoom(obj_player);
+        } else if (instance_exists(target)) {
+            obj_camera.setTargetWithZoom(target);
+        }
+    }
+	
     if (_isPlayer) {
         _name = global.player.name;
         drawPersonBody(
@@ -117,6 +131,7 @@ function drawDialogueBox() {
             global.player.gender, 0, _scale, 0, 1,
             global.player.skinColor,
             global.player.hair,
+			global.player.eyeId,
             is_struct(global.equipments.armor) ? global.equipments.armor.itemId : -1,
             is_struct(global.equipments.head)  ? global.equipments.head.itemId  : -1,
             is_struct(global.equipments.bag)   ? global.equipments.bag.itemId   : -1
@@ -129,7 +144,8 @@ function drawDialogueBox() {
             _npc.gender, 0, _scale, 0, 1,
             _npc.skinColor,
             new PersonHair(_npc.hairId, _npc.hairColor),
-            -1, -1, -1, -1
+			_npc.eyeId,
+            _npc.outfitId, _npc.helmetId, _npc.bagId, -1
         );
     }
 

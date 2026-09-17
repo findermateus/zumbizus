@@ -8,7 +8,8 @@ enum Menus {
 	Inventory,
 	Dialogue,
 	NpcInteraction,
-	Trade
+	Trade,
+	Cutscene
 }
 
 function isCurrentMenu(_menu) {

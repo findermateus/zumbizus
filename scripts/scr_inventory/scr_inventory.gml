@@ -21,8 +21,9 @@ function closeInventory(){
 	if (!global.activeInventory) return;
 	if (isCurrentMenu(Menus.Inventory)) closeMenu();
 	
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
 	obj_camera.target = obj_player;
+	
 	with (obj_inventory) {
 		currentState = hide;
 	}

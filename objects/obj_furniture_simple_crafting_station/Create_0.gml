@@ -86,7 +86,7 @@ activationMethod = function () {
 
 function hide(){
     if (!global.activeInventory) {
-        obj_camera.setDefaultScale();
+        obj_camera.setDefaultValues();
         obj_camera.target = obj_player;
     }
     
@@ -179,10 +179,10 @@ function drawSimpleCraftingStationUI() {
         category_scales[i] = lerp(category_scales[i], (_isHover || _isActive) ? 1.2 : 1.0, 0.2);
         var _s = category_scales[i];
         
-        var _drawH = 50 * _s;
+        var _drawH = 60 * _s;
         var _yOffset = (_isHover || _isActive) ? -5 : 0;
         
-        draw_sprite_stretched_ext(spr_map_button, _isHover || _isActive, _tx, _cy - (_drawH / 2) + _yOffset, _tabWidth, _drawH, c_white, _uiAlpha);
+        draw_sprite_stretched_ext(spr_inventory_box, _isHover || _isActive, _tx, _cy - (_drawH / 2) + _yOffset, _tabWidth, _drawH, c_white, _uiAlpha);
         
         draw_set_font(fnt_gui_default);
         draw_text_scribble(_tx + _tabWidth/2, _cy + _yOffset, "[fa_center][fa_middle]" + _cat.title);
@@ -240,7 +240,7 @@ function drawSimpleCraftingStationUI() {
     
     if (req_panel_alpha > 0.05 && hoverIndex != -1) {
         var _hIt = _items[hoverIndex];
-        var _craft = getItemRequirements(_hIt.type, _hIt.id);
+        var _craft = getCraftingItem(_hIt.type, _hIt.id);
         var _conf = global.items[_hIt.type][_hIt.id];
         
         hoverCraftingForUI.x = lerp(hoverCraftingForUI.x, hoverCraftingForUI.dX, 0.2);
@@ -275,7 +275,7 @@ function handleClick(_items, _hoverIndex, _xMouse, _yMouse) {
     if (_hoverIndex == -1 || !arrayKeyExists(_items, _hoverIndex)) return;
     
     var _hIt = _items[_hoverIndex];
-    var _craft = getItemRequirements(_hIt.type, _hIt.id);
+    var _craft = getCraftingItem(_hIt.type, _hIt.id);
     var _conf = global.items[_hIt.type][_hIt.id];
 
     if (!verifyIfHasAllItems(_craft)) {

@@ -1,3 +1,5 @@
+
+//chamado na sequence sq_fade_out
 function transitionFinished() {
 	if (!instance_exists(obj_map_transition)) return;
 	
@@ -5,9 +7,20 @@ function transitionFinished() {
 	obj_map_transition.finishTransition();
 }
 
+//chamado na sequence sq_fade_in
 function transitionChangeRoom() {
 	if (!instance_exists(obj_map_transition)) return;
 	obj_map_transition.changeRoom();
+	
+	if (obj_map_transition.mapId == "") return;
+	
+	var _map = global.maps[$ obj_map_transition.mapId];
+	
+	if (!is_struct(_map)) return;
+	
+	var _rainChance = _map.rainChance;
+	
+	obj_rain_controller.updateRainChance(_rainChance);
 }
 
 function transitionPlaceSequence(_transitionType ) {

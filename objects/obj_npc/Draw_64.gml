@@ -2,9 +2,49 @@ if (global.pause) exit;
 
 event_inherited();
 
-drawInterface();
+var _isNear = isHovering;
 
-if (!activeInteraction) {
+var _targetBubbleScale = 0;
+var _targetBubbleAlpha = 0;
+
+if (canPlayerTalk()) {
+    if (!activeInteraction && !isCurrentMenu(Menus.Dialogue)) {
+        _targetBubbleAlpha = _isNear ? 1.0 : 0.5;
+        _targetBubbleScale = _isNear ? 1.0 : 0.7;
+    } else {
+        _targetBubbleScale = 0.0;
+        _targetBubbleAlpha = 0.0;
+    }
+}
+
+bubble_scale = lerp(bubble_scale, _targetBubbleScale, 0.15);
+bubble_alpha = lerp(bubble_alpha, _targetBubbleAlpha, 0.2);
+
+var _isMenuOpen = global.activeBuilding || global.activeInventory;
+
+if (bubble_alpha > 0.01 && !isMenuOpen()) {
+    var _sprite = spr_dialogue_popup;
+    var _baseScale = getScale(30, sprite_get_width(_sprite));
+    var _finalScale = _baseScale * bubble_scale;
+    
+    var _hoverY = dsin(current_time * 0.3) * 3;
+    
+    var _flyUpY = activeInteraction ? ((1 - bubble_alpha) * -20) : 0;
+    
+    draw_sprite_ext(
+        _sprite, 
+        0, 
+        roomToGuiX(bbox_left) - 5, 
+        roomToGuiY(bbox_top) - 35 + _hoverY + _flyUpY, 
+        _finalScale, 
+        _finalScale, 
+        0, 
+        c_white, 
+        bubble_alpha
+    );
+}
+
+if (!activeInteraction || _isMenuOpen) {
     alpha = 0;
     animProgress = 0;
     hover_offset1 = 0;
@@ -14,7 +54,7 @@ if (!activeInteraction) {
     return;
 }
 
-if (global.activeBuilding || global.activeInventory) {
+if (_isMenuOpen) {
     closeInteractOptions();
     return;
 }

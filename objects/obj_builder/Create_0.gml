@@ -59,7 +59,7 @@ function nothing(){
 }
 
 function verifyConditionsToAimFurniture(){
-	if(!keyboard_check_released(ord("T"))) return false;
+	if(!keyboard_check_released(ord("T")) || global.blockMenus) return false;
 	selectLateralMenuOption(menu.builder);
 }
 
@@ -68,14 +68,14 @@ function setUpModal(){
 	global.playerStopInteractions = true;
 	listOfElementsDestinyYPosition = defaultListOfElementsDestinyYPosition;
 	playSwiiimmmSound();
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
 	obj_camera.target = obj_player;
 	guiCurrentState = displayFurniture;
 	currentState = aimFurniture;
 }
 
 function verifyConditionsToStopAimFurniture(){
-	if(keyboard_check_released(ord("T"))){
+	if(keyboard_check_released(ord("T")) || global.blockMenus){
 		deactivateLateralMenuOption(menu.builder);
 		return true;
 	}

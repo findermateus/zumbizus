@@ -29,7 +29,9 @@ function handleLevelUp() {
     audio_play_sound(snd_level_up, 0, false);
     pauseSystems();
     isLevelingUp = true;
-    obj_controller.setDefaultCursor();
+    
+	obj_cursor_controller.setCursor(CursorType.Default);
+	
     if (!audio_is_playing(snd_level_up_music)) {
         audio_play_sound(snd_level_up_music, 0, true);
     }

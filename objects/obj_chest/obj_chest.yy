@@ -33,7 +33,7 @@
   "physicsShapePoints":[],
   "physicsStartAwake":true,
   "properties":[
-    {"$GMObjectProperty":"v1","%Name":"containerId","filters":[],"listItems":[],"multiselect":false,"name":"containerId","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"\"chest\"","varType":2,},
+    {"$GMObjectProperty":"v1","%Name":"containerId","filters":[],"listItems":[],"multiselect":false,"name":"containerId","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"chest","varType":2,},
   ],
   "resourceType":"GMObject",
   "resourceVersion":"2.0",

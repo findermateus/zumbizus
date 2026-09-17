@@ -184,16 +184,18 @@ function playerGetGrabbedState() {
 }
 
 function playerDialogueState() {
-	handleAngleOffset(true, .2, 0);
+	handleAngleOffset(false);
 	adjustPlayerInteractions(false);
 	updateSpriteWithState(sprites.iddle);
+	
+	obj_weapon.currentState = obj_weapon.weaponIdleState;
 	
 	velh = 0;
 	velv = 0;
 }
 
 function playerTradeState() {
-	handleAngleOffset(true, .2, 0);
+	handleAngleOffset(false);
 	adjustPlayerInteractions(false);
 	updateSpriteWithState(sprites.iddle);
 

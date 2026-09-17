@@ -7,7 +7,7 @@ global.itemMethods[itemType.weapons][weaponItems.baseballBatWithNails]   = [
 	new ItemMethod("Equipar", "equip")
 ];
 
-global.itemMethods[itemType.weapons][weaponItems.sword]         = [
+global.itemMethods[itemType.weapons][weaponItems.machete]         = [
 	new ItemMethod("Equipar", "equip")
 ];
 
@@ -16,6 +16,10 @@ global.itemMethods[itemType.weapons][weaponItems.nailBoard]     = [
 ];
 
 global.itemMethods[itemType.weapons][weaponItems.axe]     = [
+	new ItemMethod("Equipar", "equip")
+];
+
+global.itemMethods[itemType.weapons][weaponItems.metalPipe]     = [
 	new ItemMethod("Equipar", "equip")
 ];
 
