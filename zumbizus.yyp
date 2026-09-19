@@ -266,7 +266,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.6.1.160",
+    "IDEVersion":"2024.6.2.162",
   },
   "name":"zumbizus",
   "resources":[
@@ -396,6 +396,7 @@
     {"id":{"name":"tg_oManager","path":"objects/tg_oManager/tg_oManager.yy",},},
     {"id":{"name":"ps_campfire","path":"particles/ps_campfire/ps_campfire.yy",},},
     {"id":{"name":"rm_boot","path":"rooms/rm_boot/rm_boot.yy",},},
+    {"id":{"name":"rm_container","path":"rooms/rm_container/rm_container.yy",},},
     {"id":{"name":"rm_default_room","path":"rooms/rm_default_room/rm_default_room.yy",},},
     {"id":{"name":"rm_dump","path":"rooms/rm_dump/rm_dump.yy",},},
     {"id":{"name":"rm_forest","path":"rooms/rm_forest/rm_forest.yy",},},
@@ -1006,6 +1007,7 @@
     {"roomId":{"name":"rm_forest","path":"rooms/rm_forest/rm_forest.yy",},},
     {"roomId":{"name":"rm_small_city","path":"rooms/rm_small_city/rm_small_city.yy",},},
     {"roomId":{"name":"rm_default_room","path":"rooms/rm_default_room/rm_default_room.yy",},},
+    {"roomId":{"name":"rm_container","path":"rooms/rm_container/rm_container.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[
