@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_trading",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_trading",
+  "parent":{
+    "name":"Economy",
+    "path":"folders/Scripts/Economy.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

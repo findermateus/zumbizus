@@ -10,7 +10,7 @@ enum npcStates {
 	working
 }
 
-function iddle() {
+iddle = function() {
 	state = npcStates.iddle;
 	drawState = drawStates.iddle;
 	
@@ -34,13 +34,6 @@ furniture = false;
 walkSpeed = irandom_range(3,5);
 wanderSpeed = irandom_range(1, 2);
 angleOffset = 0;
-
-pathHandler = instance_create_layer(
-	x, y,
-	layer,
-	obj_path_handler,
-	{ father: id }
-);
 
 wanderTargetX = x;
 wanderTargetY = y;
@@ -79,18 +72,6 @@ function getInstanceByObjectId(_objectId) {
 	}
 	
 	return false;
-}
-
-angleTimer = 0;
-
-function handleAngleOffset(_canJiggle, _speed = .3, _force = 3){
-	if (!_canJiggle) {
-		angleOffset = lerp(angleOffset, 0, 0.1);
-		return;
-	}
-	
-	angleTimer += 1;
-	angleOffset = sin(angleTimer * _speed) * _force;
 }
 
 function handleWorkingStation() {
@@ -153,24 +134,6 @@ function goingToWork() {
 	}
 }
 
-function handleNpcPositionWithPathHandler(_shouldStop = false) {
-	if (_shouldStop) {
-		pathHandler.x = x;
-		pathHandler.y = y;
-		
-		return;
-	}
-	
-	var _speed = 0.08;
-
-	if (point_distance(x, y, pathHandler.x, pathHandler.y) < 32) {
-		_speed = 0.3;
-	}
-
-	x = lerp(x, pathHandler.x, _speed);
-	y = lerp(y, pathHandler.y, _speed);
-}
-
 function onArriveAtWork() {
 	currentState = working;
 	isHovering = false;
@@ -222,7 +185,7 @@ function walkingWithoutDestiny() {
 		return;
 	}
 
-	if (wanderTimer > wanderCooldown || point_distance(x, y, wanderTargetX, wanderTargetY) < 8) {
+	if (wanderTimer > wanderCooldown || point_distance(x, y, wanderTargetX, wanderTargetY) < 16) {
 		wanderTimer = 0;
 		wanderCooldown = irandom_range(200, 260);
 		
@@ -237,11 +200,15 @@ function walkingWithoutDestiny() {
 		chooseWanderDestination();
 	}
 
-	pathHandler.calculatePath(
+	var _result = pathHandler.calculatePath(
 		wanderSpeed,
 		wanderTargetX,
 		wanderTargetY
 	);
+	
+	if (!_result) {
+		chooseWanderDestination();
+	}
 	
 	handleNpcPositionWithPathHandler();
 

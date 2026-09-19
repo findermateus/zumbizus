@@ -140,12 +140,12 @@ function hideModal(){
 	currentState = innactive;
 	playSwiiimmmSound();
 	
-	if (global.activeMenu == menuId) {
+	if (isCurrentMenu(menuId)) {
 		closeMenu();
 	}
 	
 	if (!global.activeInventory) {
-		obj_camera.setDefaultScale();
+		obj_camera.setDefaultValues();
 		obj_camera.target = obj_player;
 	}
 	defineModalValues(guiModalClosed);
@@ -169,7 +169,7 @@ function checkConditionsToClose(){
 	var _player = checkPlayerExistence();
 	if (!_player) return true;
 	if(checkObstacules(_player) && checkDistance(_player)) return false;
-	if (global.activeMenu == menuId) {
+	if (isCurrentMenu(menuId)) {
 		closeMenu();
 	}
 	
@@ -362,8 +362,8 @@ function drawWorkerList(_x, _x2, _y, _size, _workerList) {
 			continue;	
 		}
 
-		var _npc = global.npcList[_worker.id];
-		drawNpcInsideBlock(_posX, _y, _size, _npc.hair, _npc.skinColor, _npc.gender, 1);
+		var _npc = global.baseResidents[_worker.id];
+		drawNpcInsideBlock(_posX, _y, _size, _npc.hair, _npc.skinColor, _npc.gender, 1, _npc.eyeId);
 
 		_posX += _size + _gap;
 	}

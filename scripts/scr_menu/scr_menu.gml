@@ -7,5 +7,11 @@ enum Menus {
 	ResidentController,
 	Inventory,
 	Dialogue,
-	NpcInteraction
+	NpcInteraction,
+	Trade,
+	Cutscene
+}
+
+function isCurrentMenu(_menu) {
+	return global.activeMenu == _menu;
 }

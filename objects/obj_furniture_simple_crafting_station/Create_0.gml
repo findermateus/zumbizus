@@ -86,7 +86,7 @@ activationMethod = function () {
 
 function hide(){
     if (!global.activeInventory) {
-        obj_camera.setDefaultScale();
+        obj_camera.setDefaultValues();
         obj_camera.target = obj_player;
     }
     
@@ -99,7 +99,7 @@ function hide(){
     
     setVariablesCloseFurniture();
     
-	if (global.activeMenu == menuId) {
+	if (isCurrentMenu(menuId)) {
 		closeMenu();
 	}
 }
@@ -179,10 +179,10 @@ function drawSimpleCraftingStationUI() {
         category_scales[i] = lerp(category_scales[i], (_isHover || _isActive) ? 1.2 : 1.0, 0.2);
         var _s = category_scales[i];
         
-        var _drawH = 50 * _s;
+        var _drawH = 60 * _s;
         var _yOffset = (_isHover || _isActive) ? -5 : 0;
         
-        draw_sprite_stretched_ext(spr_map_button, _isHover || _isActive, _tx, _cy - (_drawH / 2) + _yOffset, _tabWidth, _drawH, c_white, _uiAlpha);
+        draw_sprite_stretched_ext(spr_inventory_box, _isHover || _isActive, _tx, _cy - (_drawH / 2) + _yOffset, _tabWidth, _drawH, c_white, _uiAlpha);
         
         draw_set_font(fnt_gui_default);
         draw_text_scribble(_tx + _tabWidth/2, _cy + _yOffset, "[fa_center][fa_middle]" + _cat.title);
@@ -240,7 +240,7 @@ function drawSimpleCraftingStationUI() {
     
     if (req_panel_alpha > 0.05 && hoverIndex != -1) {
         var _hIt = _items[hoverIndex];
-        var _craft = getItemRequirements(_hIt.type, _hIt.id);
+        var _craft = getCraftingItem(_hIt.type, _hIt.id);
         var _conf = global.items[_hIt.type][_hIt.id];
         
         hoverCraftingForUI.x = lerp(hoverCraftingForUI.x, hoverCraftingForUI.dX, 0.2);
@@ -275,7 +275,7 @@ function handleClick(_items, _hoverIndex, _xMouse, _yMouse) {
     if (_hoverIndex == -1 || !arrayKeyExists(_items, _hoverIndex)) return;
     
     var _hIt = _items[_hoverIndex];
-    var _craft = getItemRequirements(_hIt.type, _hIt.id);
+    var _craft = getCraftingItem(_hIt.type, _hIt.id);
     var _conf = global.items[_hIt.type][_hIt.id];
 
     if (!verifyIfHasAllItems(_craft)) {
@@ -287,13 +287,13 @@ function handleClick(_items, _hoverIndex, _xMouse, _yMouse) {
     if (_gIdx[0] == -1) {
         var _res = findItemInInventoryById(global.inventory, _conf.itemId, _conf.type);
         if (_res == false) {
-            createNotifyIndicator("Inventário cheio!", _xMouse, _yMouse);
+            createGUINotifyIndicator("Inventário cheio!", _xMouse, _yMouse);
             return;
         }
         
         var _qI = global.inventory[# _res[0], _res[1]];
         if (_qI.quantity >= _qI.limit) {
-            createNotifyIndicator("Inventário cheio!", _xMouse, _yMouse);
+            createGUINotifyIndicator("Inventário cheio!", _xMouse, _yMouse);
             return;
         }
         _gIdx = _res;
@@ -303,7 +303,7 @@ function handleClick(_items, _hoverIndex, _xMouse, _yMouse) {
     _bld.quantity = 1;
 
     if (!addItemToGrid(global.inventory, _bld)) {
-        createNotifyIndicator("Inventário cheio!", _xMouse, _yMouse);
+        createGUINotifyIndicator("Inventário cheio!", _xMouse, _yMouse);
         return;
     }
 
