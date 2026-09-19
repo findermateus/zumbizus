@@ -1,6 +1,8 @@
-disabled = false;
-textToDraw = "Entrar";
-onClick = method(id, function () {
+event_inherited();
+
+handleHover();
+
+if (isHovering && mouse_check_button_pressed(mb_left)) {
 	if (instance_exists(obj_map_transition)) return;
 	
 	playClickSound();
@@ -9,4 +11,4 @@ onClick = method(id, function () {
 		destination: rm_container,
 		mapName: ""
 	});
-})
+}

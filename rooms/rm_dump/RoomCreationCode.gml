@@ -50,12 +50,9 @@ with (obj_chest) {
     var _gw = ds_grid_width(containerData);
     var _gh = ds_grid_height(containerData);
     
-    // i percorre a largura (X)
     for (var i = 0; i < _gw; i++) {
-        // j percorre a altura (Y)
         for (var j = 0; j < _gh; j++) {
             
-            // Lembre-se: choose(false, false, true) dá apenas 33% de chance de vir loot
             var _gridWillHaveLoot = choose(false, false, true);
             
             if (_gridWillHaveLoot) {

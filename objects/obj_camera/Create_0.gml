@@ -13,7 +13,6 @@ target = noone;
 currentShakeEffect = 0;
 
 setGuiSize(1920, 1080);
-window_set_size(1920, 1080)
 
 cameraScaleSpeed = DEFAULT_CAM_SCALE_SPEED;
 cameraScale = DEFAULT_CAM_SCALE;
@@ -59,6 +58,12 @@ function setDefaultValues(){
 }
 
 function setCameraScale(){
+	if (instance_exists(obj_camera_point)) {
+		cameraScale = lerp(cameraScale, obj_camera_point.scale, cameraScaleSpeed);
+		
+		return;
+	}
+	
 	cameraScale = lerp(cameraScale, destinyCameraScale, cameraScaleSpeed);
 	var _cameraWidth = DEFAULT_CAM_W * cameraScale;
 	var _cameraHeight = DEFAULT_CAM_H * cameraScale;

@@ -266,7 +266,7 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.6.2.162",
+    "IDEVersion":"2024.6.1.160",
   },
   "name":"zumbizus",
   "resources":[
@@ -299,6 +299,7 @@
     {"id":{"name":"obj_builder","path":"objects/obj_builder/obj_builder.yy",},},
     {"id":{"name":"obj_bullet","path":"objects/obj_bullet/obj_bullet.yy",},},
     {"id":{"name":"obj_bush","path":"objects/obj_bush/obj_bush.yy",},},
+    {"id":{"name":"obj_camera_point","path":"objects/obj_camera_point/obj_camera_point.yy",},},
     {"id":{"name":"obj_camera","path":"objects/obj_camera/obj_camera.yy",},},
     {"id":{"name":"obj_car_alarm","path":"objects/obj_car_alarm/obj_car_alarm.yy",},},
     {"id":{"name":"obj_chest","path":"objects/obj_chest/obj_chest.yy",},},
@@ -306,6 +307,7 @@
     {"id":{"name":"obj_collected_item_indicator","path":"objects/obj_collected_item_indicator/obj_collected_item_indicator.yy",},},
     {"id":{"name":"obj_collision","path":"objects/obj_collision/obj_collision.yy",},},
     {"id":{"name":"obj_combat_tutorial","path":"objects/obj_combat_tutorial/obj_combat_tutorial.yy",},},
+    {"id":{"name":"obj_container","path":"objects/obj_container/obj_container.yy",},},
     {"id":{"name":"obj_controller","path":"objects/obj_controller/obj_controller.yy",},},
     {"id":{"name":"obj_cursor_controller","path":"objects/obj_cursor_controller/obj_cursor_controller.yy",},},
     {"id":{"name":"obj_damage_controller","path":"objects/obj_damage_controller/obj_damage_controller.yy",},},
@@ -884,6 +886,7 @@
     {"id":{"name":"spr_metal_cabinet_double_doors","path":"sprites/spr_metal_cabinet_double_doors/spr_metal_cabinet_double_doors.yy",},},
     {"id":{"name":"spr_metal_cabinet","path":"sprites/spr_metal_cabinet/spr_metal_cabinet.yy",},},
     {"id":{"name":"spr_metal_chest","path":"sprites/spr_metal_chest/spr_metal_chest.yy",},},
+    {"id":{"name":"spr_metal_container","path":"sprites/spr_metal_container/spr_metal_container.yy",},},
     {"id":{"name":"spr_metal_crate","path":"sprites/spr_metal_crate/spr_metal_crate.yy",},},
     {"id":{"name":"spr_metal_pipe","path":"sprites/spr_metal_pipe/spr_metal_pipe.yy",},},
     {"id":{"name":"spr_mouse","path":"sprites/spr_mouse/spr_mouse.yy",},},

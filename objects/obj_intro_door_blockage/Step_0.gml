@@ -1,5 +1,4 @@
 handleHover();
-adjustObjectDepth();
 
 if (!isRemoving && isHovering && mouse_check_button_pressed(mb_left)) {
 	if (canRemoveBlockage()) {

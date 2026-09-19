@@ -1,20 +1,17 @@
 {
   "$GMObject":"",
-  "%Name":"obj_interactable_decoration_with_colision",
+  "%Name":"obj_camera_point",
   "eventList":[
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
-  "name":"obj_interactable_decoration_with_colision",
+  "name":"obj_camera_point",
   "overriddenProperties":[],
   "parent":{
-    "name":"InteractableDecoration",
-    "path":"folders/Objects/Enviroment/InteractableDecoration.yy",
+    "name":"Controllers",
+    "path":"folders/Objects/Controllers.yy",
   },
-  "parentObjectId":{
-    "name":"obj_interactable_decoration",
-    "path":"objects/obj_interactable_decoration/obj_interactable_decoration.yy",
-  },
+  "parentObjectId":null,
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,
