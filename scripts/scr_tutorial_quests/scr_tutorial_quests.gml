@@ -583,6 +583,31 @@ function getExploreDumpQuest() {
 	
 	_quest.addStep(_killTheZombiesStep);
 	
+	var _keepExploringStep = new QuestStep("keep_exploring_dump", "Continue Explorando");
+	_keepExploringStep.area = rm_container;
+	_keepExploringStep.containerId = "container_survivor";
+	
+	
+	_keepExploringStep.onEvent = method(_keepExploringStep, function (_event, _data) {
+	    if (_event != QuestEvent.AreaEntered) return;
+		if (_data.area != self.area) return;
+		if (global.persistentRoomId != self.containerId) return;
+		
+		self.quest.completeCurrentStep();
+	});
+	
+	_quest.addStep(_keepExploringStep);
+	
+	var _talkStep = new QuestStep("speak_to_survivor", "Fale com a sobrevivente");
+
+	_talkStep.onEvent = method(_talkStep, function (_event, _data) {
+		if (_event != QuestEvent.DialogueEnded) return;
+
+		self.quest.completeCurrentStep();
+	});
+	
+	_quest.addStep(_talkStep);
+	
 	_quest.onComplete = method(_quest, function () {
 		lockMap(self.mapId)
 	})

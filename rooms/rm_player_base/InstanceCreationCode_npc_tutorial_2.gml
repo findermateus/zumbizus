@@ -1,4 +1,4 @@
-getCurrentDialogue = function() {
+getCurrentDialogue = function() {	
 	if (
 		!obj_quest_manager.hasActiveQuest(Quests.BecomeALumberjack)
 		&&

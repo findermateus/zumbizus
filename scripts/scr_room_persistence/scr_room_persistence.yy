@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_room_persistence",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_room_persistence",
+  "parent":{
+    "name":"Maps",
+    "path":"folders/Scripts/Maps.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
