@@ -7,8 +7,12 @@ if (isHovering && mouse_check_button_pressed(mb_left)) {
 	
 	playClickSound();
 	
+	global.containerRoomInitializer = method(rm_container, containerInitializer);
+	
 	instance_create_layer(0, 0, "Controllers", obj_map_transition, {
 		destination: rm_container,
-		mapName: ""
+		persistentRoomId: roomId,
+		mapName: "",
+		transitionType: TransitionType.Interior
 	});
 }
