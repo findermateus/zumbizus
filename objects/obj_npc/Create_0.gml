@@ -104,6 +104,7 @@ function goToDestiny() {
 	handleNpcPositionWithPathHandler();
 	
 	if (point_distance(x, y, destinyX, destinyY) < 16) {
+		handlePositionWithPathHandler(true);
 		onArriveAtDestiny();
 	}
 }
@@ -112,6 +113,9 @@ function handleNpcPositionWithPathHandler(_shouldStop = false) {
 	if (_shouldStop) {
 		pathHandler.x = x;
 		pathHandler.y = y;
+		with (pathHandler) {
+			path_end();
+		}
 		
 		return;
 	}
@@ -313,6 +317,92 @@ function draw() {
 		currentDirection,
 		drawState
 	);
+}
+
+minFollowDistance = 70;
+maxFollowDistance = 75;
+repathTimer = 0;
+repathInterval = 12;
+
+companionState = function() {
+    var _targetToFollow = obj_player;
+    
+    if (!instance_exists(_targetToFollow)) {
+        iddle();
+        return;
+    }
+    
+    if (isInteracting || activeInteraction) {
+        drawState = drawStates.iddle;
+        handleAngleOffset(false);
+        handleNpcPositionWithPathHandler(true);
+        return;
+    }
+
+    var _dist = point_distance(x, y, _targetToFollow.x, _targetToFollow.y);
+
+    if (_dist <= minFollowDistance) {
+        drawState = drawStates.iddle;
+        handleAngleOffset(false);
+        handleNpcPositionWithPathHandler(true);
+        repathTimer = repathInterval;
+        
+		return;
+    }
+    
+    if (_dist <= maxFollowDistance && drawState != drawStates.walking) {
+		handleAngleOffset(false);
+		handleNpcPositionWithPathHandler(true);
+		
+		return;
+	}
+	
+    repathTimer++;
+
+    if (repathTimer >= repathInterval) {
+        repathTimer = 0;
+        destinyX = _targetToFollow.x;
+        destinyY = _targetToFollow.y;
+            
+        var _canWalk = pathHandler.calculatePath(walkSpeed, destinyX, destinyY);
+        drawState = _canWalk ? drawStates.walking : drawStates.iddle;
+    }
+
+    if (drawState == drawStates.walking) {
+        handleAngleOffset(true, .25, 4);
+            
+        var _velh = destinyX > x ? walkSpeed : -walkSpeed;
+        var _velv = destinyY > y ? walkSpeed : -walkSpeed;
+
+        if (choose(0, 1)) {
+            createWalkingParticles(x, y, _velh, _velv, 1);
+        }
+    } else {
+        handleAngleOffset(false);
+		handleNpcPositionWithPathHandler(true);
+		
+		return;
+    }
+
+    if (point_distance(x, y, destinyX, destinyY) > 12) {
+        if (abs(destinyX - x) > 1) {
+            currentDirection = (destinyX > x) ? 1 : -1;
+        }
+    }
+
+    handleNpcPositionWithPathHandler();
+}
+
+function becomeCompanion() {
+    currentState = companionState;
+	
+    global.activeCompanionPreset = presetId;
+}
+
+function removeCompanion() {
+    currentState = iddle;
+	
+    global.activeCompanionPreset = "";
 }
 
 if (presetId != "") {    

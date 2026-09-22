@@ -1,6 +1,6 @@
 currentPath = path_add();
-calculationPathDelay = 15;
-calculationPathTimer = irandom(60);
+calculationPathDelay = 8;
+calculationPathTimer = calculationPathDelay;
 currentDirection = 1;
 
 hasAccess = false;

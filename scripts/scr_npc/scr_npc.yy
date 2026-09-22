@@ -1,12 +1,12 @@
 {
   "$GMScript":"v1",
-  "%Name":"scr_ui",
+  "%Name":"scr_npc",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"scr_ui",
+  "name":"scr_npc",
   "parent":{
-    "name":"UI",
-    "path":"folders/Scripts/UI.yy",
+    "name":"NPC",
+    "path":"folders/Scripts/NPC.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

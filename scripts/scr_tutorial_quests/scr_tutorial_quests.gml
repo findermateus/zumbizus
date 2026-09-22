@@ -608,6 +608,8 @@ function getExploreDumpQuest() {
 	
 	_quest.addStep(_talkStep);
 	
+	_quest.addStep(createReturnToBaseStep());
+	
 	_quest.onComplete = method(_quest, function () {
 		lockMap(self.mapId)
 	})

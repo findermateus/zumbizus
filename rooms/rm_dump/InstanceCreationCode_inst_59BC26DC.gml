@@ -50,9 +50,7 @@ containerInitializer = function() {
 			
 				obj_waypoint.disabled = false;
 			
-				setDestiny(obj_waypoint.x, obj_waypoint.y, function () {
-					currentState = fadeOutState;
-				});
+				becomeCompanion();
 			}
 		
 			return _dialogue;
