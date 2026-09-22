@@ -611,8 +611,8 @@ function getExploreDumpQuest() {
 	_quest.addStep(createReturnToBaseStep());
 	
 	_quest.onComplete = method(_quest, function () {
-		lockMap(self.mapId)
-	})
+		lockMap(self.mapId);
+	});
 
 	return _quest;
 }
