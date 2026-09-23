@@ -21,6 +21,7 @@ mouseIsOnSecundaryInventory = false;
 mouseIsOnInventoryGrid = false;
 mouseIsOnToolBar = false;
 mouseIsOnEquipments = false;
+mouseIsOnPlayerInfo = false;
 mouseIsOnQuickUseBar = false;
 holdingItemPositions = { x: 0, y: 0}
 defaultToolBarAlpha = .80;
@@ -92,11 +93,7 @@ function handleIndicator(){
 	if (_item == BLANK_INVENTORY_SPACE) return;
 	
 	if (_item.type == itemType.equipment){
-		switch (_item.equipType) {
-			case equipmentType.armor: indicatorToWhereItemShouldBePut = "armor"; break; 
-			case equipmentType.bag: indicatorToWhereItemShouldBePut = "bag"; break; 
-			case equipmentType.head: indicatorToWhereItemShouldBePut = "head"; break;
-		}
+		indicatorToWhereItemShouldBePut = getEquipmentSlotFromItem(_item);
 		return;
 	}
 	if (_item.type == itemType.weapons){
@@ -111,6 +108,7 @@ function drawInventory(){
 	mouseIsOnInventory = false;
 	mouseIsOnInventoryGrid = false;
 	mouseIsOnEquipments = false;
+	mouseIsOnPlayerInfo = false;
 	activeHoverItem = BLANK_INVENTORY_SPACE;
 	hoverToolbarIndex = BLANK_INVENTORY_SPACE;
 	mouseIsOnOtherMenu = false;
@@ -582,7 +580,7 @@ function dropInventoryItem(){
 		switchPositionInInventory();	
 		return;
 	}
-	if (mouseIsOnOtherMenu || mouseIsOnInventory || mouseIsOnToolBar || mouseIsOnEquipments || mouseIsOnQuickUseBar) return;
+	if (mouseIsOnOtherMenu || mouseIsOnInventory || mouseIsOnToolBar || mouseIsOnEquipments || mouseIsOnPlayerInfo || mouseIsOnQuickUseBar) return;
 	global.currentItemPlayingTheAction = holdingItem;
 	var _item = global.activeInventoryAction[# holdingItem.j, holdingItem.i];
 	audio_play_sound(snd_equip_item, 0, false);

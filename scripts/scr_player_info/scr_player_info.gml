@@ -11,6 +11,10 @@ function drawPlayerInfo(_inventoryBox) {
 	
 	var _marginFromInventory = 25;
 	_playerInfoBox.x = _inventoryBox.xPosition - _playerInfoBox.width - _marginFromInventory;
+	var _infoBoxX1 = _playerInfoBox.x;
+	var _infoBoxY1 = _playerInfoBox.y;
+	var _infoBoxX2 = _playerInfoBox.x + _playerInfoBox.width;
+	var _infoBoxY2 = _playerInfoBox.y + _playerInfoBox.height;
     var _yScale = getScale(_playerInfoBox.height, sprite_get_height(_playerInfoBox.sprite));
 	var _xScale = getScale(_playerInfoBox.width, sprite_get_width(_playerInfoBox.sprite));
 	
@@ -24,6 +28,28 @@ function drawPlayerInfo(_inventoryBox) {
 	drawPlayerInsideInfoBox(_playerInfoBox);
 	drawPlayerToolBar(_playerInfoBox);
 	drawPlayerEquipments(_playerInfoBox);
+
+	mouseIsOnPlayerInfo = mouseIsOnRectangle(_infoBoxX1, _infoBoxY1, _infoBoxX2, _infoBoxY2);
+	if (mouseIsOnPlayerInfo && !mouseIsOnEquipments) {
+		handleDropOnPlayerInfo();
+	}
+}
+
+function getEquipmentSlotFromItem(_item) {
+	if (_item == BLANK_INVENTORY_SPACE || _item.type != itemType.equipment) return BLANK_INVENTORY_SPACE;
+	switch (_item.equipType) {
+		case equipmentType.armor: return "armor";
+		case equipmentType.bag: return "bag";
+		case equipmentType.head: return "head";
+	}
+	return BLANK_INVENTORY_SPACE;
+}
+
+function handleDropOnPlayerInfo() {
+	if (currentState != holdItem || holdingItemFromToolBar) return;
+	var _slot = getEquipmentSlotFromItem(activeHoldingItem);
+	if (_slot == BLANK_INVENTORY_SPACE) return;
+	handleHoldingOverItem(_slot);
 }
 
 function drawPlayerInsideInfoBox(_box) {
@@ -232,7 +258,7 @@ function handleEquipmentDropping(){
 		storeEquipment();
 		return;
 	}
-	if (mouseIsOnEquipments || mouseIsOnInventory){
+	if (mouseIsOnEquipments || mouseIsOnInventory || mouseIsOnPlayerInfo){
 		return;
 	}
 	var _droppedItem = instance_create_layer(obj_player.x, obj_player.y, "Items", obj_item);

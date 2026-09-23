@@ -33,3 +33,16 @@ if (keyboard_check_pressed(vk_escape)) {
 if (keyboard_check_released(ord("P"))) {
 	saveGame(true);
 }
+
+if (global.debug && keyboard_check_pressed(ord("B"))) {
+		if (instance_exists(obj_map_transition)) return;
+	
+		playClickSound();
+	
+		var _room = room == rm_debug ? rm_player_base : rm_debug;
+	
+		instance_create_layer(0, 0, "Controllers", obj_map_transition, {
+			destination:  _room,
+			mapName: "Debug"
+		});
+}
