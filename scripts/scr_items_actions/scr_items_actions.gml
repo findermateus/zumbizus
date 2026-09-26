@@ -109,6 +109,27 @@ function dropItem(){
 	return true;
 }
 
+function getItemConfiguration(_id, _type) {
+	return global.items[_type][_id];
+}
+
+function createDroppedItem(_id, _type, _x, _y, _quantity = 1) {
+    var _configuration = getItemConfiguration(_id, _type);
+	
+	var _buildedItem = constructItem(_type, _configuration);
+	
+	if (variable_struct_exists(_buildedItem, "quantity") && _quantity >= 1) {
+		_buildedItem.quantity = _quantity
+	}
+	
+	var _droppedItem = instance_create_layer(_x, _y, "Items", obj_item);
+
+    _droppedItem.item = _buildedItem;
+
+    return _droppedItem;
+}
+
+
 function createItem(_item, _bounce = false){
 	var _droppedItem = instance_create_layer(obj_player.x, obj_player.y, "Items", obj_item);
 	_droppedItem.item = _item;

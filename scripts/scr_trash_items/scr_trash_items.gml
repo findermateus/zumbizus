@@ -8,7 +8,8 @@ function TrashConfig() {
 		quantity: 1,
 		sound: snd_can,
 		fitInGrid: fitInGridType.verticaly,
-		type: itemType.trash
+		type: itemType.trash,
+		value: 0
 	};
 }
 
@@ -19,6 +20,7 @@ function TrashConfig() {
 	_config.description = "Diversos pregos";
 	_config.sprite = spr_nail;
 	_config.limit = 64;
+	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.nail] = _config;
 }
@@ -31,6 +33,7 @@ function TrashConfig() {
 	_config.sprite = spr_empty_water_bottle;
 	_config.limit = 12;
 	_config.sound = snd_empty_water_bottle;
+	_config.value = 4;
 
 	global.items[itemType.trash][trashItems.empty_watter_bottle] = _config;
 }
@@ -42,6 +45,7 @@ function TrashConfig() {
 	_config.description = "Lata vazia, sem muito uso pois já foi aberta";
 	_config.sprite = spr_empty_canned_food;
 	_config.limit = 16;
+	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.empty_canned_food] = _config;
 }
@@ -54,6 +58,7 @@ function TrashConfig() {
 	_config.sprite = spr_wood_board;
 	_config.limit = 8;
 	_config.fitInGrid = fitInGridType.horizontaly;
+	_config.value = 8;
 
 	global.items[itemType.trash][trashItems.wood_board] = _config;
 }
@@ -65,6 +70,7 @@ function TrashConfig() {
 	_config.description = "Já conteve um saboroso peixe.";
 	_config.sprite = spr_empty_canned_fish;
 	_config.limit = 16;
+	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.empty_canned_fish] = _config;
 }
@@ -76,6 +82,7 @@ function TrashConfig() {
 	_config.description = "Já conteve um abacaxi.";
 	_config.sprite = spr_empty_canned_pineapple;
 	_config.limit = 16;
+	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.empty_canned_pineapple] = _config;
 }
@@ -87,6 +94,7 @@ function TrashConfig() {
 	_config.description = "Serve para remendar coisas (até certo ponto)";
 	_config.sprite = spr_duct_tape;
 	_config.limit = 32;
+	_config.value = 6;
 
 	global.items[itemType.trash][trashItems.duct_tape] = _config;
 }
@@ -98,6 +106,7 @@ function TrashConfig() {
 	_config.description = "Gravetos de Madeira";
 	_config.sprite = spr_twig;
 	_config.limit = 16;
+	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.twig] = _config;
 }
@@ -109,6 +118,7 @@ function TrashConfig() {
 	_config.description = "Pequena Pedra";
 	_config.sprite = spr_rock;
 	_config.limit = 16;
+	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.rock] = _config;
 }
@@ -120,6 +130,7 @@ function TrashConfig() {
 	_config.description = "Ué";
 	_config.sprite = spr_wood_log;
 	_config.limit = 8;
+	_config.value = 12;
 
 	global.items[itemType.trash][trashItems.wood_log] = _config;
 }
@@ -131,6 +142,7 @@ function TrashConfig() {
 	_config.description = "Utilizado para criação de diversos itens";
 	_config.sprite = spr_rope;
 	_config.limit = 8;
+	_config.value = 10;
 
 	global.items[itemType.trash][trashItems.rope] = _config;
 }
@@ -142,6 +154,7 @@ function TrashConfig() {
 	_config.description = "Utilizado para criação de diversos itens";
 	_config.sprite = spr_plant_fiber;
 	_config.limit = 32;
+	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.plant_fiber] = _config;
 }

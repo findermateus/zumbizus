@@ -21,6 +21,7 @@ mouseIsOnSecundaryInventory = false;
 mouseIsOnInventoryGrid = false;
 mouseIsOnToolBar = false;
 mouseIsOnEquipments = false;
+mouseIsOnPlayerInfo = false;
 mouseIsOnQuickUseBar = false;
 holdingItemPositions = { x: 0, y: 0}
 defaultToolBarAlpha = .80;
@@ -65,9 +66,11 @@ mouseIsOnOtherMenu = false;
 
 function hide(){
 	instance_destroy(obj_menu_option);
+	
 	var _animationSpeed = (delta_time/1000000);
 	curveAnimationIndex -= _animationSpeed * 1.1;
 	animationCurveInventoryShow = animcurve_get_channel(ac_inventory, "inventory_hide");
+	
 	if(curveAnimationIndex < .1){
 		curveAnimationIndex = 0;
 		global.activeInventory = false;
@@ -90,11 +93,7 @@ function handleIndicator(){
 	if (_item == BLANK_INVENTORY_SPACE) return;
 	
 	if (_item.type == itemType.equipment){
-		switch (_item.equipType) {
-			case equipmentType.armor: indicatorToWhereItemShouldBePut = "armor"; break; 
-			case equipmentType.bag: indicatorToWhereItemShouldBePut = "bag"; break; 
-			case equipmentType.head: indicatorToWhereItemShouldBePut = "head"; break;
-		}
+		indicatorToWhereItemShouldBePut = getEquipmentSlotFromItem(_item);
 		return;
 	}
 	if (_item.type == itemType.weapons){
@@ -109,6 +108,7 @@ function drawInventory(){
 	mouseIsOnInventory = false;
 	mouseIsOnInventoryGrid = false;
 	mouseIsOnEquipments = false;
+	mouseIsOnPlayerInfo = false;
 	activeHoverItem = BLANK_INVENTORY_SPACE;
 	hoverToolbarIndex = BLANK_INVENTORY_SPACE;
 	mouseIsOnOtherMenu = false;
@@ -336,10 +336,6 @@ function drawInventoryGrid(_inventory, _inventoryBox){
 			}
 		}
 	}
-	
-	if (activeHoverItem == BLANK_INVENTORY_SPACE) return;
-		
-	draw_text(xMouseToGui, yMouseToGui, activeHoverItem.value);
 }
 
 function verifyConditionToApplyHoverEffect() {
@@ -468,7 +464,11 @@ function holdItem(){
 	
 	if(mouse_check_button_released(mb_left) && activeHoldingItem != BLANK_INVENTORY_SPACE){
 		dropInventoryItem();
-		currentState = nothing;
+		
+		if (currentState != hide) {
+			currentState = nothing;
+		}
+		
 		return;
 	}
 	
@@ -580,7 +580,7 @@ function dropInventoryItem(){
 		switchPositionInInventory();	
 		return;
 	}
-	if (mouseIsOnOtherMenu || mouseIsOnInventory || mouseIsOnToolBar || mouseIsOnEquipments || mouseIsOnQuickUseBar) return;
+	if (mouseIsOnOtherMenu || mouseIsOnInventory || mouseIsOnToolBar || mouseIsOnEquipments || mouseIsOnPlayerInfo || mouseIsOnQuickUseBar) return;
 	global.currentItemPlayingTheAction = holdingItem;
 	var _item = global.activeInventoryAction[# holdingItem.j, holdingItem.i];
 	audio_play_sound(snd_equip_item, 0, false);
@@ -591,12 +591,22 @@ function addItemToToolBar(_index = undefined, _inventory = global.inventory, _it
 	if (holdingItemFromToolBar) return;
 	var _auxiliarItem = _inventory[# _item.j, _item.i];
 	if (_auxiliarItem.type != itemType.weapons) return;
+	
 	_index = _index == undefined ? getCleanIndexFromToolBar() : _index;
+
+	obj_quest_manager.notifyEvent(QuestEvent.ItemEquiped, {
+		type: "weapon",
+		itemId: _auxiliarItem.itemId,
+		itemType: _auxiliarItem.type
+	});
+	
 	if (_index != BLANK_INVENTORY_SPACE){
 		_inventory[# _item.j, _item.i] = global.equipedItems[| _index];
 		global.equipedItems[| _index] = _auxiliarItem;
+		
 		return;
 	}
+	
 	_inventory[# _item.j, _item.i] = global.equipedItems[| 0];
 	global.equipedItems[| 0] = _auxiliarItem;
 }

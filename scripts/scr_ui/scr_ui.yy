@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"scr_ui",
   "parent":{
-    "name":"Bootstrap",
-    "path":"folders/Scripts/Bootstrap.yy",
+    "name":"UI",
+    "path":"folders/Scripts/UI.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

@@ -11,7 +11,8 @@ function ConsumableConfig() {
 		fitInGrid: fitInGridType.verticaly,
 		limit: 1,
 		stackable: false,
-		type: itemType.consumables
+		type: itemType.consumables,
+		value: 0
 	};
 }
 
@@ -25,6 +26,7 @@ function ConsumableConfig() {
 	_config.consumableType = consumableTypes.drink;
 	_config.limit = 4;
 	_config.stackable = true;
+	_config.value = 20;
 
 	global.items[itemType.consumables][consumableItems.watter_bottle] = _config;
 }
@@ -39,6 +41,7 @@ function ConsumableConfig() {
 	_config.consumableType = consumableTypes.drink;
 	_config.limit = 4;
 	_config.stackable = true;
+	_config.value = 8;
 
 	global.items[itemType.consumables][consumableItems.dirt_water] = _config;
 }
@@ -52,6 +55,7 @@ function ConsumableConfig() {
 	_config.consumableType = consumableTypes.food;
 	_config.stackable = true;
 	_config.limit = 4;
+	_config.value = 16;
 
 	global.items[itemType.consumables][consumableItems.canned_food] = _config;
 }
@@ -65,6 +69,7 @@ function ConsumableConfig() {
 	_config.consumableType = consumableTypes.food;
 	_config.stackable = true;
 	_config.limit = 4;
+	_config.value = 20;
 
 	global.items[itemType.consumables][consumableItems.canned_fish] = _config;
 }
@@ -78,6 +83,7 @@ function ConsumableConfig() {
 	_config.consumableType = consumableTypes.food;
 	_config.stackable = true;
 	_config.limit = 4;
+	_config.value = 20;
 
 	global.items[itemType.consumables][consumableItems.canned_pineapple] = _config;
 }
@@ -91,6 +97,7 @@ function ConsumableConfig() {
 	_config.consumableType = consumableTypes.drink;
 	_config.stackable = true;
 	_config.limit = 4;
+	_config.value = 18;
 
 	global.items[itemType.consumables][consumableItems.orange_juice] = _config;
 }
@@ -104,6 +111,7 @@ function ConsumableConfig() {
 	_config.consumableType = consumableTypes.food;
 	_config.stackable = true;
 	_config.limit = 8;
+	_config.value = 22;
 	
 	global.items[itemType.consumables][consumableItems.raw_meat_1] = _config;
 }
@@ -117,6 +125,7 @@ function ConsumableConfig() {
 	_config.consumableType = consumableTypes.food;
 	_config.stackable = true;
 	_config.limit = 8;
+	_config.value = 35;
 	
 	global.items[itemType.consumables][consumableItems.cooked_meat_1] = _config;
 }
@@ -130,6 +139,7 @@ function ConsumableConfig() {
 	_config.consumableType = consumableTypes.food;
 	_config.stackable = true;
 	_config.limit = 8;
+	_config.value = 22;
 	
 	global.items[itemType.consumables][consumableItems.raw_meat_2] = _config;
 }
@@ -143,6 +153,7 @@ function ConsumableConfig() {
 	_config.consumableType = consumableTypes.food;
 	_config.stackable = true;
 	_config.limit = 8;
+	_config.value = 35;
 	
 	global.items[itemType.consumables][consumableItems.cooked_meat_2] = _config;
 }
@@ -156,6 +167,7 @@ function ConsumableConfig() {
 	_config.consumableType = consumableTypes.health;
 	_config.stackable = true;
 	_config.limit = 6;
+	_config.value = 15;
 	
 	global.items[itemType.consumables][consumableItems.bandage] = _config;
 }
@@ -170,6 +182,7 @@ function ConsumableConfig() {
 	_config.stackable = true;
 	_config.limit = 3;
 	_config.sound = snd_medicine;
+	_config.value = 60;
 	
 	global.items[itemType.consumables][consumableItems.medicine] = _config;
 }

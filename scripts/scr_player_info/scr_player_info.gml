@@ -3,13 +3,18 @@ function drawPlayerInfo(_inventoryBox) {
 	var _playerInfoBox = {
 		x: 0,
 		y: _inventoryBox.yPosition,
-		width: display_get_width() / 4,
+		width: 550,
 		height: display_get_gui_height() * .7,
 		sprite: spr_inventory_box,
 		border: 12
 	};
+	
 	var _marginFromInventory = 25;
 	_playerInfoBox.x = _inventoryBox.xPosition - _playerInfoBox.width - _marginFromInventory;
+	var _infoBoxX1 = _playerInfoBox.x;
+	var _infoBoxY1 = _playerInfoBox.y;
+	var _infoBoxX2 = _playerInfoBox.x + _playerInfoBox.width;
+	var _infoBoxY2 = _playerInfoBox.y + _playerInfoBox.height;
     var _yScale = getScale(_playerInfoBox.height, sprite_get_height(_playerInfoBox.sprite));
 	var _xScale = getScale(_playerInfoBox.width, sprite_get_width(_playerInfoBox.sprite));
 	
@@ -23,6 +28,28 @@ function drawPlayerInfo(_inventoryBox) {
 	drawPlayerInsideInfoBox(_playerInfoBox);
 	drawPlayerToolBar(_playerInfoBox);
 	drawPlayerEquipments(_playerInfoBox);
+
+	mouseIsOnPlayerInfo = mouseIsOnRectangle(_infoBoxX1, _infoBoxY1, _infoBoxX2, _infoBoxY2);
+	if (mouseIsOnPlayerInfo && !mouseIsOnEquipments) {
+		handleDropOnPlayerInfo();
+	}
+}
+
+function getEquipmentSlotFromItem(_item) {
+	if (_item == BLANK_INVENTORY_SPACE || _item.type != itemType.equipment) return BLANK_INVENTORY_SPACE;
+	switch (_item.equipType) {
+		case equipmentType.armor: return "armor";
+		case equipmentType.bag: return "bag";
+		case equipmentType.head: return "head";
+	}
+	return BLANK_INVENTORY_SPACE;
+}
+
+function handleDropOnPlayerInfo() {
+	if (currentState != holdItem || holdingItemFromToolBar) return;
+	var _slot = getEquipmentSlotFromItem(activeHoldingItem);
+	if (_slot == BLANK_INVENTORY_SPACE) return;
+	handleHoldingOverItem(_slot);
 }
 
 function drawPlayerInsideInfoBox(_box) {
@@ -82,6 +109,7 @@ function drawPlayerInsideInfoBox(_box) {
 		1,
 		_skinColor,
 		_hair,
+		global.player.eyeId,
 		_armorId,
 		_helmetId,
 		_bagId,
@@ -143,9 +171,27 @@ function drawEquipmentGrid(_xPosition, _y, _grid, _box, _hMargin, _indicatorType
 		var _alphaIndex = (sin(_timer * 0.5) + 1) * 0.2;
 		drawSpriteWithGpuFog(c_white, _grid.sprite, 2, _xPosition, _y, _grid.scale, _grid.scale, 0, _alphaIndex);
 	}
+	
 	if (_item != BLANK_INVENTORY_SPACE){
 		drawItemInGrid(_item, _grid, _xPosition, _y);
+	} else {
+		var _equipmentCategoryToSprite = {
+			"bag": spr_bag_icon,
+			"armor": spr_clothing_icon,
+			"head": spr_head_icon
+		}
+		
+		var _categorySprite = _equipmentCategoryToSprite[$ _indicatorType];
+		
+		var _gridHeight = sprite_get_height(_grid.sprite) * _grid.scale;
+		var _categoryScale = getScale(_gridHeight * .5, sprite_get_width(_categorySprite));
+		
+		var _cx =  _xPosition + _gridHeight / 2;
+		var _cy = _y + _gridHeight / 2;
+		
+		draw_sprite_ext(_categorySprite, 0, _cx, _cy, _categoryScale, _categoryScale, 0, c_white, .6);
 	}
+	
 	var _gridSize = sprite_get_width(_grid.sprite) * _grid.scale;
 	var _mouseIsOnGrid = mouseIsOnRectangle(_xPosition, _y, _xPosition + _gridSize, _y + _gridSize);
 	if (_mouseIsOnGrid && indicatorToWhereItemShouldBePut == _indicatorType){
@@ -186,7 +232,12 @@ function handleHoldingOverItem(_indicatorType){
 function equipEquipment(_type, _inventoryItem) {
 	playEquipEquipmentSound();
 	variable_struct_set(global.equipments, _type, _inventoryItem);
-	handleEquipmentSwitch();
+	handleEquipmentSwitch(_type);
+	
+	obj_quest_manager.notifyEvent(QuestEvent.ItemEquiped, {
+		type: _type,
+		item: _inventoryItem
+	});
 }
 
 function playEquipEquipmentSound() {
@@ -198,7 +249,7 @@ function storeEquipment(){
 	if (_inventorySpace != BLANK_INVENTORY_SPACE) return;
 	global.activeInventoryAction[# hoverItem.j, hoverItem.i] = variable_struct_get(global.equipments, indicatorToWhereItemShouldBePut);
 	variable_struct_set(global.equipments, indicatorToWhereItemShouldBePut, BLANK_INVENTORY_SPACE);
-	handleEquipmentSwitch();
+	handleEquipmentSwitch(indicatorToWhereItemShouldBePut);
 }
 
 function handleEquipmentDropping(){
@@ -207,20 +258,20 @@ function handleEquipmentDropping(){
 		storeEquipment();
 		return;
 	}
-	if (mouseIsOnEquipments || mouseIsOnInventory){
+	if (mouseIsOnEquipments || mouseIsOnInventory || mouseIsOnPlayerInfo){
 		return;
 	}
 	var _droppedItem = instance_create_layer(obj_player.x, obj_player.y, "Items", obj_item);
 	_droppedItem.item = activeHoldingItem;
 	variable_struct_set(global.equipments, indicatorToWhereItemShouldBePut, BLANK_INVENTORY_SPACE);
-	handleEquipmentSwitch();
+	handleEquipmentSwitch(indicatorToWhereItemShouldBePut);
 }
 
 function drawItemInGrid(_item, _grid, _x, _y){
 	var _height = sprite_get_height(_grid.sprite) * _grid.scale;
 	var _itemWidth = sprite_get_width(_item.sprite);
 	var _itemHeight = sprite_get_height(_item.sprite);
-	var _scale = getItemScale(_height - 20, _itemHeight);
+	var _scale = getItemScale(_height * .5, _itemHeight);
 	if (_item.fitInGrid == fitInGridType.horizontaly){
 		_scale = getItemScale(_height - 20, _itemWidth);
 	}

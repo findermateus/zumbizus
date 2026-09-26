@@ -14,6 +14,8 @@ lerp_speed = 0.15;
 click_life = irandom_range(2, 5);
 is_dying = false;
 
+yPositionToDrawShadow = y - 15;
+
 function handlePlayerCollision() {
 	if (!instance_exists(obj_player)) return;
     if (!place_meeting(x, y, obj_player)) {

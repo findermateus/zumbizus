@@ -15,7 +15,18 @@ function CampfireSlot() constructor {
 	}
 	
 	function getResult() {
-		return resultId == BLANK_INVENTORY_SPACE ? BLANK_INVENTORY_SPACE : constructItem(resultType, global.items[resultType, resultId]);
+		if (resultId == BLANK_INVENTORY_SPACE) {
+			return BLANK_INVENTORY_SPACE;
+		}
+		
+		obj_quest_manager.notifyEvent(QuestEvent.ItemCrafted, {
+			itemId: resultId,
+			itemType: resultType
+		});
+		
+		var _buildedItem = constructItem(resultType, global.items[resultType, resultId]);
+		
+		return _buildedItem;
 	}
 	
 	function canAddItem(_itemId, _itemType) {
@@ -47,7 +58,8 @@ function CampfireSlot() constructor {
 		if (resultQuantity > 0) {
 			return getResult();
 		}
-		return resultQuantity > 0 ? getResult() : getItem();
+		
+		return getItem();
 	}
 	
 	function resetValues() {

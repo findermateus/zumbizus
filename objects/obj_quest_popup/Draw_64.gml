@@ -13,32 +13,14 @@ if (label != "") {
     var _labelScale = 0.7;
     var _labelY     = _y - (28 * textScale);
 
-    var _glowSize = 3 * _labelScale;
-    draw_set_color(textColor);
-    draw_set_alpha(alpha * 0.2);
-    draw_text_transformed(_x - _glowSize, _labelY, label, _labelScale, _labelScale, 0);
-    draw_text_transformed(_x + _glowSize, _labelY, label, _labelScale, _labelScale, 0);
-    draw_text_transformed(_x, _labelY - _glowSize, label, _labelScale, _labelScale, 0);
-    draw_text_transformed(_x, _labelY + _glowSize, label, _labelScale, _labelScale, 0);
-    draw_set_alpha(alpha);
-
-    draw_set_color(c_black);
-    draw_text_transformed(_x + (2 * _labelScale), _labelY + (2 * _labelScale), label, _labelScale, _labelScale, 0);
+    drawTextShadow(_x, _labelY, label, alpha, 2 * _labelScale, _labelScale);
+    
     draw_set_color(textColor);
     draw_text_transformed(_x, _labelY, label, _labelScale, _labelScale, 0);
 }
 
-var _glowSize = 4 * textScale;
-draw_set_color(textColor);
-draw_set_alpha(alpha * 0.2);
-draw_text_transformed(_x - _glowSize, _y, textContent, textScale, textScale, 0);
-draw_text_transformed(_x + _glowSize, _y, textContent, textScale, textScale, 0);
-draw_text_transformed(_x, _y - _glowSize, textContent, textScale, textScale, 0);
-draw_text_transformed(_x, _y + _glowSize, textContent, textScale, textScale, 0);
-draw_set_alpha(alpha);
+drawTextShadow(_x, _y, textContent, alpha, 2 * textScale, textScale);
 
-draw_set_color(c_black);
-draw_text_transformed(_x + (2 * textScale), _y + (2 * textScale), textContent, textScale, textScale, 0);
 draw_set_color(textColor);
 draw_text_transformed(_x, _y, textContent, textScale, textScale, 0);
 

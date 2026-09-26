@@ -59,7 +59,7 @@ function nothing(){
 }
 
 function verifyConditionsToAimFurniture(){
-	if(!keyboard_check_released(ord("T"))) return false;
+	if(!keyboard_check_released(ord("T")) || global.blockMenus) return false;
 	selectLateralMenuOption(menu.builder);
 }
 
@@ -68,14 +68,14 @@ function setUpModal(){
 	global.playerStopInteractions = true;
 	listOfElementsDestinyYPosition = defaultListOfElementsDestinyYPosition;
 	playSwiiimmmSound();
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
 	obj_camera.target = obj_player;
 	guiCurrentState = displayFurniture;
 	currentState = aimFurniture;
 }
 
 function verifyConditionsToStopAimFurniture(){
-	if(keyboard_check_released(ord("T"))){
+	if(keyboard_check_released(ord("T")) || global.blockMenus){
 		deactivateLateralMenuOption(menu.builder);
 		return true;
 	}
@@ -553,7 +553,7 @@ function getListOfFurnitureBox(){
 }
 
 function drawIndicationArrow(_box, _xPosition){
-	var _sprite = spr_builder_arrow_indicator;
+	var _sprite = spr_arrow_indicator;
 	var _yPosition = _box.yPosition + _box.yMarginFromBottom/2;
 	var _yScale = arrowScale * arrowDirection;
 	_xPosition += sprite_get_width(_sprite) * arrowScale;
@@ -640,9 +640,7 @@ function handleBuildable(){
 		return;
 	}
 	
-	var _alert = instance_create_layer(furnitureDisplayInfo.xPosition, furnitureDisplayInfo.yPosition, "Alert", obj_alert);
-	_alert.textAlert = "Mobília construída";
-	_alert.alertColor = c_lime;
+	createRoomNotifyIndicator("Mobília construída", furnitureDisplayInfo.xPosition, furnitureDisplayInfo.yPosition, c_lime);
 	
 	var _furnitureId = selectedFurniture.furnitureId;
 	

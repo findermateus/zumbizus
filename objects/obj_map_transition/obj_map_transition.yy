@@ -30,6 +30,9 @@
   "properties":[
     {"$GMObjectProperty":"v1","%Name":"destination","filters":[],"listItems":[],"multiselect":false,"name":"destination","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resource":{"name":"rm_player_base","path":"rooms/rm_player_base/rm_player_base.yy",},"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"rm_player_base","varType":5,},
     {"$GMObjectProperty":"v1","%Name":"mapName","filters":[],"listItems":[],"multiselect":false,"name":"mapName","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"","varType":2,},
+    {"$GMObjectProperty":"v1","%Name":"mapId","filters":[],"listItems":[],"multiselect":false,"name":"mapId","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"","varType":2,},
+    {"$GMObjectProperty":"v1","%Name":"persistentRoomId","filters":[],"listItems":[],"multiselect":false,"name":"persistentRoomId","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"","varType":2,},
+    {"$GMObjectProperty":"v1","%Name":"transitionType","filters":[],"listItems":[],"multiselect":false,"name":"transitionType","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"TransitionType.Map","varType":4,},
   ],
   "resourceType":"GMObject",
   "resourceVersion":"2.0",

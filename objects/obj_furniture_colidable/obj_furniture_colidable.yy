@@ -8,8 +8,8 @@
   "name":"obj_furniture_colidable",
   "overriddenProperties":[],
   "parent":{
-    "name":"Decoration",
-    "path":"folders/Objects/Interactive/Furniture/Decoration.yy",
+    "name":"Furniture",
+    "path":"folders/Objects/Interactive/Furniture.yy",
   },
   "parentObjectId":{
     "name":"obj_furniture",

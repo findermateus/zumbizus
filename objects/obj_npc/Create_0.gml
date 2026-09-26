@@ -15,6 +15,10 @@ isInteracting = false;
 alpha = 0;
 animProgress = 0;
 
+bubble_scale = 0;
+bubble_alpha = 0;
+was_near = false;
+
 hover_offset1 = 0;
 hover_offset2 = 0;
 hover_offset3 = 0;
@@ -26,7 +30,105 @@ defaultGreetingOptions = [
 greetingOptions = defaultGreetingOptions;
 
 canTrade = false;
+tradeItems = [];
+
 isInteracting = false;
+
+walkSpeed = irandom_range(3,5);
+
+pathHandler = instance_create_layer(
+	x, y,
+	layer,
+	obj_path_handler,
+	{ father: id }
+);
+
+destinyX = x;
+destinyY = y;
+
+angleTimer = 0;
+
+function handleAngleOffset(_canJiggle, _speed = .3, _force = 3){
+	if (!_canJiggle) {
+		angleOffset = lerp(angleOffset, 0, 0.1);
+		return;
+	}
+	
+	angleTimer += 1;
+	angleOffset = sin(angleTimer * _speed) * _force;
+}
+
+iddle = function() {
+	drawState = drawStates.iddle;
+	handleAngleOffset(false);
+}
+
+currentState = iddle;
+
+onArriveAtDestiny = function() {
+	currentState = iddle;
+}
+
+function setDestiny(_x, _y, _onArrive, _walkSpeed = walkSpeed) {
+	destinyX = _x;
+	destinyY = _y;
+	onArriveAtDestiny = _onArrive;
+	walkSpeed = _walkSpeed;
+	
+	currentState = goToDestiny;
+}
+
+function goToDestiny() {
+	handleAngleOffset(true, .25, 4);
+	drawState = drawStates.walking;
+	
+	pathHandler.calculatePath(
+		walkSpeed,
+		destinyX,
+		destinyY
+	);
+	
+	if (point_distance(x, y, destinyX, destinyY) > 12) {
+		if (abs(destinyX - x) > 1) {
+			currentDirection = (destinyX > x) ? 1 : -1;
+		}
+	}
+	
+	var _velh = destinyX > x ? walkSpeed : -walkSpeed;
+	var _velv = destinyY > y ? walkSpeed : -walkSpeed;
+	
+	if (choose(0, 1)) {
+		createWalkingParticles(x, y, _velh, _velv, 1);
+	}
+	
+	handleNpcPositionWithPathHandler();
+	
+	if (point_distance(x, y, destinyX, destinyY) < 16) {
+		handlePositionWithPathHandler(true);
+		onArriveAtDestiny();
+	}
+}
+
+function handleNpcPositionWithPathHandler(_shouldStop = false) {
+	if (_shouldStop) {
+		pathHandler.x = x;
+		pathHandler.y = y;
+		with (pathHandler) {
+			path_end();
+		}
+		
+		return;
+	}
+	
+	var _speed = 0.08;
+
+	if (point_distance(x, y, pathHandler.x, pathHandler.y) < 32) {
+		_speed = 0.3;
+	}
+
+	x = lerp(x, pathHandler.x, _speed);
+	y = lerp(y, pathHandler.y, _speed);
+}
 
 function canPlayerTalk() {
 	return is_struct(getCurrentDialogue());
@@ -76,7 +178,11 @@ function getCurrentDialogue() {
 function handleInteract(_options) {
 	if (!array_length(_options)) {
 		greet();
-		
+		return;
+	}
+
+	if (array_length(_options) == 1) {
+		handleNPCOption(_options[0].action);
 		return;
 	}
 	
@@ -88,26 +194,40 @@ function handleInteract(_options) {
 
 function closeInteractOptions() {
 	activeInteraction = false;
-	if (global.activeMenu == menuId) closeMenu();
+	if (isCurrentMenu(menuId)) closeMenu();
 }
 
 function handleNPCOption(option) {
+	if (isInteracting) return;
+
 	playClickSound();	
-	isInteracting = true;
+	
 	switch (option) {
 
 		case "talk":
+			var _dialogue = getCurrentDialogue();
+
+			if (!is_struct(_dialogue)) return;
+
+			isInteracting = true;
 			closeInteractOptions();
 
 			instance_create_layer(0, 0, "Controllers", obj_dialogue, {
 				target: id,
-				dialogue: getCurrentDialogue()
+				dialogue: _dialogue
 			});
 		break;
 
 		case "trade":
-			show_message("Negociando");
-			//openTrade(npc);
+			if (!canTrade) return;
+			if (isInteracting) return;
+
+			isInteracting = true;
+			closeInteractOptions();
+
+			instance_create_layer(0, 0, "Controllers", obj_trade_menu, {
+				target: id
+			});
 		break;
 	}
 }
@@ -190,10 +310,129 @@ function draw() {
 		image_alpha,
 		skinColor,
 		new PersonHair(hairOption, hairColor),
+		eyeId,
 		outfitId,
 		helmetId,
-		backpack,
+		bagId,
 		currentDirection,
 		drawState
 	);
+}
+
+minFollowDistance = 70;
+maxFollowDistance = 75;
+repathTimer = 0;
+repathInterval = 12;
+
+companionState = function() {
+    var _targetToFollow = obj_player;
+    
+    if (!instance_exists(_targetToFollow)) {
+        iddle();
+        return;
+    }
+    
+    if (isInteracting || activeInteraction) {
+        drawState = drawStates.iddle;
+        handleAngleOffset(false);
+        handleNpcPositionWithPathHandler(true);
+        return;
+    }
+
+    var _dist = point_distance(x, y, _targetToFollow.x, _targetToFollow.y);
+
+    if (_dist <= minFollowDistance) {
+        drawState = drawStates.iddle;
+        handleAngleOffset(false);
+        handleNpcPositionWithPathHandler(true);
+        repathTimer = repathInterval;
+        
+		return;
+    }
+    
+    if (_dist <= maxFollowDistance && drawState != drawStates.walking) {
+		handleAngleOffset(false);
+		handleNpcPositionWithPathHandler(true);
+		
+		return;
+	}
+	
+    repathTimer++;
+
+    if (repathTimer >= repathInterval) {
+        repathTimer = 0;
+        destinyX = _targetToFollow.x;
+        destinyY = _targetToFollow.y;
+            
+        var _canWalk = pathHandler.calculatePath(walkSpeed, destinyX, destinyY);
+        drawState = _canWalk ? drawStates.walking : drawStates.iddle;
+    }
+
+    if (drawState == drawStates.walking) {
+        handleAngleOffset(true, .25, 4);
+            
+        var _velh = destinyX > x ? walkSpeed : -walkSpeed;
+        var _velv = destinyY > y ? walkSpeed : -walkSpeed;
+
+        if (choose(0, 1)) {
+            createWalkingParticles(x, y, _velh, _velv, 1);
+        }
+    } else {
+        handleAngleOffset(false);
+		handleNpcPositionWithPathHandler(true);
+		
+		return;
+    }
+
+    if (point_distance(x, y, destinyX, destinyY) > 12) {
+        if (abs(destinyX - x) > 1) {
+            currentDirection = (destinyX > x) ? 1 : -1;
+        }
+    }
+
+    handleNpcPositionWithPathHandler();
+}
+
+function becomeCompanion() {
+    currentState = companionState;
+	
+    global.activeCompanionPreset = presetId;
+}
+
+function removeCompanion() {
+    currentState = iddle;
+	
+    global.activeCompanionPreset = "";
+}
+
+if (presetId != "") {    
+    if (variable_struct_exists(global.npcPresets, presetId)) {
+        
+        var _preset = global.npcPresets[$ presetId];
+        
+        name = _preset.name;
+        genderId = _preset.genderId;
+        skinColor = _preset.skinColor;
+        hairOption = _preset.hairOption;
+        hairColor = _preset.hairColor;
+		eyeId = _preset.eyeId;
+		
+		outfitId = _preset.outfitId;
+		bagId = _preset.bagId;
+		helmetId = _preset.helmetId;
+		
+        
+    } else {
+        show_debug_message("AVISO: Preset de NPC '" + presetId + "' não encontrado no banco de dados!");
+    }
+}
+
+function fadeOutState() {
+	iddle();
+						
+	image_alpha = lerp(image_alpha, 0, .1);
+						
+	if (image_alpha < .1) {
+		instance_destroy(id);
+	}
 }

@@ -103,7 +103,7 @@ function reloadItems() {
 
 function hide(){
 	if (!global.activeInventory) {
-		obj_camera.setDefaultScale();
+		obj_camera.setDefaultValues();
 		obj_camera.target = obj_player;
 	}
 	
@@ -111,7 +111,7 @@ function hide(){
 	isUsing = false;
 	setVariablesCloseFurniture();
 	
-	if (global.activeMenu == menuId) {
+	if (isCurrentMenu(menuId)) {
 		closeMenu();
 	}
 	
@@ -489,6 +489,11 @@ function drawRepairPanel(_y, _modal) {
 	var _struct = itemsThatCanBeRepaired[hoverCrafting]
 	var _selectedItem = _struct.item;
 	var _requirements = getItemRepairRequirements(_selectedItem.itemId);
+	
+	if (_requirements == false) {
+		return;
+	}
+	
 	drawRepairRequirements(_requirements.requirements, _selectedItem.name);
 	if (mouse_check_button_released(mb_left)) {
 		repairItem(_struct, _requirements);
@@ -778,12 +783,12 @@ function drawPagination(_modal, _y, _actionUp = function () {}, _actionDown = fu
 	var _x = _modal.x2 - _buttonWidth - _modal.border;
 	
 	draw_sprite_stretched(_buttonSprite, _spriteIndex, _x, _y, _buttonWidth, _buttonHeight)
-	draw_sprite_ext(spr_builder_arrow_indicator, 0, _x + _buttonWidth/2, _y + _buttonHeight/2, 1, 1, 0, c_white, 1);
+	draw_sprite_ext(spr_arrow_indicator, 0, _x + _buttonWidth/2, _y + _buttonHeight/2, 1, 1, 0, c_white, 1);
 	
 	var _y2 = _y + _buttonHeight + 10;
 	
 	draw_sprite_stretched(_buttonSprite, _spriteIndex, _x, _y2, _buttonWidth, _buttonHeight)
-	draw_sprite_ext(spr_builder_arrow_indicator, 0, _x + _buttonWidth/2, _y2 + _buttonHeight/2, 1, -1, 0, c_white, 1);
+	draw_sprite_ext(spr_arrow_indicator, 0, _x + _buttonWidth/2, _y2 + _buttonHeight/2, 1, -1, 0, c_white, 1);
 	
 }
 
@@ -861,7 +866,7 @@ function handleClickOnItem(_item, _requirementItem){
 	if(_gridIndex[0] == -1){
 		var _modalX = xMouse;
 		var _modalY = yMouse;
-		createNotifyIndicator("Inventário cheio!", _modalX, _modalY);
+		createGUINotifyIndicator("Inventário cheio!", _modalX, _modalY);
 		return;
 	}
 	

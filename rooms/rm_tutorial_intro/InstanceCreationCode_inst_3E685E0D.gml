@@ -1,0 +1,1 @@
+yPositionToDrawShadow = y - 20;

@@ -5,7 +5,9 @@ var _dependencies = [
 	obj_xp_controller,
 	obj_damage_controller,
 	obj_player_stats,
-	obj_quest_manager
+	obj_quest_manager,
+	obj_rain_controller,
+	obj_draw_entity_shadow
 ];
 
 array_foreach(_dependencies, function (_dep) {
@@ -31,6 +33,9 @@ playerAngleOffset = 0;
 playerAngleTimer = 0;
 closestObjectToCatch = noone;
 hitFlash = 0;
+
+grabCooldownTimer = 0; 
+grabCooldownMax = game_get_speed(gamespeed_fps) * 2;
 
 inputs = {
 	up: keyboard_check(ord("W")),
@@ -138,18 +143,23 @@ function updateEquipedItems(){
 }
 
 function updateQuickUseBar() {
-	if (global.stopInteractions) {
+	if (global.stopInteractions || global.activeInventory || global.activeMenu || global.pause) {
 		return;
 	}
+	
 	var _scrollUp = mouse_wheel_up();
 	var _scrollDown = mouse_wheel_down();
+	
 	global.activeQuickUseIndex += _scrollDown - _scrollUp;
+	
 	if (_scrollDown || _scrollUp) {
 		playClickSound();
 	}
+	
 	if (global.activeQuickUseIndex < 0) global.activeQuickUseIndex = ds_list_size(global.quickUse) - 1;
 	if (global.activeQuickUseIndex >= global.quickUseBarSize) global.activeQuickUseIndex = 0;
 	if (!keyboard_check_released(ord("E"))) return;
+	
 	useItemFromQuickUseBar(global.activeQuickUseIndex);
 }
 
@@ -269,6 +279,7 @@ function drawPlayer() {
 		image_alpha,
 		_skinColor,
 		_hair,
+		global.player.eyeId,
 		_armorId,
 		_helmetId,
 		_bagId,
@@ -292,6 +303,7 @@ function drawPlayer() {
 		hitFlash,
 		_skinColor,
 		_hair,
+		global.player.eyeId,
 		_armorId,
 		_helmetId,
 		_bagId,
@@ -362,7 +374,43 @@ function executeItemMethod(
 		case "dismantle":
 			dismantle(_inventoryJ, _inventoryI);
 			break;
+		case "wear":
+			wear(_item, _inventory, _inventoryJ, _inventoryI);
+			break;
 	}
+}
+
+function wear(_item, _inventory, _j, _i) {
+	var _equipType = "";
+	
+	switch (_item.equipType) {
+		case equipmentType.armor: 
+			_equipType = "armor"; 
+			
+			break; 
+		case equipmentType.bag: 
+			_equipType = "bag"; 
+			
+			break; 
+		case equipmentType.head: 
+			_equipType = "head";			
+			
+			break;
+	}
+	
+	if (_equipType == "") return;
+	
+	var _equipedItem = global.equipments[$ _equipType];
+	
+	if (_equipedItem == BLANK_INVENTORY_SPACE) {
+		cleanInventoryGrid(_inventory, _j, _i);
+		equipEquipment(_equipType, _item);
+		
+		return;
+	}
+	
+	_inventory[# _j, _i] =  _equipedItem;
+	equipEquipment(_equipType, _item)
 }
 
 function use(_item, _comingFromInventory, _inventory, _j, _i) {
@@ -397,6 +445,13 @@ function eat(_item, _comingFromInventory, _inventory, _j, _i) {
 	if (_buff != false) {
 		applyBuff(_buff);
 	}
+	
+	obj_quest_manager.notifyEvent(QuestEvent.ItemConsumed, {
+		itemId: _item.itemId,
+		type: _item.type,
+		quantity: 1
+	});
+	
 	if (!_comingFromInventory) return;
 	handleCleanInventoryAfterConsuming(_item, _data, _j, _i, _inventory);
 }
@@ -410,6 +465,13 @@ function drink(_item, _comingFromInventory, _inventory, _j, _i) {
 	if (_buff != false) {
 		applyBuff(_buff);
 	}
+	
+	obj_quest_manager.notifyEvent(QuestEvent.ItemConsumed, {
+		itemId: _item.itemId,
+		type: _item.type,
+		quantity: 1
+	});
+	
 	if (!_comingFromInventory) return;
 	handleCleanInventoryAfterConsuming(_item, _data, _j, _i, _inventory);
 }
@@ -508,7 +570,7 @@ function unload(_item, _inventory, _j, _i) {
 	var _totalAmmo = _item.bullets;
 
 	if (_totalAmmo == 0) {
-		createNotifyIndicator("Sem munição", getMouseXGui(), getMouseYGui());
+		createGUINotifyIndicator("Sem munição", getMouseXGui(), getMouseYGui());
 		return false;
 	}
 
@@ -549,9 +611,15 @@ function handleInteriors() {
 }
 
 function getGrabbed(_enemyId) {
-	instance_create_layer(x, y, "Controllers", obj_grabbing_controller, {
-		enemy: _enemyId
-	});
+    if (grabCooldownTimer > 0 || currentState == playerGetGrabbedState) {
+        return; 
+    }
+
+    instance_create_layer(x, y, "Controllers", obj_grabbing_controller, {
+        enemy: _enemyId
+    });
 	
-	currentState = playerGetGrabbedState;
+    grabCooldownTimer = grabCooldownMax;
+	
+    currentState = playerGetGrabbedState;
 }

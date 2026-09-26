@@ -46,7 +46,7 @@ function checkPlayerExistence(){
 }
 
 
-#macro TILESIZE	64
+#macro TILESIZE	16
 
 font_enable_effects(fnt_gui_default_outline, true, {
 	outlineEnable: true,
@@ -152,7 +152,8 @@ global.collidableObjects = [
 	obj_collision,
 	obj_furniture_colidable,
 	obj_furniture_usable,
-	obj_tree
+	obj_breakable,
+	obj_interactable_decoration_with_colision
 ];
 
 global.interactableObjects = [
