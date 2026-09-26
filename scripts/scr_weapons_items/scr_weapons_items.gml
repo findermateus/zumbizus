@@ -27,7 +27,8 @@ function WeaponConfig() {
 		bullets: undefined,
 		maxAmmo: undefined,
 		soundRadius: 100,
-		type: itemType.weapons
+		type: itemType.weapons,
+		value: 0
 	};
 }
 
@@ -41,6 +42,7 @@ function WeaponConfig() {
 	_config.durability = 100;
 	_config.maxDurability = 100;
 	_config.durabilityDecrease = 6;
+	_config.value = 40;
 
 	global.items[itemType.weapons][weaponItems.baseballBat] = _config;
 }
@@ -55,6 +57,7 @@ function WeaponConfig() {
 	_config.durability = 100;
 	_config.maxDurability = 100;
 	_config.durabilityDecrease = 4;
+	_config.value = 60;
 
 	global.items[itemType.weapons][weaponItems.baseballBatWithNails] = _config;
 }
@@ -70,6 +73,7 @@ function WeaponConfig() {
 	_config.durability = 100;
 	_config.maxDurability = 100;
 	_config.durabilityDecrease = 8;
+	_config.value = 35;
 
 	global.items[itemType.weapons][weaponItems.nailBoard] = _config;
 }
@@ -84,6 +88,7 @@ function WeaponConfig() {
 	_config.durability = 100;
 	_config.maxDurability = 100;
 	_config.durabilityDecrease = 3;
+	_config.value = 85;
 
 	global.items[itemType.weapons][weaponItems.machete] = _config;
 }
@@ -98,6 +103,7 @@ function WeaponConfig() {
 	_config.durability = 100;
 	_config.maxDurability = 100;
 	_config.durabilityDecrease = 2;
+	_config.value = 100;
 
 	global.items[itemType.weapons][weaponItems.axe] = _config;
 }
@@ -112,6 +118,7 @@ function WeaponConfig() {
 	_config.durability = 120;
 	_config.maxDurability = 120;
 	_config.durabilityDecrease = 4;
+	_config.value = 70;
 
 	global.items[itemType.weapons][weaponItems.metalPipe] = _config;
 }
@@ -127,6 +134,7 @@ function WeaponConfig() {
 	_config.bullets = 0;
 	_config.maxAmmo = 12;
 	_config.soundRadius = 500;
+	_config.value = 150;
 	global.items[itemType.weapons][weaponItems.pistol] = _config;
 }
 
@@ -141,6 +149,7 @@ function WeaponConfig() {
 	_config.bullets = 0;
 	_config.maxAmmo = 30;
 	_config.soundRadius = 600;
+	_config.value = 280;
 	global.items[itemType.weapons][weaponItems.ump] = _config;
 }
 
@@ -155,6 +164,7 @@ function WeaponConfig() {
 	_config.bullets = 0;
 	_config.maxAmmo = 6;
 	_config.soundRadius = 1100;
+	_config.value = 320;
 	global.items[itemType.weapons][weaponItems.shotgun] = _config;
 }
 
@@ -169,6 +179,7 @@ function WeaponConfig() {
 	_config.bullets = 0;
 	_config.maxAmmo = 30;
 	_config.soundRadius = 750;
+	_config.value = 450;
 	global.items[itemType.weapons][weaponItems.assaultRifle] = _config;
 }
 
@@ -183,5 +194,6 @@ function WeaponConfig() {
 	_config.bullets = 0;
 	_config.maxAmmo = 5;
 	_config.soundRadius = 1000;
+	_config.value = 400;
 	global.items[itemType.weapons][weaponItems.sniperRifle] = _config;
 }

@@ -11,7 +11,8 @@ function ConsumableConfig() {
 		fitInGrid: fitInGridType.verticaly,
 		limit: 1,
 		stackable: false,
-		type: itemType.consumables
+		type: itemType.consumables,
+		value: 0
 	};
 }
 

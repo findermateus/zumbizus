@@ -122,13 +122,3 @@ getCurrentDialogue = function() {
 
 	return noone;
 };
-
-canTrade = true;
-
-tradeItems = [
-	new TradeItem(consumableItems.canned_food, itemType.consumables, 1),
-	new TradeItem(consumableItems.canned_fish, itemType.consumables, 1),
-	new TradeItem(consumableItems.watter_bottle, itemType.consumables, 1),
-	new TradeItem(consumableItems.dirt_water, itemType.consumables, 1),
-	new TradeItem(consumableItems.bandage, itemType.consumables, 1),
-];

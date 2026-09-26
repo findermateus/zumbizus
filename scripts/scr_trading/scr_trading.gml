@@ -63,6 +63,7 @@ function getBuyItemValue(_id, _type, _quantity = 1) {
 function getSellItemValue(_item, _quantity = 1) {
 	if (!is_struct(_item)) return 0;
 	if (!variable_struct_exists(_item, "value")) return 0;
+	if (_item.value == 0) return 0;
 
 	return floor(_item.value * _quantity * SELL_PRICE_MULTIPLIER);
 }

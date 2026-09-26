@@ -96,9 +96,15 @@ function generatePlayerSellList() {
             var _item = _inv[# _i, _j];
             
             if (_item != BLANK_INVENTORY_SPACE && is_struct(_item)) {
-                var _qty = variable_struct_exists(_item, "quantity") ? _item.quantity : 1;
+                var _qtd = variable_struct_exists(_item, "quantity") ? _item.quantity : 1;
                 
-                array_push(_sellList, new SellItem(_item.type, _item.itemId, _qty, getSellItemValue(_item, 1), _i, _j));
+				var _sellValue = getSellItemValue(_item, 1);
+				
+				if (_sellValue == 0) {
+					continue;
+				}
+				
+                array_push(_sellList, new SellItem(_item.type, _item.itemId, _qtd, _sellValue, _i, _j));
             }
         }
     }
