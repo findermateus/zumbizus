@@ -163,6 +163,18 @@ function cleanMenuOptions(){
 	global.currentMenuOptions = [];
 }
 
+function closeItemOptionsMenu() {
+	if (!instance_exists(obj_menu_option)) return false;
+
+	cleanMenuOptions();
+
+	with (obj_inventory) {
+		if (currentState == drawOptionsMenu) currentState = nothing;
+	}
+
+	return true;
+}
+
 function itemIsDismantable(_item) {
 	if (_item == BLANK_INVENTORY_SPACE) return false;
 	if (array_length(global.dismantableItems) <= _item.type) return false;

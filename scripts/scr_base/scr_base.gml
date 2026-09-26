@@ -45,7 +45,7 @@ function selectLateralMenuOption(_option){
 		}
 		
 		with (obj_builder) {
-			openMenu(Menus.Builder);
+			openMenu(Menus.Builder, closeBuilder);
 			setUpModal();
 		}
 		
@@ -53,7 +53,7 @@ function selectLateralMenuOption(_option){
 	}
 	if (_option == menu.resident) {
 		with obj_resident_gui_controller {
-			openMenu(Menus.ResidentController);
+			openMenu(Menus.ResidentController, closeResidentMenu);
 			setUpModal();
 		}
 	}

@@ -126,7 +126,7 @@ activationMethod = function () {
 function activateFurniture() {
 	obj_camera.setTargetWithZoom(id);
 	setVariablesOpenFurniture();
-	openMenu(Menus.Campfire);
+	openMenu(Menus.Campfire, hideModal);
 	defineModalValues(guiModalOpen);
 	isUsing = true;
     

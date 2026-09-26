@@ -140,6 +140,10 @@ function verifyMenuInput(){
 	selectLateralMenuOption(menu.resident);
 }
 
+function closeResidentMenu() {
+	deactivateLateralMenuOption(menu.resident);
+}
+
 function hideMenu() {
 	playSwiiimmmSound();
 	global.stopInteractions = false;

@@ -104,7 +104,7 @@ function goToDestiny() {
 	handleNpcPositionWithPathHandler();
 	
 	if (point_distance(x, y, destinyX, destinyY) < 16) {
-		handlePositionWithPathHandler(true);
+		handleNpcPositionWithPathHandler(true);
 		onArriveAtDestiny();
 	}
 }

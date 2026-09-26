@@ -1,5 +1,3 @@
-openMenu(Menus.Trade);
-
 obj_player.currentState = playerTradeState;
 
 if (!instance_exists(target)) {
@@ -39,7 +37,7 @@ tabAnimAlpha = array_create(2, 0.5);
 tabAnimYOffset = array_create(2, 0);
 
 function performClose() {
-	closeMenu();
+	if (isCurrentMenu(Menus.Trade)) closeMenu();
 	unBlockPlayerMenus();
 
 	if (instance_exists(merchant)) {
@@ -53,6 +51,8 @@ function performClose() {
 function closeTrade() {
 	isClosing = true; 
 }
+
+openMenu(Menus.Trade, closeTrade);
 
 function handleTradeScroll() {
 	var _itemCount = array_length(tradeItems);

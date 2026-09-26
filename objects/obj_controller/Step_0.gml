@@ -23,11 +23,12 @@ if (keyboard_check_pressed(ord("C"))) {
 }
 
 if (keyboard_check_pressed(vk_escape)) {
-	if (!isGamePaused) {
+	if (isGamePaused) {
+		unPauseGame();
+	} else if (!handleMenuEscape()) {
 		pauseGame();
-		return
+		return;
 	}
-	unPauseGame();
 }
 
 if (keyboard_check_released(ord("P"))) {

@@ -82,6 +82,10 @@ function verifyConditionsToStopAimFurniture(){
 	return false;
 }
 
+function closeBuilder(){
+	deactivateLateralMenuOption(menu.builder);
+}
+
 function displayNothing(){
 	return;
 }
