@@ -1,6 +1,7 @@
 #macro GRID_WIDTH 92
 #macro GRID_MB 10
 #macro INVENTORY_TITLE_SPACE 75
+#macro INVENTORY_LEGEND_SPACE 24
 activeHoldingItem = BLANK_INVENTORY_SPACE;
 activeHoverItem = BLANK_INVENTORY_SPACE;
 activeSelectedItem = BLANK_INVENTORY_SPACE;
@@ -229,7 +230,7 @@ function drawInventoryBox(_xPosition = undefined, _yPosition = undefined, _boxWi
 	_inventoryBox.xPosition = _xPosition;
 	_inventoryBox.yPosition = _yPosition;
 	_inventoryBox.boxWidth = _boxWidth;
-	_inventoryBox.boxHeight = INVENTORY_TITLE_SPACE + _gridTotalSize * _totalRows + _inventoryBox.margin * 2;	
+	_inventoryBox.boxHeight = INVENTORY_TITLE_SPACE + _gridTotalSize * _totalRows + INVENTORY_LEGEND_SPACE + _inventoryBox.margin * 2;
 	_inventoryBox.xPosition = _xPosition == undefined ? (_displayWidth/2) - (_inventoryBox.boxWidth/2) : _xPosition;
 	_inventoryBox.yPosition = _yPosition == undefined ? (_displayHeight/2) - (_inventoryBox.boxHeight/2) : _yPosition;
 	
@@ -362,6 +363,17 @@ function drawInventoryGrid(_inventory, _inventoryBox){
 			}
 		}
 	}
+
+	drawInventoryLegend(_inventoryBox);
+}
+
+function drawInventoryLegend(_inventoryBox){
+	var _legendXPosition = _inventoryBox.xPosition + _inventoryBox.boxWidth - 20;
+	var _legendYPosition = _inventoryBox.yPosition + _inventoryBox.boxHeight - _inventoryBox.margin - INVENTORY_LEGEND_SPACE / 2 - 10;
+	var _legendScribble = "[fa_right][fa_middle][scale,1.5][spr_mouse_right][/scale] para interagir";
+
+	drawTextShadowScribble(_legendXPosition, _legendYPosition, _legendScribble, draw_get_alpha());
+	draw_text_scribble(_legendXPosition, _legendYPosition, _legendScribble);
 }
 
 function verifyConditionToApplyHoverEffect() {
@@ -424,7 +436,11 @@ function drawInventoryName(_inititalYPosition, _yPosition, _xPosition, _inventor
 	var _centralizedYPosition = getMiddlePoint(_inititalYPosition, _yPosition);
 	var _title = "Armazém";
 	if (_inventory == global.inventory) _title = "Inventário"; 
-	draw_text_scribble(_xPosition, _centralizedYPosition, "[fa_middle]" +  _title);
+	
+	var _titleScribble = "[fa_middle]" +  _title;
+	
+	drawTextShadowScribble(_xPosition, _centralizedYPosition, _titleScribble, draw_get_alpha());
+	draw_text_scribble(_xPosition, _centralizedYPosition, _titleScribble);
 }
 
 function drawItem(_item, _x, _y, _grid, _minusScale){

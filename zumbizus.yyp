@@ -897,6 +897,7 @@
     {"id":{"name":"spr_metal_container","path":"sprites/spr_metal_container/spr_metal_container.yy",},},
     {"id":{"name":"spr_metal_crate","path":"sprites/spr_metal_crate/spr_metal_crate.yy",},},
     {"id":{"name":"spr_metal_pipe","path":"sprites/spr_metal_pipe/spr_metal_pipe.yy",},},
+    {"id":{"name":"spr_mouse_right","path":"sprites/spr_mouse_right/spr_mouse_right.yy",},},
     {"id":{"name":"spr_mouse","path":"sprites/spr_mouse/spr_mouse.yy",},},
     {"id":{"name":"spr_nail_board","path":"sprites/spr_nail_board/spr_nail_board.yy",},},
     {"id":{"name":"spr_nail","path":"sprites/spr_nail/spr_nail.yy",},},
