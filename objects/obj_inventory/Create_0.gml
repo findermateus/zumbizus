@@ -81,6 +81,7 @@ function hide(){
 	if(curveAnimationIndex < .1){
 		curveAnimationIndex = 0;
 		global.activeInventory = false;
+		global.activeInventoryAction = global.inventory;
 		currentState = nothing;
 	}
 }
