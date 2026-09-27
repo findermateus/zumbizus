@@ -46,10 +46,36 @@ function getEquipmentSlotFromItem(_item) {
 }
 
 function handleDropOnPlayerInfo() {
-	if (currentState != holdItem || holdingItemFromToolBar) return;
+	if (currentState != holdItem || holdingItemFromToolBar || holdingItemFromEquipments) return;
+	if (activeHoldingItem == BLANK_INVENTORY_SPACE) return;
+
+	if (activeHoldingItem.type == itemType.weapons) {
+		handleWeaponDropOnPlayerInfo();
+		return;
+	}
+
+	if (itemCanBeAddedToQuickBarUse(activeHoldingItem)) {
+		handleQuickUseDropOnPlayerInfo();
+		return;
+	}
+
 	var _slot = getEquipmentSlotFromItem(activeHoldingItem);
 	if (_slot == BLANK_INVENTORY_SPACE) return;
 	handleHoldingOverItem(_slot);
+}
+
+function handleWeaponDropOnPlayerInfo() {
+	if (hoverToolbarIndex != BLANK_INVENTORY_SPACE) return;
+	if (!mouse_check_button_released(mb_left)) return;
+	addItemToToolBar(undefined, global.activeInventoryAction);
+}
+
+function handleQuickUseDropOnPlayerInfo() {
+	if (mouseIsOnQuickUseBar) return;
+	if (!mouse_check_button_released(mb_left)) return;
+	var _index = getQuickUseIndexForItem(activeHoldingItem);
+	if (_index == BLANK_INVENTORY_SPACE) return;
+	addToQuickUseWithIndex(_index, activeHoldingItem, activeHoldingItem.quantity);
 }
 
 function drawPlayerInsideInfoBox(_box) {
