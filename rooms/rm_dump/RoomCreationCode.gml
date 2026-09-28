@@ -24,12 +24,6 @@ var _possibleItems = [
 	buildPossibleItemDrop(weaponItems.nailBoard, itemType.weapons, 2)
 ];
 
-with (obj_item) {
-    var _selectedItem = getWeightItemRandom(_possibleItems);
-    
-    self.item = convertRandomItemToBuildedItem(_selectedItem, 3);
-}
-
 var _fridgePossibleItems = [
 	buildPossibleItemDrop(consumableItems.dirt_water, itemType.consumables, 15),
     buildPossibleItemDrop(consumableItems.canned_food, itemType.consumables, 15),

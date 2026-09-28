@@ -1,6 +1,23 @@
 openMenu(Menus.Dialogue);
 blockPlayerMenus();
 
+typeWritterSounds = [
+	snd_tp_1,
+	snd_tp_2,
+	snd_tp_3,
+	snd_tp_4,
+	snd_tp_5,
+	snd_tp_6,
+	snd_tp_7,
+	snd_tp_8,
+	snd_tp_9,
+	snd_tp_10,
+	snd_tp_11,
+];
+typeWritterSoundInterval = 70;
+lastTypeWritterSoundTime = 0;
+lastTypeWritterSound = undefined;
+
 currentPage = 0;
 textIndex = 0;
 animationProgress = 0;
@@ -87,7 +104,19 @@ function drawDialogueBox() {
     var _textSize     = string_length(_text);
     var _pageQuantity = array_length(dialogue.texts);
 
+    var _previousCharIndex = floor(textIndex);
     if (textIndex <= _textSize) textIndex += dialogue.textSpeed;
+    var _currentCharIndex = floor(min(textIndex, _textSize));
+
+    var _canPlayTypeSound = current_time - lastTypeWritterSoundTime >= typeWritterSoundInterval;
+
+    if (_currentCharIndex > _previousCharIndex && _canPlayTypeSound && string_char_at(_text, _currentCharIndex) != " ") {
+        if (!is_undefined(lastTypeWritterSound) && audio_is_playing(lastTypeWritterSound)) audio_stop_sound(lastTypeWritterSound);
+
+        var _sound = typeWritterSounds[irandom(array_length(typeWritterSounds) - 1)];
+        lastTypeWritterSound = audio_play_sound(_sound, 1, false, .4);
+        lastTypeWritterSoundTime = current_time;
+    }
 
     if (keyboard_check_pressed(vk_space) || (animationProgress > 50 && mouse_check_button_released(mb_left))) {
         if (textIndex < _textSize) {
