@@ -1,9 +1,9 @@
 {
   "$GMScript":"v1",
-  "%Name":"scr_consumables_methods",
+  "%Name":"scr_consumables_effects",
   "isCompatibility":false,
   "isDnD":false,
-  "name":"scr_consumables_methods",
+  "name":"scr_consumables_effects",
   "parent":{
     "name":"Consumables",
     "path":"folders/Scripts/Items/IndividualItems/Consumables.yy",

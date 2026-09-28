@@ -23,6 +23,7 @@ function TrashConfig() {
 	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.nail] = _config;
+	global.itemMethods[itemType.trash][trashItems.nail] = [];
 }
 
 {
@@ -36,6 +37,7 @@ function TrashConfig() {
 	_config.value = 4;
 
 	global.items[itemType.trash][trashItems.empty_watter_bottle] = _config;
+	global.itemMethods[itemType.trash][trashItems.empty_watter_bottle] = [];
 }
 
 {
@@ -48,6 +50,7 @@ function TrashConfig() {
 	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.empty_canned_food] = _config;
+	global.itemMethods[itemType.trash][trashItems.empty_canned_food] = [];
 }
 
 {
@@ -61,6 +64,7 @@ function TrashConfig() {
 	_config.value = 8;
 
 	global.items[itemType.trash][trashItems.wood_board] = _config;
+	global.itemMethods[itemType.trash][trashItems.wood_board] = [];
 }
 
 {
@@ -73,6 +77,7 @@ function TrashConfig() {
 	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.empty_canned_fish] = _config;
+	global.itemMethods[itemType.trash][trashItems.empty_canned_fish] = [];
 }
 
 {
@@ -85,6 +90,7 @@ function TrashConfig() {
 	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.empty_canned_pineapple] = _config;
+	global.itemMethods[itemType.trash][trashItems.empty_canned_pineapple] = [];
 }
 
 {
@@ -97,6 +103,7 @@ function TrashConfig() {
 	_config.value = 6;
 
 	global.items[itemType.trash][trashItems.duct_tape] = _config;
+	global.itemMethods[itemType.trash][trashItems.duct_tape] = [];
 }
 
 {
@@ -109,6 +116,7 @@ function TrashConfig() {
 	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.twig] = _config;
+	global.itemMethods[itemType.trash][trashItems.twig] = [];
 }
 
 {
@@ -121,6 +129,7 @@ function TrashConfig() {
 	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.rock] = _config;
+	global.itemMethods[itemType.trash][trashItems.rock] = [];
 }
 
 {
@@ -133,6 +142,7 @@ function TrashConfig() {
 	_config.value = 12;
 
 	global.items[itemType.trash][trashItems.wood_log] = _config;
+	global.itemMethods[itemType.trash][trashItems.wood_log] = [];
 }
 
 {
@@ -145,6 +155,7 @@ function TrashConfig() {
 	_config.value = 10;
 
 	global.items[itemType.trash][trashItems.rope] = _config;
+	global.itemMethods[itemType.trash][trashItems.rope] = [];
 }
 
 {
@@ -157,4 +168,5 @@ function TrashConfig() {
 	_config.value = 2;
 
 	global.items[itemType.trash][trashItems.plant_fiber] = _config;
+	global.itemMethods[itemType.trash][trashItems.plant_fiber] = [];
 }
