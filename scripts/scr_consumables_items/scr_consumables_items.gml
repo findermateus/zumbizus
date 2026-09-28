@@ -1,4 +1,19 @@
-
+enum consumableItems {
+	watter_bottle,
+	canned_food,
+	canned_fish,
+	raw_meat_1,
+	cooked_meat_1,
+	raw_meat_2,
+	raw_rat_meat,
+	cooked_rat_meat,
+	cooked_meat_2,
+	dirt_water,
+	bandage,
+	medicine,
+	canned_pineapple,
+	orange_juice
+}
 
 function ConsumableConfig() {
 	return {
@@ -156,6 +171,34 @@ function ConsumableConfig() {
 	_config.value = 35;
 	
 	global.items[itemType.consumables][consumableItems.cooked_meat_2] = _config;
+}
+
+{
+	var _config = ConsumableConfig();
+	_config.itemId = consumableItems.raw_rat_meat;
+	_config.name = "Carne crua de rato";
+	_config.description = "Não vai comer isso, né?";
+	_config.sprite = spr_raw_rat_meat;
+	_config.consumableType = consumableTypes.food;
+	_config.stackable = true;
+	_config.limit = 12;
+	_config.value = 8;
+	
+	global.items[itemType.consumables][consumableItems.raw_rat_meat] = _config;
+}
+
+{
+	var _config = ConsumableConfig();
+	_config.itemId = consumableItems.cooked_rat_meat;
+	_config.name = "Carne assada de rato";
+	_config.description = "Um pouco menos pior do que crua...";
+	_config.sprite = spr_cooked_rat_meat;
+	_config.consumableType = consumableTypes.food;
+	_config.stackable = true;
+	_config.limit = 12;
+	_config.value = 12;
+	
+	global.items[itemType.consumables][consumableItems.cooked_rat_meat] = _config;
 }
 
 {

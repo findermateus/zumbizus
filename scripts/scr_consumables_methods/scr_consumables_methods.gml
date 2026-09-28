@@ -1,14 +1,19 @@
-global.itemMethods[itemType.consumables][consumableItems.canned_food]   = [ new ItemMethod("Comer", "eat") ];
-global.itemMethods[itemType.consumables][consumableItems.watter_bottle] = [ new ItemMethod("Beber", "drink") ];
-global.itemMethods[itemType.consumables][consumableItems.canned_fish]   = [ new ItemMethod("Comer", "eat") ];
-global.itemMethods[itemType.consumables][consumableItems.raw_meat_1]    = [ new ItemMethod("Comer", "eat") ];
+global.itemMethods[itemType.consumables][consumableItems.canned_food] = [ new ItemMethod("Comer", "eat") ];
+global.itemMethods[itemType.consumables][consumableItems.canned_fish] = [ new ItemMethod("Comer", "eat") ];
+global.itemMethods[itemType.consumables][consumableItems.raw_meat_1] = [ new ItemMethod("Comer", "eat") ];
 global.itemMethods[itemType.consumables][consumableItems.cooked_meat_1] = [ new ItemMethod("Comer", "eat") ];
-global.itemMethods[itemType.consumables][consumableItems.raw_meat_2]    = [ new ItemMethod("Comer", "eat") ];
+global.itemMethods[itemType.consumables][consumableItems.raw_meat_2] = [ new ItemMethod("Comer", "eat") ];
 global.itemMethods[itemType.consumables][consumableItems.cooked_meat_2] = [ new ItemMethod("Comer", "eat") ];
-global.itemMethods[itemType.consumables][consumableItems.dirt_water]    = [ new ItemMethod("Beber", "drink") ];
+global.itemMethods[itemType.consumables][consumableItems.canned_pineapple] = [ new ItemMethod("Comer", "eat") ];
+global.itemMethods[itemType.consumables][consumableItems.canned_pineapple] = [ new ItemMethod("Comer", "eat") ];
+global.itemMethods[itemType.consumables][consumableItems.raw_rat_meat] = [ new ItemMethod("Comer", "eat") ];
+global.itemMethods[itemType.consumables][consumableItems.cooked_rat_meat] = [ new ItemMethod("Comer", "eat") ];
+
 global.itemMethods[itemType.consumables][consumableItems.bandage] = [ new ItemMethod("Usar", "use") ];
 global.itemMethods[itemType.consumables][consumableItems.medicine]    = [ new ItemMethod("Usar", "use") ];
-global.itemMethods[itemType.consumables][consumableItems.canned_pineapple]    = [ new ItemMethod("Comer", "eat") ];
+
+global.itemMethods[itemType.consumables][consumableItems.watter_bottle] = [ new ItemMethod("Beber", "drink") ];
+global.itemMethods[itemType.consumables][consumableItems.dirt_water]    = [ new ItemMethod("Beber", "drink") ];
 global.itemMethods[itemType.consumables][consumableItems.orange_juice]    = [ new ItemMethod("Beber", "drink") ];
 
 function ConsumableUsageData(_increaseValue, _sound, _itemToDrop = undefined, _otherEffects = []) constructor {
@@ -68,6 +73,12 @@ global.consumableUsageData[consumableItems.cooked_meat_1] = new ConsumableUsageD
 global.consumableUsageData[consumableItems.raw_meat_2] = new ConsumableUsageData(200, snd_eat_canned_food, undefined, [
 	otherEffectsData(otherEffectTypes.healthDecrease, 10)
 ]);
+
+global.consumableUsageData[consumableItems.raw_rat_meat] = new ConsumableUsageData(50, snd_eat_canned_food, undefined, [
+	otherEffectsData(otherEffectTypes.healthDecrease, 15)
+]);
+
+global.consumableUsageData[consumableItems.cooked_rat_meat] = new ConsumableUsageData(120, snd_eat_canned_food, undefined);
 
 global.consumableUsageData[consumableItems.cooked_meat_2] = new ConsumableUsageData(750, snd_eat_canned_food, undefined, [
 	otherEffectsData(otherEffectTypes.healthIncrease, 30)

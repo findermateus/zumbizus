@@ -11,7 +11,7 @@ enum craftingOptions {
 }
 
 function setUpCraftingGlobals() {
-	global.craftingItems = [];
+	global.craftingRecipes = [];
 
 	global.craftingOptions = [];
 
@@ -51,7 +51,7 @@ function CraftingItem(_itemId, _type, _requiredLevel = 1, _requirements = [], _b
 function getAvailableCraftingItemsByCategoryAndLevel(_category, _level) {
 	var _list = [];
 
-	var _items = global.craftingItems[_category];
+	var _items = global.craftingRecipes[_category];
 
 	if (is_undefined(_items)) return _list;
 
@@ -82,11 +82,11 @@ function getCraftingItem(_type, _id) {
 		_category = craftingCategories.materials;
 	}
 	
-	if (!arrayKeyExists(global.craftingItems, _category)) return [];
+	if (!arrayKeyExists(global.craftingRecipes, _category)) return [];
 	
-	for (var i = 0; i < array_length(global.craftingItems[_category]); i++) {
-		if (global.craftingItems[_category][i].id == _id) {
-			return global.craftingItems[_category][i];
+	for (var i = 0; i < array_length(global.craftingRecipes[_category]); i++) {
+		if (global.craftingRecipes[_category][i].id == _id) {
+			return global.craftingRecipes[_category][i];
 		}
 	}
 	
