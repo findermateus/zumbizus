@@ -87,7 +87,7 @@ function loadSavedData(_data = false) {
 menuId = Menus.FurnitureCrafting;
 
 function activateFurniture() {
-	openMenu(menuId);
+	openMenu(menuId, hide);
 	obj_camera.setTargetWithZoom(id);
 	isUsing = true;
 	setVariablesOpenFurniture();

@@ -26,6 +26,7 @@ function AmmoConfig() {
 	_config.value = 13;
 
 	global.items[itemType.ammo][ammoItems.mm9] = _config;
+	global.itemMethods[itemType.ammo][ammoItems.mm9] = [];
 }
 
 {
@@ -41,6 +42,7 @@ function AmmoConfig() {
 	_config.value = 22
 
 	global.items[itemType.ammo][ammoItems.cal12] = _config;
+	global.itemMethods[itemType.ammo][ammoItems.cal12] = [];
 }
 
 {
@@ -56,4 +58,5 @@ function AmmoConfig() {
 	_config.value = 15;
 
 	global.items[itemType.ammo][ammoItems.rifle] = _config;
+	global.itemMethods[itemType.ammo][ammoItems.rifle] = [];
 }

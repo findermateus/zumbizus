@@ -1,4 +1,19 @@
-
+enum consumableItems {
+	watter_bottle,
+	canned_food,
+	canned_fish,
+	raw_meat_1,
+	cooked_meat_1,
+	raw_meat_2,
+	raw_rat_meat,
+	cooked_rat_meat,
+	cooked_meat_2,
+	dirt_water,
+	bandage,
+	medicine,
+	canned_pineapple,
+	orange_juice
+}
 
 function ConsumableConfig() {
 	return {
@@ -16,6 +31,8 @@ function ConsumableConfig() {
 	};
 }
 
+global.consumableUsageData = [];
+
 {
 	var _config = ConsumableConfig();
 	_config.itemId = consumableItems.watter_bottle;
@@ -29,6 +46,10 @@ function ConsumableConfig() {
 	_config.value = 20;
 
 	global.items[itemType.consumables][consumableItems.watter_bottle] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.watter_bottle] = [ new ItemMethod("Beber", "drink") ];
+	global.consumableUsageData[consumableItems.watter_bottle] = new ConsumableUsageData(600, snd_drink_water_bottle, trashItems.empty_watter_bottle, [
+		otherEffectsData(otherEffectTypes.staminaIncrease, 40)
+	]);
 }
 
 {
@@ -44,6 +65,10 @@ function ConsumableConfig() {
 	_config.value = 8;
 
 	global.items[itemType.consumables][consumableItems.dirt_water] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.dirt_water] = [ new ItemMethod("Beber", "drink") ];
+	global.consumableUsageData[consumableItems.dirt_water] = new ConsumableUsageData(100, snd_drink_water_bottle, trashItems.empty_watter_bottle, [
+		otherEffectsData(otherEffectTypes.healthDecrease, 10)
+	]);
 }
 
 {
@@ -58,6 +83,10 @@ function ConsumableConfig() {
 	_config.value = 16;
 
 	global.items[itemType.consumables][consumableItems.canned_food] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.canned_food] = [ new ItemMethod("Comer", "eat") ];
+	global.consumableUsageData[consumableItems.canned_food] = new ConsumableUsageData(500, snd_eat_canned_food, trashItems.empty_canned_food, [
+		otherEffectsData(otherEffectTypes.healthIncrease, 20)
+	]);
 }
 
 {
@@ -72,6 +101,10 @@ function ConsumableConfig() {
 	_config.value = 20;
 
 	global.items[itemType.consumables][consumableItems.canned_fish] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.canned_fish] = [ new ItemMethod("Comer", "eat") ];
+	global.consumableUsageData[consumableItems.canned_fish] = new ConsumableUsageData(400, snd_eat_canned_food, trashItems.empty_canned_fish, [
+		otherEffectsData(otherEffectTypes.thirstDecrease, 100)
+	]);
 }
 
 {
@@ -86,6 +119,10 @@ function ConsumableConfig() {
 	_config.value = 20;
 
 	global.items[itemType.consumables][consumableItems.canned_pineapple] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.canned_pineapple] = [ new ItemMethod("Comer", "eat") ];
+	global.consumableUsageData[consumableItems.canned_pineapple] = new ConsumableUsageData(370, snd_eat_canned_food, trashItems.empty_canned_pineapple, [
+		otherEffectsData(otherEffectTypes.thirstDecrease, 400)
+	]);
 }
 
 {
@@ -100,6 +137,8 @@ function ConsumableConfig() {
 	_config.value = 18;
 
 	global.items[itemType.consumables][consumableItems.orange_juice] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.orange_juice] = [ new ItemMethod("Beber", "drink") ];
+	global.consumableUsageData[consumableItems.orange_juice] = new ConsumableUsageData(450, snd_drink_water_bottle);
 }
 
 {
@@ -114,6 +153,10 @@ function ConsumableConfig() {
 	_config.value = 22;
 	
 	global.items[itemType.consumables][consumableItems.raw_meat_1] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.raw_meat_1] = [ new ItemMethod("Comer", "eat") ];
+	global.consumableUsageData[consumableItems.raw_meat_1] = new ConsumableUsageData(200, snd_eat_canned_food, undefined, [
+		otherEffectsData(otherEffectTypes.healthDecrease, 10)
+	]);
 }
 
 {
@@ -128,6 +171,10 @@ function ConsumableConfig() {
 	_config.value = 35;
 	
 	global.items[itemType.consumables][consumableItems.cooked_meat_1] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.cooked_meat_1] = [ new ItemMethod("Comer", "eat") ];
+	global.consumableUsageData[consumableItems.cooked_meat_1] = new ConsumableUsageData(700, snd_eat_canned_food, undefined, [
+		otherEffectsData(otherEffectTypes.healthIncrease, 30)
+	]);
 }
 
 {
@@ -142,6 +189,10 @@ function ConsumableConfig() {
 	_config.value = 22;
 	
 	global.items[itemType.consumables][consumableItems.raw_meat_2] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.raw_meat_2] = [ new ItemMethod("Comer", "eat") ];
+	global.consumableUsageData[consumableItems.raw_meat_2] = new ConsumableUsageData(200, snd_eat_canned_food, undefined, [
+		otherEffectsData(otherEffectTypes.healthDecrease, 10)
+	]);
 }
 
 {
@@ -156,6 +207,44 @@ function ConsumableConfig() {
 	_config.value = 35;
 	
 	global.items[itemType.consumables][consumableItems.cooked_meat_2] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.cooked_meat_2] = [ new ItemMethod("Comer", "eat") ];
+	global.consumableUsageData[consumableItems.cooked_meat_2] = new ConsumableUsageData(750, snd_eat_canned_food, undefined, [
+		otherEffectsData(otherEffectTypes.healthIncrease, 30)
+	]);
+}
+
+{
+	var _config = ConsumableConfig();
+	_config.itemId = consumableItems.raw_rat_meat;
+	_config.name = "Carne crua de rato";
+	_config.description = "Não vai comer isso, né?";
+	_config.sprite = spr_raw_rat_meat;
+	_config.consumableType = consumableTypes.food;
+	_config.stackable = true;
+	_config.limit = 12;
+	_config.value = 8;
+	
+	global.items[itemType.consumables][consumableItems.raw_rat_meat] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.raw_rat_meat] = [ new ItemMethod("Comer", "eat") ];
+	global.consumableUsageData[consumableItems.raw_rat_meat] = new ConsumableUsageData(50, snd_eat_canned_food, undefined, [
+		otherEffectsData(otherEffectTypes.healthDecrease, 15)
+	]);
+}
+
+{
+	var _config = ConsumableConfig();
+	_config.itemId = consumableItems.cooked_rat_meat;
+	_config.name = "Carne assada de rato";
+	_config.description = "Um pouco menos pior do que crua...";
+	_config.sprite = spr_cooked_rat_meat;
+	_config.consumableType = consumableTypes.food;
+	_config.stackable = true;
+	_config.limit = 12;
+	_config.value = 12;
+	
+	global.items[itemType.consumables][consumableItems.cooked_rat_meat] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.cooked_rat_meat] = [ new ItemMethod("Comer", "eat") ];
+	global.consumableUsageData[consumableItems.cooked_rat_meat] = new ConsumableUsageData(120, snd_eat_canned_food, undefined);
 }
 
 {
@@ -170,6 +259,8 @@ function ConsumableConfig() {
 	_config.value = 15;
 	
 	global.items[itemType.consumables][consumableItems.bandage] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.bandage] = [ new ItemMethod("Usar", "use") ];
+	global.consumableUsageData[consumableItems.bandage] = new ConsumableUsageData(10, snd_eat_canned_food, undefined);
 }
 
 {
@@ -185,4 +276,6 @@ function ConsumableConfig() {
 	_config.value = 60;
 	
 	global.items[itemType.consumables][consumableItems.medicine] = _config;
+	global.itemMethods[itemType.consumables][consumableItems.medicine] = [ new ItemMethod("Usar", "use") ];
+	global.consumableUsageData[consumableItems.medicine] = new ConsumableUsageData(70, snd_eat_medicine, undefined);
 }

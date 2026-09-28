@@ -168,7 +168,7 @@ function drawDialogueBox() {
     }
 
     if (textIndex >= _textSize) {
-        var _hintText  = "Pressione Espaço para avançar";
+        var _hintText  = "[fa_right][fa_bottom]Pressione Espaço ou [scale,1.5][spr_mouse][/scale] para avançar";
         var _hintAlpha = (sin(current_time * 0.003) + 1) / 2;
 
         draw_set_font(fnt_gui_default);
@@ -179,8 +179,8 @@ function drawDialogueBox() {
         var _hintY = _currentDialogTopY + _dialogBoxH - _padding;
 
         draw_set_alpha(_hintAlpha * _alpha);
-        drawTextShadow(_hintX, _hintY, _hintText, _hintAlpha * _alpha, 4);
-        draw_text(_hintX, _hintY, _hintText);
+        drawTextShadowScribble(_hintX, _hintY, _hintText, _hintAlpha * _alpha, 4);
+        draw_text_scribble(_hintX, _hintY, _hintText);
         draw_set_alpha(_alpha);
     }
 

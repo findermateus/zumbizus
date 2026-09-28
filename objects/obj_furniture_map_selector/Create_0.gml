@@ -17,7 +17,7 @@ activationMethod = function () {
 	playClickSound();
 	audio_play_sound(snd_open_crafting_station, 0, false);
 	
-	openMenu(menuId);
+	openMenu(menuId, hide);
 	setVariablesOpenFurniture();
 	
 	isUsing = true;

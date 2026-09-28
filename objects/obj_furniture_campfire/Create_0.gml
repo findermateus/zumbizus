@@ -31,7 +31,7 @@ loadFurnitureByDefaultId();
 setShadow(sprite_index, image_index, 1);
 
 {
-    var _cookingRecipees = global.craftingItems[craftingCategories.cooking];
+    var _cookingRecipees = global.craftingRecipes[craftingCategories.cooking];
     var _type = itemType.consumables;
 
     var _index = array_find_index(_cookingRecipees, function (_recipee) {
@@ -49,8 +49,14 @@ setShadow(sprite_index, image_index, 1);
     _index = array_find_index(_cookingRecipees, function (_recipee) {
         return _recipee.id == consumableItems.watter_bottle;
     });
-    
+	
 	allowedRecipees[? string(_type) + "_" + string(consumableItems.dirt_water)] = _cookingRecipees[_index];
+	
+	_index = array_find_index(_cookingRecipees, function (_recipee) {
+        return _recipee.id == consumableItems.cooked_rat_meat;
+    });
+	
+	allowedRecipees[? string(_type) + "_" + string(consumableItems.raw_rat_meat)] = _cookingRecipees[_index];
 }
 
 function loadSavedData(_data = false) {
@@ -126,7 +132,7 @@ activationMethod = function () {
 function activateFurniture() {
 	obj_camera.setTargetWithZoom(id);
 	setVariablesOpenFurniture();
-	openMenu(Menus.Campfire);
+	openMenu(Menus.Campfire, hideModal);
 	defineModalValues(guiModalOpen);
 	isUsing = true;
     

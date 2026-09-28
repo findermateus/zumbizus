@@ -82,6 +82,10 @@ function verifyConditionsToStopAimFurniture(){
 	return false;
 }
 
+function closeBuilder(){
+	deactivateLateralMenuOption(menu.builder);
+}
+
 function displayNothing(){
 	return;
 }
@@ -298,19 +302,6 @@ function drawHoverIndicator(_size){
 	var sprite = spr_hover_indicator;
 	var _scale = getScale(_size, sprite_get_width(sprite));
 	draw_sprite_stretched_ext(sprite, 0, hoverIndicatorUIData .x, hoverIndicatorUIData .y, _size, _size, c_white, hoverIndicatorUIData.alpha);
-}
-
-function drawItemDescriptionBox(_box){
-	var _sprite = spr_builder_furniture_description;
-	var _xScale = getScale(_box.x2Position - _box.xPosition, sprite_get_width(_sprite));
-	var _yScale = getScale(_box.y2Position - _box.yPosition, sprite_get_height(_sprite));
-	draw_sprite_ext(_sprite, 0, _box.xPosition, _box.yPosition, _xScale, _yScale, 0, c_white, 1);
-	var _border = 12;
-	_box.xPosition += _border;
-	_box.x2Position -= _border;
-	_box.yPosition += _border;
-	_box.y2Position -= _border;
-	return _box;
 }
 
 function checkPositionWithWithScreenBorder(_descriptionBox){

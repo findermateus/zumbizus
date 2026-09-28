@@ -59,7 +59,7 @@ setUpLight();
 menuId = Menus.SimpleCrafting;
 
 function activateFurniture() {
-	openMenu(menuId);
+	openMenu(menuId, hide);
 	obj_camera.setTargetWithZoom(id);
 	isUsing = true;
 	setVariablesOpenFurniture();
