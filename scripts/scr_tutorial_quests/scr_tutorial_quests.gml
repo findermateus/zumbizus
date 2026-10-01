@@ -587,6 +587,11 @@ function getExploreDumpQuest() {
 	_keepExploringStep.area = rm_container;
 	_keepExploringStep.containerId = "container_survivor";
 	
+	_keepExploringStep.onStart = method(_keepExploringStep, function () {
+		if (global.activeCompanionPreset == "container_survivor") {
+			self.quest.completeCurrentStep();
+		}
+	});
 	
 	_keepExploringStep.onEvent = method(_keepExploringStep, function (_event, _data) {
 	    if (_event != QuestEvent.AreaEntered) return;
@@ -600,6 +605,12 @@ function getExploreDumpQuest() {
 	
 	var _talkStep = new QuestStep("speak_to_survivor", "Fale com a sobrevivente");
 
+	_talkStep.onStart = method(_talkStep, function () {
+		if (global.activeCompanionPreset == "container_survivor") {
+			self.quest.completeCurrentStep();
+		}
+	});
+
 	_talkStep.onEvent = method(_talkStep, function (_event, _data) {
 		if (_event != QuestEvent.DialogueEnded) return;
 
@@ -612,6 +623,7 @@ function getExploreDumpQuest() {
 	
 	_quest.onComplete = method(_quest, function () {
 		lockMap(self.mapId);
+		room_set_persistent(rm_dump, false);
 	});
 
 	return _quest;

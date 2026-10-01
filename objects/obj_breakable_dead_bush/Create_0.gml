@@ -5,6 +5,9 @@ image_index = irandom_range(0, sprite_get_number(sprite_index) - 1);
 currentSpriteFrame = image_index;
 spriteToDrawShadow = sprite_index;
 
+image_xscale = 1.5;
+image_yscale = image_xscale;
+
 hp = 5;
 required_tool = noone;
 tool_error_msg = "";

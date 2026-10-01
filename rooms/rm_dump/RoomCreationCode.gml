@@ -38,6 +38,11 @@ var _fridgePossibleItems = [
 
 with (obj_chest) {
     var _chestCode = containerId;
+	
+	if (_chestCode == "metalCabinetDoubleDoors") {
+		continue;
+	}
+	
     var _isAFridge = (_chestCode == "fridgeBroken");
     var _itemList = _isAFridge ? _fridgePossibleItems : _possibleItems;
     
