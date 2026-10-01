@@ -1,6 +1,6 @@
 enum blueprints {
 	nailBoard,
-	ironSword,
+	machete,
 	hammer,
 	purifiedWater,
 	cookedMeat1,
@@ -18,7 +18,7 @@ function Blueprint(_id, _name, _description) constructor {
 global.blueprints = {
     weapons: [
         new Blueprint(blueprints.nailBoard, "Blueprint: Nail Board", "Permite criar uma arma com tábuas e pregos."),
-        new Blueprint(blueprints.ironSword, "Blueprint: Iron Sword", "Uma espada simples de ferro.")
+        new Blueprint(blueprints.machete, "Blueprint: Machete", "Uma machete de ferro.")
     ],
 	cooking: [
 		new Blueprint(blueprints.purifiedWater, "Blueprint: Água Purificada", "Permite criar água purificada")

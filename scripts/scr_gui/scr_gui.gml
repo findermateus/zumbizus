@@ -17,12 +17,18 @@ function getAlphaWithTimer(_alphaTimer){
 	return (sin(_timer * 0.5) + 1) * _alphaTimer;
 }
 
-function createNotifyIndicator(_text, _x, _y){
+function createGUINotifyIndicator(_text, _x, _y){
 	var _alert = instance_create_layer(_x, _y, "Alert", obj_alert_gui, {
 		xPosition: _x,
 		yPosition: _y
 	});
 	_alert.textAlert = _text;
+}
+
+function createRoomNotifyIndicator(_text, _x, _y, _color = c_red) {
+	var _alert = instance_create_layer(_x, _y, "Alert", obj_alert);
+	_alert.textAlert = _text;
+	_alert.alertColor = _color;
 }
 
 function drawTextShadow(_x, _y, _text, _alpha, _offset = 3, _scale = 1){

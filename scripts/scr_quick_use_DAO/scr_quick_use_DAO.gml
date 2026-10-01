@@ -40,6 +40,24 @@ function increaseQuickUseBarSize() {
 	global.quickUseBarSize ++;
 }
 
+function getQuickUseIndexForItem(_item) {
+	var _size = ds_list_size(global.quickUse);
+	if (_size <= 0) return BLANK_INVENTORY_SPACE;
+
+	for (var i = 0; i < _size; i ++) {
+		var _equipedItem = getItemFromQuickUse(i);
+		if (_equipedItem == false) continue;
+		if (_equipedItem.itemId != _item.itemId || _equipedItem.type != _item.type) continue;
+		if (_equipedItem.quantity < _equipedItem.limit) return i;
+	}
+
+	for (var i = 0; i < _size; i ++) {
+		if (getItemFromQuickUse(i) == false) return i;
+	}
+
+	return 0;
+}
+
 function itemCanBeAddedToQuickBarUse(_item) {
 	if (_item == BLANK_INVENTORY_SPACE) return false;
 	return _item.type == itemType.consumables;

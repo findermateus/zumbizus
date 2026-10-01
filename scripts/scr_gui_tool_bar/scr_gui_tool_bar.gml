@@ -240,13 +240,16 @@ function handleToolBarDropping(){
 		}
 		return;
 	}
+	
 	if(mouseIsOnInventory){
 		return;
 	}
+	
 	if (mouseIsOnToolBar && hoverToolbarIndex != BLANK_INVENTORY_SPACE){
 		var _auxItem = global.equipedItems[| hoverToolbarIndex];
 		global.equipedItems[| hoverToolbarIndex] = global.equipedItems[| toolbarIndex];
 		global.equipedItems[| toolbarIndex] = _auxItem;
+		
 		return;
 	}
 	audio_play_sound(snd_equip_item, 0, false);

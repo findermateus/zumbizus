@@ -7,10 +7,9 @@ enum buffTypes {
 
 enum buffs {
 	cookedMeat,
-	cookedMeat2,
 	dirtWater,
 	rawMeat,
-	rawMeat2,
+	ratMeat,
 	hungry,
 	veryHungry,
 	thirst,
@@ -35,10 +34,11 @@ function initConsumableBuffs() {
     global.consumableBuffs = [];
 
     global.consumableBuffs[consumableItems.cooked_meat_1] = buffConfig(buffs.cookedMeat, 1.1, buffTypes.health, "Comeu uma boa carne nutritiva", 60, true);
-    global.consumableBuffs[consumableItems.cooked_meat_2] = buffConfig(buffs.cookedMeat2, 1.1, buffTypes.health, "Comeu uma boa carne nutritiva", 60, true);
-    global.consumableBuffs[consumableItems.dirt_water]    = buffConfig(buffs.dirtWater, 0.9, buffTypes.health, "Bebeu uma água de procedência duvidosa", 120, false);
-	global.consumableBuffs[consumableItems.raw_meat_1]    = buffConfig(buffs.rawMeat, 0.9, buffTypes.health, "Cormeu carne crua irmãooooooo", 120, false);
-	global.consumableBuffs[consumableItems.raw_meat_2]    = buffConfig(buffs.rawMeat2, 0.9, buffTypes.health, "Cormeu carne crua irmãooooooo", 120, false);
+    global.consumableBuffs[consumableItems.cooked_meat_2] = buffConfig(buffs.cookedMeat, 1.1, buffTypes.health, "Comeu uma boa carne nutritiva", 60, true);
+    global.consumableBuffs[consumableItems.dirt_water] = buffConfig(buffs.dirtWater, 0.9, buffTypes.health, "Bebeu uma água de procedência duvidosa", 120, false);
+	global.consumableBuffs[consumableItems.raw_meat_1] = buffConfig(buffs.rawMeat, 0.9, buffTypes.health, "Cormeu carne crua", 120, false);
+	global.consumableBuffs[consumableItems.raw_meat_2] = buffConfig(buffs.rawMeat, 0.9, buffTypes.health, "Cormeu carne crua", 120, false);
+	global.consumableBuffs[consumableItems.raw_rat_meat] = buffConfig(buffs.ratMeat, 0.8, buffTypes.health, "Cormeu carne crua de RATO (????)", 300, false);
 }
 
 function initCustomBuffs() {

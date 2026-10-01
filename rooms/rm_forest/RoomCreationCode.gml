@@ -1,5 +1,3 @@
-loadPlayerData();
-
 var _roomWidth = room_width;
 var _roomHeight = room_height;
 var _grassSprite = tg_sGrass;
@@ -20,21 +18,11 @@ for (var _xx = 0; _xx < _roomWidth; _xx += _camW) {
     }
 }
 
-var _treeSprites = [
-    spr_tree,
-    spr_tree2,
-    spr_tree3,
-	spr_tree4,
-	spr_tree5,
-	spr_tree6
-];
-
-var _density = 0.5;          // Densidade (0.1 = 10% de ocupação, 0.2 = 20%, etc.)
+var _density = 0.5;
 var _minTreeSize = 250;
 var _maxTreeSize = 300;
-var _treeAverageSize = mean(_minTreeSize, _maxTreeSize);    // Espaço médio (em pixels) que uma árvore ocupa (largura/altura)
+var _treeAverageSize = mean(_minTreeSize, _maxTreeSize);
 
-// Cálculo automático da quantidade
 var _roomArea = _roomWidth * _roomHeight;
 var _treeArea = _treeAverageSize * _treeAverageSize;
 var _totalTrees = floor((_roomArea / _treeArea) * _density);
@@ -49,17 +37,8 @@ repeat(_totalTrees) {
     while (!_success && _attempts < _maxAttempts) {
 		var _xx = irandom_range(_margin, _roomWidth - _margin);
         var _yy = irandom_range(_margin, _roomHeight - _margin);
-        
-        var _randomSprite = _treeSprites[irandom(array_length(_treeSprites) - 1)];
-        
-		var _height = irandom_range(_minTreeSize, _maxTreeSize);
-		var _scale = getScale(_height, sprite_get_height(_randomSprite));
 		
-        var _inst = instance_create_layer(_xx, _yy, "GroundEffect", obj_tree, {
-			sprite_index: _randomSprite,
-			image_xscale: _scale,
-			image_yscale: _scale
-		});
+        var _inst = instance_create_layer(_xx, _yy, "GroundEffect", obj_tree);
         
         with (_inst) {
             if (place_meeting(x, y, obj_tree)) {

@@ -2,26 +2,41 @@ animationCurveItemDescription = animcurve_get_channel(ac_inventory,"item_descrip
 playedItemDescription = false;
 curveAnimationIndex = 0;
 isHovering = false;
+disabled = false;
 textToDraw = "";
 
-drawInterface = function(){
-	if(!isHovering) return;
-	
-	if(curveAnimationIndex>=1){
-		curveAnimationIndex = 0;
-		playedItemDescription = true;
-	}
-	
-	curveAnimationIndex += (delta_time/1000000);
-	
-	var _curveLength = 25;
-	var _textMarginFromSprite = 20;
-	var _positionTransition = !playedItemDescription ? animcurve_channel_evaluate(animationCurveItemDescription, curveAnimationIndex) * _curveLength : 0;
-	var _yPosition = (bbox_bottom + _textMarginFromSprite + string_height(textToDraw)) - _positionTransition;
-	var _guiXPosition = roomToGuiX(bbox_left + (bbox_right - bbox_left) /2);
-	var _guiYPosition = roomToGuiY(_yPosition);
-	
-	drawActionText(textToDraw, _guiXPosition, _guiYPosition);
+getDrawPosition = function() {
+    var _textMarginFromSprite = 20;
+
+    return {
+        x: roomToGuiX(bbox_left + (bbox_right - bbox_left) / 2),
+        y: roomToGuiY(bbox_bottom + _textMarginFromSprite + string_height(textToDraw))
+    };
+}
+
+drawInterface = function() {
+    if (!isHovering) return;
+
+    if (curveAnimationIndex >= 1) {
+        curveAnimationIndex = 0;
+        playedItemDescription = true;
+    }
+
+    curveAnimationIndex += (delta_time / 1000000);
+
+    var _curveLength = 25;
+    var _position = getDrawPosition();
+
+    var _positionTransition =
+        !playedItemDescription
+            ? animcurve_channel_evaluate(animationCurveItemDescription, curveAnimationIndex) * _curveLength
+            : 0;
+
+    drawActionText(
+        textToDraw,
+        _position.x,
+        _position.y - _positionTransition
+    );
 }
 
 checkObstacules = function(_player){
@@ -40,6 +55,7 @@ checkDistance = function(_player){
 }
 
 verifyConditions = function(){
+	if (disabled) return false;
 	var _player = checkPlayerExistence();
 	if(!_player) return false;
 	if(global.pause) return false;
@@ -54,10 +70,11 @@ verifyConditions = function(){
 }
 
 function handleHover() {
-	if(!verifyConditions()) {
-		isHovering = false;
-		
-		return;
+	if (!verifyConditions()) {
+	    isHovering = false;
+	    playedItemDescription = false;
+	    curveAnimationIndex = 0;
+	    return;
 	}
 	
 	if (!isHovering) {

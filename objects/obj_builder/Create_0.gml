@@ -59,7 +59,7 @@ function nothing(){
 }
 
 function verifyConditionsToAimFurniture(){
-	if(!keyboard_check_released(ord("T"))) return false;
+	if(!keyboard_check_released(ord("T")) || global.blockMenus) return false;
 	selectLateralMenuOption(menu.builder);
 }
 
@@ -68,18 +68,22 @@ function setUpModal(){
 	global.playerStopInteractions = true;
 	listOfElementsDestinyYPosition = defaultListOfElementsDestinyYPosition;
 	playSwiiimmmSound();
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
 	obj_camera.target = obj_player;
 	guiCurrentState = displayFurniture;
 	currentState = aimFurniture;
 }
 
 function verifyConditionsToStopAimFurniture(){
-	if(keyboard_check_released(ord("T"))){
+	if(keyboard_check_released(ord("T")) || global.blockMenus){
 		deactivateLateralMenuOption(menu.builder);
 		return true;
 	}
 	return false;
+}
+
+function closeBuilder(){
+	deactivateLateralMenuOption(menu.builder);
 }
 
 function displayNothing(){
@@ -300,19 +304,6 @@ function drawHoverIndicator(_size){
 	draw_sprite_stretched_ext(sprite, 0, hoverIndicatorUIData .x, hoverIndicatorUIData .y, _size, _size, c_white, hoverIndicatorUIData.alpha);
 }
 
-function drawItemDescriptionBox(_box){
-	var _sprite = spr_builder_furniture_description;
-	var _xScale = getScale(_box.x2Position - _box.xPosition, sprite_get_width(_sprite));
-	var _yScale = getScale(_box.y2Position - _box.yPosition, sprite_get_height(_sprite));
-	draw_sprite_ext(_sprite, 0, _box.xPosition, _box.yPosition, _xScale, _yScale, 0, c_white, 1);
-	var _border = 12;
-	_box.xPosition += _border;
-	_box.x2Position -= _border;
-	_box.yPosition += _border;
-	_box.y2Position -= _border;
-	return _box;
-}
-
 function checkPositionWithWithScreenBorder(_descriptionBox){
 	var _displayWidth = display_get_width();
 	var _hDifferenceBetween = _descriptionBox.x2Position - _displayWidth;
@@ -509,14 +500,13 @@ function checkMouseOnClick(){
 		activeSelectingFurniture = true;
 		furnitureDisplay.isDisplaying = false;
 		selectedFurniture = BLANK_INVENTORY_SPACE;
-		obj_base_controller.setUpResourceViewer(false);
+		
 		return;
 	}
 	menuNotActiveSelectingFurnatureMenuButOnBuildMode();
 }
 
 function menuNotActiveSelectingFurnatureMenuButOnBuildMode(){
-	obj_base_controller.setUpResourceViewer(true);
 	listOfElementsDestinyYPosition = defaultListOfElementsDestinyYPosition;
 	arrowDirection = 1;
 	activeSelectingFurniture = false;
@@ -553,7 +543,7 @@ function getListOfFurnitureBox(){
 }
 
 function drawIndicationArrow(_box, _xPosition){
-	var _sprite = spr_builder_arrow_indicator;
+	var _sprite = spr_arrow_indicator;
 	var _yPosition = _box.yPosition + _box.yMarginFromBottom/2;
 	var _yScale = arrowScale * arrowDirection;
 	_xPosition += sprite_get_width(_sprite) * arrowScale;
@@ -640,9 +630,7 @@ function handleBuildable(){
 		return;
 	}
 	
-	var _alert = instance_create_layer(furnitureDisplayInfo.xPosition, furnitureDisplayInfo.yPosition, "Alert", obj_alert);
-	_alert.textAlert = "Mobília construída";
-	_alert.alertColor = c_lime;
+	createRoomNotifyIndicator("Mobília construída", furnitureDisplayInfo.xPosition, furnitureDisplayInfo.yPosition, c_lime);
 	
 	var _furnitureId = selectedFurniture.furnitureId;
 	

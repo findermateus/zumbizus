@@ -1,6 +1,23 @@
 openMenu(Menus.Dialogue);
 blockPlayerMenus();
 
+typeWritterSounds = [
+	snd_tp_1,
+	snd_tp_2,
+	snd_tp_3,
+	snd_tp_4,
+	snd_tp_5,
+	snd_tp_6,
+	snd_tp_7,
+	snd_tp_8,
+	snd_tp_9,
+	snd_tp_10,
+	snd_tp_11,
+];
+typeWritterSoundInterval = 70;
+lastTypeWritterSoundTime = 0;
+lastTypeWritterSound = undefined;
+
 currentPage = 0;
 textIndex = 0;
 animationProgress = 0;
@@ -9,26 +26,28 @@ avatarTransitionProgress = 0;
 avatarTransitionState = "idle";
 lastParticipantIndex = -1;
 
-obj_player.currentState = playerDialogueState;
-
 if (!is_struct(dialogue)) {
 	instance_destroy(id);
 }
 
-if (instance_exists(target)) {
-	obj_camera.setTargetWithZoom(target);
-}
+obj_player.currentState = playerDialogueState;
+
+obj_camera.camSpeed = .05
 
 function endDialogue() {
 	closeMenu();
 	unBlockPlayerMenus();
 	
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
 	obj_camera.target = obj_player;
 	
 	obj_player.currentState = playerIddleState;
 	
-	obj_quest_manager.notifyEvent(QuestEvent.DialogueEnded, { dialogue: dialogue, npc: target});
+	if (instance_exists(target)) {
+		obj_quest_manager.notifyEvent(QuestEvent.DialogueEnded, {
+			npc: target
+		});
+	}
 	
 	if (is_callable(dialogue.onEnd)) {
 		dialogue.onEnd();
@@ -42,6 +61,7 @@ function endDialogue() {
 
 function drawDialogueBox() {
     animationProgress = lerp(animationProgress, 100, 0.07);
+	
     var _normProg = animationProgress / 100;
 
     var _guiWidth  = display_get_gui_width();
@@ -84,9 +104,21 @@ function drawDialogueBox() {
     var _textSize     = string_length(_text);
     var _pageQuantity = array_length(dialogue.texts);
 
+    var _previousCharIndex = floor(textIndex);
     if (textIndex <= _textSize) textIndex += dialogue.textSpeed;
+    var _currentCharIndex = floor(min(textIndex, _textSize));
 
-    if (keyboard_check_pressed(vk_space)) {
+    var _canPlayTypeSound = current_time - lastTypeWritterSoundTime >= typeWritterSoundInterval;
+
+    if (_currentCharIndex > _previousCharIndex && _canPlayTypeSound && string_char_at(_text, _currentCharIndex) != " ") {
+        if (!is_undefined(lastTypeWritterSound) && audio_is_playing(lastTypeWritterSound)) audio_stop_sound(lastTypeWritterSound);
+
+        var _sound = typeWritterSounds[irandom(array_length(typeWritterSounds) - 1)];
+        lastTypeWritterSound = audio_play_sound(_sound, 1, false, .4);
+        lastTypeWritterSoundTime = current_time;
+    }
+
+    if (keyboard_check_pressed(vk_space) || (animationProgress > 50 && mouse_check_button_released(mb_left))) {
         if (textIndex < _textSize) {
             textIndex = _textSize;
         } else if (currentPage < _pageQuantity - 1) {
@@ -102,7 +134,7 @@ function drawDialogueBox() {
     var _currentTextPart = string_copy(_text, 1, textIndex);
     draw_set_font(fnt_gui_default);
     drawTextShadowScribble(_textX1, _textY1, _currentTextPart, _alpha, 4, _reservedSpaceForText);
-    draw_text_scribble_ext(_textX1, _textY1, _currentTextPart, -1, _reservedSpaceForText);
+    draw_text_scribble_ext(_textX1, _textY1, _currentTextPart, _reservedSpaceForText);
 
     var _personCentralPoint = getMiddlePoint(_avatarBoxX, _avatarBoxX + _avatarBoxW);
     var _expectedBodySize   = _avatarBoxH * 0.65;
@@ -110,6 +142,17 @@ function drawDialogueBox() {
     var _participantY       = _currentDialogTopY;
 
     var _name = "";
+	
+	if (lastParticipantIndex != _isPlayer) {
+        lastParticipantIndex = _isPlayer;
+        
+        if (_isPlayer) {
+            obj_camera.setTargetWithZoom(obj_player);
+        } else if (instance_exists(target)) {
+            obj_camera.setTargetWithZoom(target);
+        }
+    }
+	
     if (_isPlayer) {
         _name = global.player.name;
         drawPersonBody(
@@ -117,6 +160,7 @@ function drawDialogueBox() {
             global.player.gender, 0, _scale, 0, 1,
             global.player.skinColor,
             global.player.hair,
+			global.player.eyeId,
             is_struct(global.equipments.armor) ? global.equipments.armor.itemId : -1,
             is_struct(global.equipments.head)  ? global.equipments.head.itemId  : -1,
             is_struct(global.equipments.bag)   ? global.equipments.bag.itemId   : -1
@@ -129,7 +173,8 @@ function drawDialogueBox() {
             _npc.gender, 0, _scale, 0, 1,
             _npc.skinColor,
             new PersonHair(_npc.hairId, _npc.hairColor),
-            -1, -1, -1, -1
+			_npc.eyeId,
+            _npc.outfitId, _npc.helmetId, _npc.bagId, -1
         );
     }
 
@@ -152,7 +197,7 @@ function drawDialogueBox() {
     }
 
     if (textIndex >= _textSize) {
-        var _hintText  = "Pressione Espaço para avançar";
+        var _hintText  = "[fa_right][fa_bottom]Pressione Espaço ou [scale,1.5][spr_mouse][/scale] para avançar";
         var _hintAlpha = (sin(current_time * 0.003) + 1) / 2;
 
         draw_set_font(fnt_gui_default);
@@ -163,8 +208,8 @@ function drawDialogueBox() {
         var _hintY = _currentDialogTopY + _dialogBoxH - _padding;
 
         draw_set_alpha(_hintAlpha * _alpha);
-        drawTextShadow(_hintX, _hintY, _hintText, _hintAlpha * _alpha, 4);
-        draw_text(_hintX, _hintY, _hintText);
+        drawTextShadowScribble(_hintX, _hintY, _hintText, _hintAlpha * _alpha, 4);
+        draw_text_scribble(_hintX, _hintY, _hintText);
         draw_set_alpha(_alpha);
     }
 

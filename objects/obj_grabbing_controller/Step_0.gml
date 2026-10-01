@@ -26,7 +26,7 @@ if (struggle_progress >= struggle_target) {
     enemy.x += lengthdir_x(20, _dir);
     enemy.y += lengthdir_y(20, _dir);
     
-	obj_camera.setDefaultScale();
+	obj_camera.setDefaultValues();
     instance_destroy();
 }
 

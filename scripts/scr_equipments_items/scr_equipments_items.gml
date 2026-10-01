@@ -27,6 +27,9 @@ function EquipmentConfig() {
 	_config.value = 115;
 
 	global.items[itemType.equipment][equipmentItems.simpleBag] = _config;
+	global.itemMethods[itemType.equipment][equipmentItems.simpleBag] = [
+		new ItemMethod("Equipar", "wear")
+	];
 }
 
 {
@@ -41,6 +44,32 @@ function EquipmentConfig() {
 	_config.value = 12;
 
 	global.items[itemType.equipment][equipmentItems.simpleOutfit] = _config;
+	global.itemMethods[itemType.equipment][equipmentItems.simpleOutfit] = [
+		new ItemMethod("Equipar", "wear"),
+		new ItemMethod("Rasgar", "dismantle")
+	];
+}
+
+{
+	var _config = EquipmentConfig();
+
+	_config.itemId = equipmentItems.tornLabCoat;
+	_config.equipType = equipmentType.armor;
+
+	_config.name = "Jaleco Rasgado";
+	_config.description = "Um jaleco velho e rasgado. Não oferece muita proteção, mas é melhor do que continuar exposto.";
+
+	_config.sprite = spr_torn_lab_coat_icon;
+	_config.fitInGrid = fitInGridType.verticaly;
+
+	_config.equipmentData.damageAbsortion = 2;
+
+	_config.value = 7;
+
+	global.items[itemType.equipment][equipmentItems.tornLabCoat] = _config;
+	global.itemMethods[itemType.equipment][equipmentItems.tornLabCoat] = [
+		new ItemMethod("Equipar", "wear")
+	];
 }
 
 {
@@ -56,6 +85,9 @@ function EquipmentConfig() {
 
 
 	global.items[itemType.equipment][equipmentItems.leatherJacket] = _config;
+	global.itemMethods[itemType.equipment][equipmentItems.leatherJacket] = [
+		new ItemMethod("Equipar", "wear")
+	];
 }
 
 {
@@ -69,6 +101,9 @@ function EquipmentConfig() {
 	_config.value = 15;
 	
 	global.items[itemType.equipment][equipmentItems.simpleCap] = _config;
+	global.itemMethods[itemType.equipment][equipmentItems.simpleCap] = [
+		new ItemMethod("Equipar", "wear")
+	];
 }
 
 {
@@ -83,4 +118,7 @@ function EquipmentConfig() {
 
 	
 	global.items[itemType.equipment][equipmentItems.boonieHat] = _config;
+	global.itemMethods[itemType.equipment][equipmentItems.boonieHat] = [
+		new ItemMethod("Equipar", "wear")
+	];
 }

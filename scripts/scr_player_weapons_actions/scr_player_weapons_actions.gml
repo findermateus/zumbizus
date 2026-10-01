@@ -134,8 +134,7 @@ function handleStepsForFireWeapon(){
 }
 
 function setUpReloading(){
-    cursor_sprite = noone;
-    window_set_cursor(cr_appstart);
+	obj_cursor_controller.setCursor(CursorType.Aim);
     
     if (weaponAction.item.reloadingSprite != spr_item_default) {
         setUpReloadingAnimation();

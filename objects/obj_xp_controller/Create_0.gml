@@ -29,9 +29,11 @@ function handleLevelUp() {
     audio_play_sound(snd_level_up, 0, false);
     pauseSystems();
     isLevelingUp = true;
-    obj_controller.setDefaultCursor();
+    
+	obj_cursor_controller.setCursor(CursorType.Default);
+	
     if (!audio_is_playing(snd_level_up_music)) {
-        audio_play_sound(snd_level_up_music, 0, true);
+        audio_play_sound(snd_level_up_music, 0, true, .6);
     }
 }
 
@@ -154,7 +156,6 @@ function handleStopLevelingUp() {
     isLevelingUp = false;
     levelUpBlur = 0;
     array_foreach(options, function (_option) {
-        _option.selectionProgress = 0;
         _option.animPercent = 0;
     });
     if (layer_exists("LevelUpBlur")) {
@@ -226,8 +227,7 @@ upgradeOptionBuilder = function (_type, _icon, _color) {
 		icon: _icon,
 		y: -1,
 		animPercent: 0,
-		color: _color,
-		selectionProgress: 0
+		color: _color
 	}
 };
 
@@ -253,7 +253,7 @@ function drawLevelUpButtonOptions() {
 
 	var _startX = _middlePoint - (_totalWidth / 2);
 	var _delayPerItem = 30;
-	var _isHoveringAny = false;
+	var _selectedType = undefined;
 	for(var i = 0; i < array_length(options); i ++) {
 		var _upgradeOption = options[i];
 		var _x = _startX + i * (_optionSize + _marginBetween);
@@ -282,43 +282,11 @@ function drawLevelUpButtonOptions() {
 
 			_upgradeOption.y = lerp(_startY, _endY, _animEvaluation);
 		} else {
-			_isHoveringAny = _isHovering ? true : _isHoveringAny;
 			_upgradeOption.y = lerp(_upgradeOption.y, _endY - (20 * _isHovering), .1);
-			var _progressSpeed = .01;
-			if (_isHovering && mouse_check_button(mb_left)) {
-				_upgradeOption.selectionProgress = min(_upgradeOption.selectionProgress + _progressSpeed, 1);
-				if (!audio_is_playing(snd_level_up_progress)) {
-					audio_play_sound(snd_level_up_progress, 0, false);
-				}
-			} else {
-				_upgradeOption.selectionProgress = max(_upgradeOption.selectionProgress - _progressSpeed, 0);
+
+			if (_isHovering && mouse_check_button_pressed(mb_left)) {
+				_selectedType = _upgradeOption.type;
 			}
-		}
-		
-		if (_upgradeOption.selectionProgress > 0) {
-			var _progressH = _optionSize * _upgradeOption.selectionProgress;
-	
-			var _left   = _x + 5;
-			var _right  = _x + _optionSize - 5;
-			var _bottom = _upgradeOption.y + _optionSize - 5;
-			var _top    = _bottom - _progressH + 6;
-			
-			var _color = _upgradeOption.color;
-			var _oAlpha = draw_get_alpha();
-			draw_set_alpha(.4);
-			draw_rectangle_color(
-				_left,
-				_top,
-				_right,
-				_bottom,
-				_color,
-				_color,
-				_color,
-				_color,
-				false
-			);
-			
-			draw_set_alpha(_oAlpha);
 		}
 
 		draw_sprite_stretched_ext(_optionSprite, 0, _x, _upgradeOption.y, _optionSize, _optionSize, _upgradeOption.color, draw_get_alpha());
@@ -357,21 +325,28 @@ function drawLevelUpButtonOptions() {
 		drawTextShadow(_lx, _dy, _lt, 1);
 		draw_text(_lx, _dy, _lt);
 		draw_set_font(fnt_gui_default);
-		
-		if (_upgradeOption.selectionProgress >= 1) {
-			handleUpgradeSelected(_upgradeOption.type);
-		}
 	}
-	
-	if (!_isHoveringAny || !mouse_check_button(mb_left)) {
-		audio_stop_sound(snd_level_up_progress);
-	}
-	
+
+	drawLevelUpLegend(_middlePoint, (_guiHeight / 2) + (_optionSize / 2) + 60);
+
 	levelUpAnimTimer++;
+
+	if (!is_undefined(_selectedType)) {
+		handleUpgradeSelected(_selectedType);
+	}
+}
+
+function drawLevelUpLegend(_x, _y) {
+	var _legendScribble = "[fa_center][fa_middle][scale,1.5][spr_mouse][/scale] para selecionar o upgrade";
+	var _oAlpha = draw_get_alpha();
+
+	draw_set_alpha(titlePercent);
+	drawTextShadowScribble(_x, _y, _legendScribble, titlePercent);
+	draw_text_scribble(_x, _y, _legendScribble);
+	draw_set_alpha(_oAlpha);
 }
 
 function handleUpgradeSelected(_upgradeType) {
-	audio_stop_sound(snd_level_up_progress);
 	audio_play_sound(snd_level_up, 0, false);
 	
 	if (_upgradeType == upgradeStatusOption.health) {

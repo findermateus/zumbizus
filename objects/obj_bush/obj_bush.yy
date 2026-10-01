@@ -10,12 +10,12 @@
   "name":"obj_bush",
   "overriddenProperties":[],
   "parent":{
-    "name":"Forest",
-    "path":"folders/Objects/Enviroment/Forest.yy",
+    "name":"InteractableDecoration",
+    "path":"folders/Objects/Enviroment/InteractableDecoration.yy",
   },
   "parentObjectId":{
-    "name":"obj_interactable",
-    "path":"objects/obj_interactable/obj_interactable.yy",
+    "name":"obj_interactable_decoration",
+    "path":"objects/obj_interactable_decoration/obj_interactable_decoration.yy",
   },
   "persistent":false,
   "physicsAngularDamping":0.1,

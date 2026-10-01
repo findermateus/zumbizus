@@ -31,7 +31,7 @@ loadFurnitureByDefaultId();
 setShadow(sprite_index, image_index, 1);
 
 {
-    var _cookingRecipees = global.craftingItems[craftingCategories.cooking];
+    var _cookingRecipees = global.craftingRecipes[craftingCategories.cooking];
     var _type = itemType.consumables;
 
     var _index = array_find_index(_cookingRecipees, function (_recipee) {
@@ -49,8 +49,14 @@ setShadow(sprite_index, image_index, 1);
     _index = array_find_index(_cookingRecipees, function (_recipee) {
         return _recipee.id == consumableItems.watter_bottle;
     });
-    
+	
 	allowedRecipees[? string(_type) + "_" + string(consumableItems.dirt_water)] = _cookingRecipees[_index];
+	
+	_index = array_find_index(_cookingRecipees, function (_recipee) {
+        return _recipee.id == consumableItems.cooked_rat_meat;
+    });
+	
+	allowedRecipees[? string(_type) + "_" + string(consumableItems.raw_rat_meat)] = _cookingRecipees[_index];
 }
 
 function loadSavedData(_data = false) {
@@ -126,7 +132,7 @@ activationMethod = function () {
 function activateFurniture() {
 	obj_camera.setTargetWithZoom(id);
 	setVariablesOpenFurniture();
-	openMenu(Menus.Campfire);
+	openMenu(Menus.Campfire, hideModal);
 	defineModalValues(guiModalOpen);
 	isUsing = true;
     
@@ -140,12 +146,12 @@ function hideModal(){
 	currentState = innactive;
 	playSwiiimmmSound();
 	
-	if (global.activeMenu == menuId) {
+	if (isCurrentMenu(menuId)) {
 		closeMenu();
 	}
 	
 	if (!global.activeInventory) {
-		obj_camera.setDefaultScale();
+		obj_camera.setDefaultValues();
 		obj_camera.target = obj_player;
 	}
 	defineModalValues(guiModalClosed);
@@ -169,7 +175,7 @@ function checkConditionsToClose(){
 	var _player = checkPlayerExistence();
 	if (!_player) return true;
 	if(checkObstacules(_player) && checkDistance(_player)) return false;
-	if (global.activeMenu == menuId) {
+	if (isCurrentMenu(menuId)) {
 		closeMenu();
 	}
 	
@@ -362,8 +368,8 @@ function drawWorkerList(_x, _x2, _y, _size, _workerList) {
 			continue;	
 		}
 
-		var _npc = global.npcList[_worker.id];
-		drawNpcInsideBlock(_posX, _y, _size, _npc.hair, _npc.skinColor, _npc.gender, 1);
+		var _npc = global.baseResidents[_worker.id];
+		drawNpcInsideBlock(_posX, _y, _size, _npc.hair, _npc.skinColor, _npc.gender, 1, _npc.eyeId);
 
 		_posX += _size + _gap;
 	}

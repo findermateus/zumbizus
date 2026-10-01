@@ -1,6 +1,7 @@
 #macro GRID_WIDTH 92
 #macro GRID_MB 10
 #macro INVENTORY_TITLE_SPACE 75
+#macro INVENTORY_LEGEND_SPACE 24
 activeHoldingItem = BLANK_INVENTORY_SPACE;
 activeHoverItem = BLANK_INVENTORY_SPACE;
 activeSelectedItem = BLANK_INVENTORY_SPACE;
@@ -21,10 +22,17 @@ mouseIsOnSecundaryInventory = false;
 mouseIsOnInventoryGrid = false;
 mouseIsOnToolBar = false;
 mouseIsOnEquipments = false;
+mouseIsOnPlayerInfo = false;
 mouseIsOnQuickUseBar = false;
 holdingItemPositions = { x: 0, y: 0}
 defaultToolBarAlpha = .80;
 descriptionItemAlpha = 0;
+itemDetailsUIData = {
+	itemId: undefined,
+	itemType: undefined,
+	x: 0,
+	y: 0
+};
 toolbarIndex = BLANK_INVENTORY_SPACE;
 hoverToolbarIndex = BLANK_INVENTORY_SPACE;
 toolBarAlpha = [];
@@ -65,12 +73,15 @@ mouseIsOnOtherMenu = false;
 
 function hide(){
 	instance_destroy(obj_menu_option);
+	
 	var _animationSpeed = (delta_time/1000000);
 	curveAnimationIndex -= _animationSpeed * 1.1;
 	animationCurveInventoryShow = animcurve_get_channel(ac_inventory, "inventory_hide");
+	
 	if(curveAnimationIndex < .1){
 		curveAnimationIndex = 0;
 		global.activeInventory = false;
+		global.activeInventoryAction = global.inventory;
 		currentState = nothing;
 	}
 }
@@ -90,11 +101,7 @@ function handleIndicator(){
 	if (_item == BLANK_INVENTORY_SPACE) return;
 	
 	if (_item.type == itemType.equipment){
-		switch (_item.equipType) {
-			case equipmentType.armor: indicatorToWhereItemShouldBePut = "armor"; break; 
-			case equipmentType.bag: indicatorToWhereItemShouldBePut = "bag"; break; 
-			case equipmentType.head: indicatorToWhereItemShouldBePut = "head"; break;
-		}
+		indicatorToWhereItemShouldBePut = getEquipmentSlotFromItem(_item);
 		return;
 	}
 	if (_item.type == itemType.weapons){
@@ -109,6 +116,7 @@ function drawInventory(){
 	mouseIsOnInventory = false;
 	mouseIsOnInventoryGrid = false;
 	mouseIsOnEquipments = false;
+	mouseIsOnPlayerInfo = false;
 	activeHoverItem = BLANK_INVENTORY_SPACE;
 	hoverToolbarIndex = BLANK_INVENTORY_SPACE;
 	mouseIsOnOtherMenu = false;
@@ -125,6 +133,23 @@ function drawInventory(){
 	drawDefaultInventory(display_get_gui_width() * .5, gui_height * .2, global.inventory);
 }
 
+function handleItemDetails() {
+	var _isShowing = currentState != hide && !mouseIsOnToolBar && activeHoverItem != BLANK_INVENTORY_SPACE && activeHoldingItem == BLANK_INVENTORY_SPACE;
+
+	if (_isShowing) {
+		itemDetailsUIData.itemId = activeHoverItem.itemId;
+		itemDetailsUIData.itemType = activeHoverItem.type;
+		itemDetailsUIData.x = hoverIndicatorUIData.destinyX + GRID_WIDTH + 12;
+		itemDetailsUIData.y = hoverIndicatorUIData.destinyY;
+	}
+
+	descriptionItemAlpha = lerp(descriptionItemAlpha, _isShowing, .15);
+
+	if (descriptionItemAlpha < .01 || itemDetailsUIData.itemId == undefined) return;
+
+	drawItemDetails(itemDetailsUIData.x, itemDetailsUIData.y, draw_get_alpha() * descriptionItemAlpha, itemDetailsUIData.itemId, itemDetailsUIData.itemType);
+}
+
 function drawDefaultInventory(_x, _y, _inventory){
 	var _inventoryBox = drawInventoryBox(_x, _y, undefined, undefined, _inventory);
 	drawPlayerStatsInventory(_inventoryBox);
@@ -135,6 +160,7 @@ function drawDefaultInventory(_x, _y, _inventory){
 	drawPlayerInfo(_inventoryBox);
 	drawHoverIndicator();
 	handleIndicator();
+	handleItemDetails();
 }
 
 function drawPersonalizedInventory(_x, _y, _inventory, _mouseIsOnOtherMenu = false) {
@@ -148,6 +174,7 @@ function drawPersonalizedInventory(_x, _y, _inventory, _mouseIsOnOtherMenu = fal
 	drawInventoryGrid(_inventory, _inventoryBox);
 	drawHoverIndicator();
 	handleIndicator();
+	handleItemDetails();
 }
 
 function drawInventoryWithContainer(){
@@ -176,6 +203,7 @@ function drawInventoryWithContainer(){
 	drawHoverIndicator();
 	mouseIsOnInventory = (mouseIsOnPrimaryInventory || mouseIsOnSecundaryInventory);
 	handleIndicator();
+	handleItemDetails();
 }
 
 function drawInventoryBox(_xPosition = undefined, _yPosition = undefined, _boxWidth = undefined, _boxHeight = undefined, _inventory = undefined, _adjustPositionWithWidth = false, _evaluateTransition = true){
@@ -203,7 +231,7 @@ function drawInventoryBox(_xPosition = undefined, _yPosition = undefined, _boxWi
 	_inventoryBox.xPosition = _xPosition;
 	_inventoryBox.yPosition = _yPosition;
 	_inventoryBox.boxWidth = _boxWidth;
-	_inventoryBox.boxHeight = INVENTORY_TITLE_SPACE + _gridTotalSize * _totalRows + _inventoryBox.margin * 2;	
+	_inventoryBox.boxHeight = INVENTORY_TITLE_SPACE + _gridTotalSize * _totalRows + INVENTORY_LEGEND_SPACE + _inventoryBox.margin * 2;
 	_inventoryBox.xPosition = _xPosition == undefined ? (_displayWidth/2) - (_inventoryBox.boxWidth/2) : _xPosition;
 	_inventoryBox.yPosition = _yPosition == undefined ? (_displayHeight/2) - (_inventoryBox.boxHeight/2) : _yPosition;
 	
@@ -336,10 +364,17 @@ function drawInventoryGrid(_inventory, _inventoryBox){
 			}
 		}
 	}
-	
-	if (activeHoverItem == BLANK_INVENTORY_SPACE) return;
-		
-	draw_text(xMouseToGui, yMouseToGui, activeHoverItem.value);
+
+	drawInventoryLegend(_inventoryBox);
+}
+
+function drawInventoryLegend(_inventoryBox){
+	var _legendXPosition = _inventoryBox.xPosition + _inventoryBox.boxWidth - 20;
+	var _legendYPosition = _inventoryBox.yPosition + _inventoryBox.boxHeight - _inventoryBox.margin - INVENTORY_LEGEND_SPACE / 2 - 10;
+	var _legendScribble = "[fa_right][fa_middle][scale,1.5][spr_mouse_right][/scale] para interagir";
+
+	drawTextShadowScribble(_legendXPosition, _legendYPosition, _legendScribble, draw_get_alpha());
+	draw_text_scribble(_legendXPosition, _legendYPosition, _legendScribble);
 }
 
 function verifyConditionToApplyHoverEffect() {
@@ -402,7 +437,11 @@ function drawInventoryName(_inititalYPosition, _yPosition, _xPosition, _inventor
 	var _centralizedYPosition = getMiddlePoint(_inititalYPosition, _yPosition);
 	var _title = "Armazém";
 	if (_inventory == global.inventory) _title = "Inventário"; 
-	draw_text_scribble(_xPosition, _centralizedYPosition, "[fa_middle]" +  _title);
+	
+	var _titleScribble = "[fa_middle]" +  _title;
+	
+	drawTextShadowScribble(_xPosition, _centralizedYPosition, _titleScribble, draw_get_alpha());
+	draw_text_scribble(_xPosition, _centralizedYPosition, _titleScribble);
 }
 
 function drawItem(_item, _x, _y, _grid, _minusScale){
@@ -468,7 +507,11 @@ function holdItem(){
 	
 	if(mouse_check_button_released(mb_left) && activeHoldingItem != BLANK_INVENTORY_SPACE){
 		dropInventoryItem();
-		currentState = nothing;
+		
+		if (currentState != hide) {
+			currentState = nothing;
+		}
+		
 		return;
 	}
 	
@@ -484,31 +527,32 @@ function holdItem(){
 }
 
 function gridOnClick(_inventory, _item, _j, _i, _xPosition, _yPosition){
-	if(mouse_check_button_released(mb_right)){
-		if (_item == BLANK_INVENTORY_SPACE) {
-			return;
-		}
-		selectingItemWhileOtherItemIsSelected(_j, _i);
-		preparingToDrawOptionMenu(_inventory, _item, _j, _i, _xPosition, _yPosition);
+	if(!mouse_check_button_released(mb_right)){
+		return;
 	}
-}
-
-function selectingItemWhileOtherItemIsSelected(_j, _i){
+	
+	if (_item == BLANK_INVENTORY_SPACE) {
+		return;
+	}
+	
 	if(_j != selectedItem.j || _i != selectedItem.i){
 		cleanMenuOptions();
 	}
-}
-function preparingToDrawOptionMenu(_inventory, _item, _j, _i, _xPosition, _yPosition){
-	if(_item != BLANK_INVENTORY_SPACE){	
-		global.activeInventoryAction = _inventory
-		activeSelectedItem = _item;
-		selectedItem.j = _j;
-		selectedItem.i = _i;
-		selectedItem.xPosition = _xPosition;
-		selectedItem.yPosition = _yPosition;
-		global.currentItemPlayingTheAction = selectedItem;
-		currentState = drawOptionsMenu;
+	
+	var _interactableOptions = getItemInteractOptions(_item.type, _item.itemId);
+	
+	if (array_length(_interactableOptions) == 0) {
+		return;
 	}
+	
+	global.activeInventoryAction = _inventory
+	activeSelectedItem = _item;
+	selectedItem.j = _j;
+	selectedItem.i = _i;
+	selectedItem.xPosition = _xPosition;
+	selectedItem.yPosition = _yPosition;
+	global.currentItemPlayingTheAction = selectedItem;
+	currentState = drawOptionsMenu;
 }
 
 function drawOptionsMenu(){
@@ -580,7 +624,7 @@ function dropInventoryItem(){
 		switchPositionInInventory();	
 		return;
 	}
-	if (mouseIsOnOtherMenu || mouseIsOnInventory || mouseIsOnToolBar || mouseIsOnEquipments || mouseIsOnQuickUseBar) return;
+	if (mouseIsOnOtherMenu || mouseIsOnInventory || mouseIsOnToolBar || mouseIsOnEquipments || mouseIsOnPlayerInfo || mouseIsOnQuickUseBar) return;
 	global.currentItemPlayingTheAction = holdingItem;
 	var _item = global.activeInventoryAction[# holdingItem.j, holdingItem.i];
 	audio_play_sound(snd_equip_item, 0, false);
@@ -591,12 +635,22 @@ function addItemToToolBar(_index = undefined, _inventory = global.inventory, _it
 	if (holdingItemFromToolBar) return;
 	var _auxiliarItem = _inventory[# _item.j, _item.i];
 	if (_auxiliarItem.type != itemType.weapons) return;
+	
 	_index = _index == undefined ? getCleanIndexFromToolBar() : _index;
+
+	obj_quest_manager.notifyEvent(QuestEvent.ItemEquiped, {
+		type: "weapon",
+		itemId: _auxiliarItem.itemId,
+		itemType: _auxiliarItem.type
+	});
+	
 	if (_index != BLANK_INVENTORY_SPACE){
 		_inventory[# _item.j, _item.i] = global.equipedItems[| _index];
 		global.equipedItems[| _index] = _auxiliarItem;
+		
 		return;
 	}
+	
 	_inventory[# _item.j, _item.i] = global.equipedItems[| 0];
 	global.equipedItems[| 0] = _auxiliarItem;
 }

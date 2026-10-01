@@ -1,18 +1,3 @@
-enum consumableItems {
-	watter_bottle,
-	canned_food,
-	canned_fish,
-	raw_meat_1,
-	cooked_meat_1,
-	raw_meat_2,
-	cooked_meat_2,
-	dirt_water,
-	bandage,
-	medicine,
-	canned_pineapple,
-	orange_juice
-}
-
 enum consumableTypes {
 	drink,
 	food,

@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"scr_npc_presets",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"scr_npc_presets",
+  "parent":{
+    "name":"Bootstrap",
+    "path":"folders/Scripts/Bootstrap.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}

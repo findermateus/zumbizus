@@ -51,16 +51,12 @@ function getNpcListFromDatabase(){
 	_requestHandler.queryNpcList();
 }
 
-function setDefaultCursor() {
-	cursor_sprite = noone;
-	window_set_cursor(cr_default);
-}
-
 function pauseGame() {
 	pauseSystems();
 	isGamePaused = true;
 	
-	setDefaultCursor();
+	obj_cursor_controller.setCursor(CursorType.Default);
+	
 	audio_play_sound(snd_swoosh, 0, false);
 }
 

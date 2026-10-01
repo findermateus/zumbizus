@@ -18,6 +18,12 @@ with (obj_decoration_with_collision) {
 	other.drawShadow(sprite_index, 0, xPositionToDrawShadow, yPositionToDrawShadow, 1, _alpha, image_xscale, image_yscale);
 }
 
+with (obj_interactable_decoration) {
+	var _alpha = image_alpha;
+	other.drawShadow(sprite_index, image_index, xPositionToDrawShadow, yPositionToDrawShadow, 1, _alpha, image_xscale, image_yscale);
+}
+
+
 surface_reset_target();
 	
 draw_set_alpha(.3);
