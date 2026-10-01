@@ -500,14 +500,13 @@ function checkMouseOnClick(){
 		activeSelectingFurniture = true;
 		furnitureDisplay.isDisplaying = false;
 		selectedFurniture = BLANK_INVENTORY_SPACE;
-		obj_base_controller.setUpResourceViewer(false);
+		
 		return;
 	}
 	menuNotActiveSelectingFurnatureMenuButOnBuildMode();
 }
 
 function menuNotActiveSelectingFurnatureMenuButOnBuildMode(){
-	obj_base_controller.setUpResourceViewer(true);
 	listOfElementsDestinyYPosition = defaultListOfElementsDestinyYPosition;
 	arrowDirection = 1;
 	activeSelectingFurniture = false;

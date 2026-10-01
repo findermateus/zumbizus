@@ -96,20 +96,20 @@ function getCookMeatQuest() {
 			new DialogueText("Boa ideia. Vou preparar a carne.", true)
 		],
 		new DialogueParticipant(
-			npc_tutorial_2.name,
-			npc_tutorial_2.genderId,
-			npc_tutorial_2.skinColor,
-			npc_tutorial_2.hairColor,
-			npc_tutorial_2.hairOption,
-			npc_tutorial_2.eyeId,
-			npc_tutorial_2.outfitId,
-			npc_tutorial_2.helmetId,
-			npc_tutorial_2.bagId
+			global.tutorialGuide.name,
+			global.tutorialGuide.genderId,
+			global.tutorialGuide.skinColor,
+			global.tutorialGuide.hairColor,
+			global.tutorialGuide.hairOption,
+			global.tutorialGuide.eyeId,
+			global.tutorialGuide.outfitId,
+			global.tutorialGuide.helmetId,
+			global.tutorialGuide.bagId
 		)
 	);
 
 		instance_create_layer(0, 0, "Controllers", obj_dialogue, {
-			target: npc_tutorial,
+			target: global.tutorialGuide,
 			dialogue: _dialogue
 		});
 	});
@@ -117,10 +117,10 @@ function getCookMeatQuest() {
 	_cookMeatStep.onEvent = method(_cookMeatStep, function (_event, _data) {
 		if (_event != QuestEvent.ItemCrafted) return;
 
-		if (
-			_data.itemType != itemType.consumables
-			|| _data.itemId != consumableItems.cooked_meat_1
-		) return;
+		if (_data.itemType != itemType.consumables || _data.itemId != consumableItems.cooked_meat_1) {
+			
+			return;
+		}
 
 		self.quest.completeCurrentStep();
 	});
@@ -166,6 +166,13 @@ function getCreateAxeQuest(_npc) {
 			};
 		})
 	);
+
+	_collectMaterialsStep.checkInventory = _collectMaterialsStep.onStart;
+
+	_collectMaterialsStep.onStart = method(_collectMaterialsStep, function () {
+		spawnMissingQuestItems(self.objectives);
+		self.checkInventory();
+	});
 
 	_quest.addStep(_collectMaterialsStep);
 
@@ -619,12 +626,14 @@ function getExploreDumpQuest() {
 	
 	_quest.addStep(_talkStep);
 	
-	_quest.addStep(createReturnToBaseStep());
+	var _returnToBaseStep = createReturnToBaseStep();
 	
-	_quest.onComplete = method(_quest, function () {
-		lockMap(self.mapId);
+	_returnToBaseStep.onComplete = method(_returnToBaseStep, function () {
+		lockMap(self.quest.mapId);
 		room_set_persistent(rm_dump, false);
 	});
+	
+	_quest.addStep(_returnToBaseStep);
 
 	return _quest;
 }

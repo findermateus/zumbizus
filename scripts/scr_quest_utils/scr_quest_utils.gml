@@ -107,3 +107,34 @@ function createReturnToBaseStep() {
 	
 	return _step;
 }
+
+function spawnMissingQuestItems(_objectives, _margin = 64) {
+	for (var i = 0; i < array_length(_objectives); i++) {
+		var _objective = _objectives[i];
+
+		var _missing = _objective.target - getItemQuantityInInventory(
+			global.inventory,
+			_objective.itemId,
+			_objective.type
+		);
+
+		with (obj_item) {
+			if (is_undefined(item)) continue;
+			if (item.type != _objective.type || item.itemId != _objective.itemId) continue;
+
+			_missing -= item.quantity;
+		}
+
+		if (_missing <= 0) continue;
+
+		var _itemRef = global.items[_objective.type][_objective.itemId];
+
+		repeat (_missing) {
+			var _xx = irandom_range(_margin, room_width - _margin);
+			var _yy = irandom_range(_margin, room_height - _margin);
+
+			var _inst = instance_create_layer(_xx, _yy, "Items", obj_item);
+			_inst.item = constructItem(_objective.type, _itemRef);
+		}
+	}
+}
