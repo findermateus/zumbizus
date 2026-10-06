@@ -493,16 +493,13 @@ function getFindSafePlaceQuest() {
 		_dialogue.onEnd = function () {
 			obj_waypoint.disabled = false;
 			
-			obj_waypoint.onClick = method(obj_waypoint, function () {
-				if (instance_exists(obj_map_transition)) return;
-	
-				playClickSound();
-	
-				instance_create_layer(0, 0, "Controllers", obj_map_transition, {
-					destination: rm_tutorial_corridor,
-					mapName: "Estrada abandonada"
+			with (obj_waypoint) {
+				setOnclickAsTravel({
+					room: rm_tutorial_corridor,
+					name: "Estrada abandonada",
+					id: ""
 				});
-			})
+			}
 			
 			with(npc_tutorial) {
 				setDestiny(obj_waypoint.x, obj_waypoint.y, function () {

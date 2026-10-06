@@ -1,3 +1,5 @@
+obj_room_controller.extractionPoint(false);
+
 if (instance_exists(obj_extraction_sign)) {
 	with(obj_extraction_sign) {
 		sprite_index = spr_traffic_sign_destroyed;

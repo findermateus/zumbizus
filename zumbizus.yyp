@@ -382,6 +382,7 @@
     {"id":{"name":"obj_quest_popup","path":"objects/obj_quest_popup/obj_quest_popup.yy",},},
     {"id":{"name":"obj_rain_controller","path":"objects/obj_rain_controller/obj_rain_controller.yy",},},
     {"id":{"name":"obj_resident_gui_controller","path":"objects/obj_resident_gui_controller/obj_resident_gui_controller.yy",},},
+    {"id":{"name":"obj_room_controller","path":"objects/obj_room_controller/obj_room_controller.yy",},},
     {"id":{"name":"obj_searchable_base","path":"objects/obj_searchable_base/obj_searchable_base.yy",},},
     {"id":{"name":"obj_searchable_metal_crate","path":"objects/obj_searchable_metal_crate/obj_searchable_metal_crate.yy",},},
     {"id":{"name":"obj_searchable_trash_can","path":"objects/obj_searchable_trash_can/obj_searchable_trash_can.yy",},},

@@ -41,24 +41,9 @@ setDestiny(obj_waypoint.x, obj_waypoint.y, function () {
 		
 		_dialogue.onEnd = function () {
 			hasSpoken = true;
-			
 			room_transition.disabled = false;
 			
-			room_transition.textToDraw = "Sair";
-			
-			room_transition.onClick = method(room_transition, function () {
-				if (instance_exists(obj_map_transition)) return;
-	
-				playClickSound();
-	
-				var _map = global.maps.playerBase;
-	
-				instance_create_layer(0, 0, "Controllers", obj_map_transition, {
-					destination: _map.room,
-					mapName: _map.name,
-					mapId: _map.id
-				});
-			})
+			room_transition.setOnclickAsTravel(global.maps.playerBase);
 			
 			setDestiny(room_transition.x, room_transition.y, function () {
 				currentState = fadeOutState;
