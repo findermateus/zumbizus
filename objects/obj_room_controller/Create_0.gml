@@ -44,6 +44,7 @@ extractionHasPath = false;
 	extractionTrailSpawnTimer = 0;
 
 	extractionTrailSystem = part_system_create();
+	part_system_depth(extractionTrailSystem, -15000);
 	extractionTrailParticle = part_type_create();
 
 	part_type_sprite(extractionTrailParticle, spr_particle, 0, 0, 1);

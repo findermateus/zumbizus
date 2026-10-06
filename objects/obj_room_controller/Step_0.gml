@@ -1,5 +1,3 @@
-adjustClosestDepth();
-
 if (instance_exists(extractionPointInstance)) {
 	exit;
 }
