@@ -70,7 +70,7 @@ repeat(irandom_range(15, 30)) {
 	_droppedItem.item = _itemToCreate;
 }
 
-var _pairCount = irandom_range(1, 3);
+var _pairCount = 2;
 var _spawnMargin = 100;
 var _pairDistance = sprite_get_width(spr_deer_female_iddle) *  2;
 
@@ -98,14 +98,11 @@ repeat(_pairCount) {
     );
 }
 
-// --- GERAÇÃO DE ARBUSTOS ---
-
-var _bushDensity = 0.05;            // Ajuste para mais ou menos arbustos
-var _minH = 60;                    // Altura mínima que o objeto aceita
-var _maxH = 80;                   // Altura máxima que o objeto aceita
+var _bushDensity = 0.05;
+var _minH = 60;
+var _maxH = 80;
 var _bushAvg = mean(_minH, _maxH);
 
-// Quantidade baseada na área da sala
 var _totalBushes = floor((_roomArea / (_bushAvg * _bushAvg)) * _bushDensity);
 
 repeat(_totalBushes) {
@@ -116,14 +113,11 @@ repeat(_totalBushes) {
         var _xx = irandom_range(_margin, _roomWidth - _margin);
         var _yy = irandom_range(_margin, _roomHeight - _margin);
         
-        // Criamos passando apenas o parâmetro 'height'
         var _inst = instance_create_layer(_xx, _yy, "GroundEffect", obj_bush, {
             height: irandom_range(_minH, _maxH)
         });
         
         with (_inst) {
-            // Verifica colisão com outras árvores ou arbustos
-            // Nota: Como o objeto se ajusta sozinho, ele usará a máscara escalonada aqui
             if (place_meeting(x, y, obj_tree) || place_meeting(x, y, obj_bush)) {
                 instance_destroy();
             } else {
