@@ -21,13 +21,16 @@ function NpcAttribute(_id) constructor {
 	}
 }
 
-function NPC(_name, _id, _gender, _skinColor, _hair, _eyeId) constructor {
+function NPC(_name, _id, _gender, _skinColor, _hair, _eyeId, _outfitId = -1, _helmetId = -1, _bagId = -1) constructor {
 	name = _name;
 	id = _id;
 	gender = _gender;
 	skinColor = _skinColor;
 	hair = _hair;
 	eyeId = _eyeId;
+	outfitId = _outfitId;
+	helmetId = _helmetId;
+	bagId = _bagId;
 	attributes = [];
 	attributes[sectorList.crafting] = new NpcAttribute(sectorList.crafting);
 	attributes[sectorList.defense] = new NpcAttribute(sectorList.defense);
@@ -37,3 +40,25 @@ function NPC(_name, _id, _gender, _skinColor, _hair, _eyeId) constructor {
 }
 
 global.baseResidents = [];
+
+function addBaseResident(_npc) {
+	var _residentId = array_length(global.baseResidents);
+
+	global.baseResidents[_residentId] = new NPC(
+		_npc.name,
+		_residentId,
+		_npc.genderId,
+		getHexStringFromColor(_npc.skinColor),
+		new PersonHair(_npc.hairOption, _npc.hairColor),
+		_npc.eyeId,
+		_npc.outfitId,
+		_npc.helmetId,
+		_npc.bagId
+	);
+
+	with (obj_base_residents_controller) {
+		loadResidentList();
+	}
+
+	return _residentId;
+}

@@ -232,29 +232,6 @@ function handleNPCOption(option) {
 	}
 }
 
-function draw_interaction_button(_sprite, _box_x, _box_y, _box_w, _box_h, _text_x, _text_y, _text, _halign, _alpha) {
-    draw_sprite_stretched(_sprite, 0, _box_x, _box_y, _box_w, _box_h);
-    
-    draw_set_halign(_halign);
-    drawTextShadow(_text_x, _text_y, _text, _alpha);
-    draw_set_color(c_white);
-    draw_text(_text_x, _text_y, _text);
-}
-
-function draw_ui_connection(_startX, _startY, _endX, _endY, _alpha) {
-    var _old_color = draw_get_color();
-    
-    draw_set_color(c_white);
-    draw_set_alpha(_alpha * 0.5);
-    draw_line_width(_startX, _startY, _endX, _endY, 2);
-    
-    draw_set_alpha(_alpha * 0.8);
-    draw_circle(_startX, _startY, 3, false);
-    
-    draw_set_color(_old_color);
-    draw_set_alpha(_alpha);
-}
-
 function greet() {
 	var _greeting = pickRandomItemFromArray(greetingOptions);
 
@@ -427,12 +404,50 @@ if (presetId != "") {
     }
 }
 
+onFadeOutEnd = undefined;
+
 function fadeOutState() {
 	iddle();
-						
+
 	image_alpha = lerp(image_alpha, 0, .1);
-						
+
 	if (image_alpha < .1) {
+		if (is_callable(onFadeOutEnd)) {
+			onFadeOutEnd();
+		}
+
+		if (instance_exists(pathHandler)) {
+			instance_destroy(pathHandler);
+		}
+
 		instance_destroy(id);
+	}
+}
+
+isLeaving = false;
+leaveTimer = 0;
+maxLeaveTime = game_get_speed(gamespeed_fps) * 8;
+
+function leaveTo(_x, _y, _onGone = undefined) {
+	onFadeOutEnd = _onGone;
+	isLeaving = true;
+	leaveTimer = 0;
+
+	setDestiny(_x, _y, function () {
+		isLeaving = false;
+		currentState = fadeOutState;
+	});
+
+	currentState = leavingState;
+}
+
+function leavingState() {
+	goToDestiny();
+
+	leaveTimer++;
+
+	if (isLeaving && leaveTimer > maxLeaveTime) {
+		isLeaving = false;
+		currentState = fadeOutState;
 	}
 }

@@ -24,7 +24,7 @@ animationProgress = 0;
 
 avatarTransitionProgress = 0;
 avatarTransitionState = "idle";
-lastParticipantIndex = -1;
+lastSpeakerKey = undefined;
 
 if (!is_struct(dialogue)) {
 	instance_destroy(id);
@@ -48,7 +48,18 @@ function endDialogue() {
 			npc: target
 		});
 	}
-	
+
+	var _npcs = dialogue.npcs;
+	for (var i = 0; i < array_length(_npcs); i++) {
+		var _instance = _npcs[i].instance;
+
+		if (_instance == target || !instance_exists(_instance)) continue;
+
+		obj_quest_manager.notifyEvent(QuestEvent.DialogueEnded, {
+			npc: _instance
+		});
+	}
+
 	if (is_callable(dialogue.onEnd)) {
 		dialogue.onEnd();
 	}
@@ -142,18 +153,29 @@ function drawDialogueBox() {
     var _participantY       = _currentDialogTopY;
 
     var _name = "";
-	
-	if (lastParticipantIndex != _isPlayer) {
-        lastParticipantIndex = _isPlayer;
-        
-        if (_isPlayer) {
+
+	var _npcCount = array_length(dialogue.npcs);
+	var _npcIndex = clamp(_currentText[$ "npcIndex"] ?? 0, 0, max(_npcCount - 1, 0));
+	var _isNpcSpeaking = !_isPlayer && _npcCount > 0;
+	var _speakerKey = _isNpcSpeaking ? _npcIndex : -1;
+
+	if (lastSpeakerKey != _speakerKey) {
+        lastSpeakerKey = _speakerKey;
+
+        if (!_isNpcSpeaking) {
             obj_camera.setTargetWithZoom(obj_player);
-        } else if (instance_exists(target)) {
-            obj_camera.setTargetWithZoom(target);
+        } else {
+			var _speakerInstance = dialogue.npcs[_npcIndex].instance;
+
+			if (instance_exists(_speakerInstance)) {
+				obj_camera.setTargetWithZoom(_speakerInstance);
+			} else if (instance_exists(target)) {
+				obj_camera.setTargetWithZoom(target);
+			}
         }
     }
-	
-    if (_isPlayer) {
+
+    if (!_isNpcSpeaking) {
         _name = global.player.name;
         drawPersonBody(
             _personCentralPoint, _participantY,
@@ -166,7 +188,7 @@ function drawDialogueBox() {
             is_struct(global.equipments.bag)   ? global.equipments.bag.itemId   : -1
         );
     } else {
-        var _npc = dialogue.npc;
+        var _npc = dialogue.npcs[_npcIndex];
         _name = _npc.name;
         drawPersonBody(
             _personCentralPoint, _participantY,

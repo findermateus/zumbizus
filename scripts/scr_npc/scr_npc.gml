@@ -11,8 +11,8 @@ function createActiveCompanion() {
     
     if (!_alreadyExists && instance_exists(obj_player)) {
         var _npc = instance_create_layer(
-            obj_player.x, 
-            obj_player.y, 
+            obj_player.bbox_left - 70, 
+            obj_player.y,
             "Instances",
             obj_npc, 
             { presetId: global.activeCompanionPreset }
@@ -20,4 +20,50 @@ function createActiveCompanion() {
         
         _npc.becomeCompanion();
     }
+}
+
+function convertNpcToResident(_npc) {
+	if (!instance_exists(_npc)) return noone;
+
+	var _resident = noone;
+
+	with (_npc) {
+		var _residentId = addBaseResident(id);
+
+		if (presetId != "" && presetId == global.activeCompanionPreset) {
+			global.activeCompanionPreset = "";
+		}
+
+		_resident = instance_create_layer(x, y, "Instances", obj_npc_resident, {
+			name: name,
+			genderId: genderId,
+			skinColor: skinColor,
+			hairOption: hairOption,
+			hairColor: hairColor,
+			eyeId: eyeId,
+			outfitId: outfitId,
+			helmetId: helmetId,
+			bagId: bagId,
+			workerId: _residentId
+		});
+
+		with (_resident) {
+			currentDirection = other.currentDirection;
+			currentImageIndex = other.currentImageIndex;
+			angleOffset = other.angleOffset;
+			drawState = other.drawState;
+		}
+
+		if (variable_global_exists("tutorialGuide") && global.tutorialGuide == id) {
+			global.tutorialGuide = _resident;
+		}
+
+		if (instance_exists(pathHandler)) {
+			instance_destroy(pathHandler);
+		}
+
+		instance_destroy();
+	}
+
+	return _resident;
 }

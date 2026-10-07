@@ -651,6 +651,167 @@ function getExploreDumpQuest() {
 	});
 	
 	_quest.addStep(_returnToBaseStep);
+	
+	var _confrontHankStep = new QuestStep("confront_hank", "Confronte Hank");
+	
+	_confrontHankStep.onStart = method(_confrontHankStep, function () {
+		var _hank = global.tutorialGuide;
+		var _survivor = noone;
+
+		with (obj_npc) {
+			if (presetId == "container_survivor") {
+				_survivor = id;
+			}
+		}
+
+		if (!instance_exists(_hank) || !instance_exists(_survivor)) return;
+
+		var _dialogue = createGroupDialogue(
+			[_hank, _survivor],
+			[
+				[0,  "Ora, ora... você voltou. E trouxe companhia."],
+				[1,  "Você! Seu desgraçado!"],
+				[-1, "É verdade Hank? Você tentou matar ela no hospital."],
+				[0,  "Calma aí. Não é bem assim que as coisas aconteceram."],
+				[1,  "Não? Você me apunhalou pelas costas pra roubar minha mochila!"],
+				[0,  "Eu fiz o que precisava pra sobreviver. Qualquer um faria o mesmo."],
+				[-1, "E me mandar pro lixão também foi pra sobreviver?"],
+				[0,  "...Você voltou vivo, não voltou? Então funcionou pra todo mundo."],
+				[1,  "Eu não vou dividir a base com esse cara."],
+				[-1, "Calma lá, não dá pra resolver na conversa?"],
+				[1, "Óbvio que não! Se tu não fizer algo sobre isso eu vou embora agora mesmo!"]
+			]
+		);
+
+		self.hank = _hank;
+		self.survivor = _survivor;
+
+		_dialogue.onEnd = method(self, function () {
+			var _stayWithHankChoice = new PlayerChoice("Ficar com Hank", method(self, function () {
+				playConfrontHankOutcome(
+					self,
+					self.hank,
+					self.survivor,
+					[
+						[0,  "Sério? Depois de tudo que ele fez comigo... você escolhe ele?"],
+						[-1, "Me desculpa. Agora eu preciso dele pra manter essa base de pé."],
+						[0,  "Achei que você fosse diferente. Pelo jeito eu me enganei."],
+						[0,  "Se cuida. Cedo ou tarde ele vai fazer com você o mesmo que fez comigo."]
+					],
+					[
+						[0,  "Fez a escolha certa. Ela ia ser só mais uma boca pra alimentar."],
+						[-1, "Não abusa da sorte, Hank. Tô de olho em você."],
+						[0,  "Justo. Valeu por confiar em mim."],
+						[0,  "Pode contar comigo pro que precisar. Vou te ajudar a deixar essa base de pé."]
+					]
+				);
+			}));
+
+			var _stayWithClaraChoice = new PlayerChoice("Ficar com " + self.survivor.name, method(self, function () {
+				playConfrontHankOutcome(
+					self,
+					self.survivor,
+					self.hank,
+					[
+						[0,  "Então é assim? Eu te tiro daquele hospital e você me troca por ela?"],
+						[-1, "Você tentou matar ela, Hank. E me mandou pro lixão pra morrer."],
+						[0,  "Tudo bem. Fica com a sua base e com a sua consciência limpa."],
+						[0,  "Mas guarda o que eu tô te dizendo: você ainda vai se arrepender disso."]
+					],
+					[
+						[0,  "Obrigada... por acreditar em mim."],
+						[-1, "Depois do que ele fez com você, não tinha como ser diferente."],
+						[0,  "Eu não tenho mais pra onde ir, mas posso ser útil aqui."],
+						[0,  "Pode contar comigo. Vou te ajudar no que for preciso pra manter essa base de pé."]
+					]
+				);
+			}));
+
+			createPlayerChoice([
+				_stayWithHankChoice,
+				_stayWithClaraChoice
+			]);
+		});
+
+		instance_create_layer(0, 0, "Controllers", obj_dialogue, {
+			target: _hank,
+			dialogue: _dialogue
+		});
+	});
+
+	_quest.addStep(_confrontHankStep);
 
 	return _quest;
+}
+
+function playConfrontHankOutcome(_step, _chosen, _rejected, _farewellLines, _thanksLines) {
+	var _context = {
+		step: _step,
+		chosen: _chosen,
+		rejected: _rejected,
+		thanksLines: _thanksLines
+	};
+
+	var _farewellDialogue = createGroupDialogue([_rejected], _farewellLines);
+
+	_farewellDialogue.onEnd = method(_context, function () {
+		openMenu(Menus.Cutscene);
+		blockPlayerMenus();
+		obj_player.currentState = playerDialogueState;
+
+		if (!instance_exists(rejected)) {
+			onRejectedGone();
+			return;
+		}
+
+		obj_camera.setTargetWithZoom(rejected);
+
+		var _onGone = onRejectedGone;
+
+		with (rejected) {
+			if (presetId != "" && presetId == global.activeCompanionPreset) {
+				removeCompanion();
+			}
+
+			leaveTo(32, y, _onGone);
+		}
+	});
+
+	_context.onRejectedGone = method(_context, function () {
+		if (!instance_exists(chosen)) {
+			finish();
+			return;
+		}
+
+		obj_camera.setTargetWithZoom(chosen);
+
+		var _thanksDialogue = createGroupDialogue([chosen], thanksLines);
+
+		_thanksDialogue.onEnd = method(self, function () {
+			convertNpcToResident(chosen);
+			finish();
+		});
+
+		instance_create_layer(0, 0, "Controllers", obj_dialogue, {
+			target: chosen,
+			dialogue: _thanksDialogue
+		});
+	});
+
+	_context.finish = method(_context, function () {
+		if (isCurrentMenu(Menus.Cutscene)) {
+			closeMenu();
+			unBlockPlayerMenus();
+			obj_camera.setDefaultValues();
+			obj_camera.target = obj_player;
+			obj_player.currentState = playerIddleState;
+		}
+
+		step.quest.completeCurrentStep();
+	});
+
+	instance_create_layer(0, 0, "Controllers", obj_dialogue, {
+		target: _rejected,
+		dialogue: _farewellDialogue
+	});
 }

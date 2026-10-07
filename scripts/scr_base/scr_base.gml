@@ -43,7 +43,7 @@ function selectLateralMenuOption(_option){
 		return;
 	}
 	if (_option == menu.resident) {
-		with obj_resident_gui_controller {
+		with obj_base_residents_controller {
 			openMenu(Menus.ResidentController, closeResidentMenu);
 			setUpModal();
 		}
@@ -61,7 +61,7 @@ function deactivateLateralMenuOption(_option) {
 	}
 	
 	if (_option == menu.resident) {
-		with obj_resident_gui_controller {
+		with obj_base_residents_controller {
 			if (isCurrentMenu(Menus.ResidentController)) closeMenu();
 			hideMenu();
 		}

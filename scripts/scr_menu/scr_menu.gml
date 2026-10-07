@@ -9,7 +9,8 @@ enum Menus {
 	Dialogue,
 	NpcInteraction,
 	Trade,
-	Cutscene
+	Cutscene,
+	PlayerChoice
 }
 
 function isCurrentMenu(_menu) {

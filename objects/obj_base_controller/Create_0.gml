@@ -22,6 +22,9 @@ function createNpcs() {
 			skinColor: getHexFromString(_npcData.skinColor),
 			genderId: _npcData.gender,
 			eyeId: _npcData.eyeId,
+			outfitId: _npcData[$ "outfitId"] ?? -1,
+			helmetId: _npcData[$ "helmetId"] ?? -1,
+			bagId: _npcData[$ "bagId"] ?? -1,
 			workerId: _npcData.id
 		});
 	}

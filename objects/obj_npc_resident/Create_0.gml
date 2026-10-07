@@ -220,7 +220,7 @@ function walkingWithoutDestiny() {
 
 updateWorkerData();
 
-if (workerData == false || furniture == false) return;
+if (workerData == false || furniture == false) exit;
 
 var _positions = furniture.workerPositions[workerData.slot];
 
