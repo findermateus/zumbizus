@@ -413,6 +413,7 @@ function loadBaseFurnitures(_furnitures){
 		var _furniture = instance_create_layer(0, 0, "Items", _furnitureInfo.objectIndex, _furnitureInfo.objectInfo);
 		
 		_furniture.furniture = _furnitureInfo.objectInfo.furniture;
+		_furniture.furnitureId = _furniture.furniture[$ "furnitureId"] ?? _furniture.furnitureId;
 		_furniture.furnitureHealth = _furnitureInfo.objectInfo.furnitureHealth;
 		_furniture.furnitureInfo = _furnitureInfo.objectInfo.furnitureInfo;
 		_furniture.objectId = _furnitureInfo.objectId;

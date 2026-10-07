@@ -87,29 +87,50 @@ hoverUiFurnitureIndicator =  {
 	isHoveringTarget: false
 };
 
+// TODO: mock de residentes só para testes
+#macro DEBUG_MOCK_RESIDENTS false
+
 function loadNpcMock() {
-    return [
-        new NPC("Alice The Brave of the Northern Lands", 1, genders.female, "#FFDAB9", new PersonHair(HairOption.AFRO, "#A52A2A"), Eye.WITH_EYEBROW),
-        new NPC("John The Hunter", 2, genders.male, "#8D5524", new PersonHair(HairOption.LONG_STRAIGHT, "#A52A2A"), Eye.SHORT_VERTICAL),
-        new NPC("Riley The Rogue of the Shadows", 3, genders.female, "#C68642", new PersonHair(HairOption.MOHAWK, "#FF69B4"), Eye.LONG_VERTICAL),
-        new NPC("Zara The Wise", 4, genders.others, "#E0AC69", new PersonHair(HairOption.BALD, "#FFD700"), Eye.WITH_EYEBROW),
-        new NPC("Mateus Who Never Falls?", 5, genders.male, "#F1C27D", new PersonHair(HairOption.QUIFF, "#ffffff"), Eye.SHORT_VERTICAL),
-        new NPC("Liam Ironfist", 6, genders.male, "#F1C27D", new PersonHair(HairOption.BUZZ_CUT, "#333333"), Eye.LONG_VERTICAL),
-        new NPC("Clara Storm of the West", 7, genders.female, "#E0AC69", new PersonHair(HairOption.LONG_STRAIGHT, "#B22222"), Eye.WITH_EYEBROW),
-        new NPC("Marcus Flame", 8, genders.male, "#C68642", new PersonHair(HairOption.MOHAWK, "#000000"), Eye.SHORT_VERTICAL),
-        new NPC("Ella Moonshade", 9, genders.others, "#FFDAB9", new PersonHair(HairOption.AFRO, "#8B4513"), Eye.LONG_VERTICAL),
-        new NPC("Noa Wild", 10, genders.others, "#8D5524", new PersonHair(HairOption.BALD, "#7FFF00"), Eye.WITH_EYEBROW),
-        new NPC("Victor Dustwalker Silent Arrow", 11, genders.male, "#C68642", new PersonHair(HairOption.QUIFF, "#AAAAAA"), Eye.SHORT_VERTICAL),
-        new NPC("Nina Blight", 12, genders.male, "#E0AC69", new PersonHair(HairOption.BUZZ_CUT, "#DA70D6"), Eye.LONG_VERTICAL),
-        new NPC("Alex Starfall Crimson Moon", 13, genders.male, "#F1C27D", new PersonHair(HairOption.LONG_STRAIGHT, "#DC143C"), Eye.WITH_EYEBROW),
-        new NPC("Bruce Ironjaw", 14, genders.male, "#8D5524", new PersonHair(HairOption.MOHAWK, "#D2691E"), Eye.SHORT_VERTICAL),
-        new NPC("Maya Frost", 15, genders.male, "#FFDAB9", new PersonHair(HairOption.AFRO, "#191970"), Eye.LONG_VERTICAL),
-        new NPC("Sam Echo", 16, genders.male, "#E0AC69", new PersonHair(HairOption.BALD, "#00CED1"), Eye.WITH_EYEBROW),
-        new NPC("Dante Hollow", 17, genders.male, "#C68642", new PersonHair(HairOption.QUIFF, "#2F4F4F"), Eye.SHORT_VERTICAL),
-        new NPC("Ivy Dawn", 18, genders.male, "#F1C27D", new PersonHair(HairOption.BUZZ_CUT, "#F08080"), Eye.LONG_VERTICAL),
-        new NPC("Sky Ember of the Wastes", 19, genders.male, "#8D5524", new PersonHair(HairOption.LONG_STRAIGHT, "#9ACD32"), Eye.WITH_EYEBROW),
-        new NPC("Logan Ashfall Flameborne", 20, genders.male, "#FFDAB9", new PersonHair(HairOption.MOHAWK, "#4B0082"), Eye.SHORT_VERTICAL)
-    ];
+	if (variable_global_exists("residentMockLoaded") && global.residentMockLoaded) return;
+
+	global.residentMockLoaded = true;
+
+	var _mockData = [
+		["Alice", genders.female, "#FFDAB9", HairOption.AFRO, "#A52A2A", Eye.WITH_EYEBROW, equipmentItems.simpleOutfit],
+		["John", genders.male, "#8D5524", HairOption.LONG_STRAIGHT, "#A52A2A", Eye.SHORT_VERTICAL, -1],
+		["Riley", genders.female, "#C68642", HairOption.MOHAWK, "#FF69B4", Eye.LONG_VERTICAL, equipmentItems.simpleOutfit],
+		["Zara", genders.others, "#E0AC69", HairOption.BALD, "#FFD700", Eye.WITH_EYEBROW, -1],
+		["Mateus", genders.male, "#F1C27D", HairOption.QUIFF, "#FFFFFF", Eye.SHORT_VERTICAL, equipmentItems.leatherJacket],
+		["Liam", genders.male, "#F1C27D", HairOption.BUZZ_CUT, "#333333", Eye.LONG_VERTICAL, -1],
+		["Marcus", genders.male, "#C68642", HairOption.MOHAWK, "#000000", Eye.SHORT_VERTICAL, equipmentItems.simpleOutfit],
+		["Ella", genders.others, "#FFDAB9", HairOption.AFRO, "#8B4513", Eye.LONG_VERTICAL, -1],
+		["Noa", genders.others, "#8D5524", HairOption.BALD, "#7FFF00", Eye.WITH_EYEBROW, equipmentItems.leatherJacket],
+		["Victor", genders.male, "#C68642", HairOption.QUIFF, "#AAAAAA", Eye.SHORT_VERTICAL, -1],
+		["Nina", genders.female, "#E0AC69", HairOption.BUZZ_CUT, "#DA70D6", Eye.LONG_VERTICAL, equipmentItems.simpleOutfit],
+		["Bruce", genders.male, "#8D5524", HairOption.MOHAWK, "#D2691E", Eye.SHORT_VERTICAL, -1]
+	];
+
+	for (var i = 0; i < array_length(_mockData); i++) {
+		var _data = _mockData[i];
+		var _residentId = array_length(global.baseResidents);
+
+		var _resident = new NPC(
+			_data[0],
+			_residentId,
+			_data[1],
+			_data[2],
+			new PersonHair(_data[3], _data[4]),
+			_data[5],
+			_data[6]
+		);
+
+		for (var j = 0; j < array_length(_resident.attributes); j++) {
+			_resident.attributes[j].level = irandom_range(1, 3);
+			_resident.attributes[j].xp = irandom(90);
+		}
+
+		global.baseResidents[_residentId] = _resident;
+	}
 }
 
 function loadResidentList(){
@@ -415,7 +436,7 @@ function findWorkerIndexInDisplayListByNpcId(_id){
 	for (var i = 0; i < array_length(residentList); i++) {
 		if (residentList[i].id == _id) return i;
 	}
-	return false;
+	return -1;
 }
 
 function handleHoldNpc(_isHoveringNpc){
@@ -575,7 +596,7 @@ function drawProductiveFurnitures(_gui, _x, _y) {
         drawFurnitureTitle(furnitureUiValues[i].x + _boxHeight, furnitureUiValues[i].y, 15, _boxHeight, _furniture.furniture, _boxWidth - _boxHeight - 40);
         drawFurnitureWorkers(furnitureUiValues[i].x + _boxHeight + 15, furnitureUiValues[i].y, 15, _boxHeight, furnitureUiValues[i].x + _boxWidth - 10, _furniture);
 		
-		var _attrIcon = attributes[global.productiveFurnitures[? _furniture.furnitureId].attribute].icon;
+		var _attrIcon = getAttributeById(global.productiveFurnitures[? _furniture.furnitureId].attribute).icon;
 		drawSpriteShadowStretched(furnitureUiValues[i].x + 10, furnitureUiValues[i].y + 10, _attrIcon, 0, 0, 40, 40);
 		draw_sprite_stretched(_attrIcon, 0, furnitureUiValues[i].x + 10, furnitureUiValues[i].y + 10, 40, 40);
 	}
@@ -804,6 +825,10 @@ function getNpcModal(){
 function handleOffsetCount() {
 	residentDisplayOffset = clamp(residentDisplayOffset, 0, max(array_length(residentList) - RESIDENT_OFFSET_VALUE * 3, 0));
 	productiveFurnitureDisplayOffset = clamp(productiveFurnitureDisplayOffset, 0, max(array_length(productiveFurnitureList) - FURNITURE_COUNT_PER_PAGE, 0));
+}
+
+if (DEBUG_MOCK_RESIDENTS) {
+	loadNpcMock();
 }
 
 loadResidentList();

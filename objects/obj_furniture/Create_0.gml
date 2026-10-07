@@ -43,6 +43,7 @@ function setFurniture(_furniture, _furnitureInfo = {}){
 	furnitureInfo = _furnitureInfo;
 	furnitureHealth = furnitureInfo.furnitureHealth;
 	furniture = _furniture;
+	furnitureId = _furniture[$ "furnitureId"] ?? furnitureId;
 	xPosition = x;
 	yPosition = y;
 	setShadow(_furniture.sprite, 0, 1);

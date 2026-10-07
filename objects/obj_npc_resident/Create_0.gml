@@ -63,6 +63,8 @@ function updateWorkerData() {
 	
 	if (workerData != false) {
 		handleWorkingStation();
+	} else {
+		furniture = false;
 	}
 }
 
@@ -97,8 +99,10 @@ function goingToWork() {
 
 	handleAngleOffset(true, .2, 5);
 	handleHover();
+	updateWorkerData();
 
-	if (furniture == false || !instance_exists(furniture)) {
+	if (workerData == false || furniture == false || !instance_exists(furniture)) {
+		furniture = false;
 		currentState = iddle;
 		return;
 	}
@@ -149,16 +153,22 @@ function working() {
 	state = npcStates.working;
 	drawState = drawStates.iddle;
 	handleAngleOffset(false);
-	
+
+	updateWorkerData();
+
+	if (workerData == false || furniture == false || !instance_exists(furniture)) {
+		furniture = false;
+		currentState = iddle;
+		return;
+	}
+
 	var _positions = furniture.workerPositions[workerData.slot];
-	
+
 	var _distance = point_distance(x, y, _positions.x, _positions.y);
-	
+
 	if (_distance > 12) {
 		currentState = goingToWork;
 	}
-	
-	updateWorkerData();
 }
 
 function chooseWanderDestination() {

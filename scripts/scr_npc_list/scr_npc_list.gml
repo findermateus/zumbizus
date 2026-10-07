@@ -6,7 +6,7 @@ global.genderList[global.genders.others] = {
 function NpcAttribute(_id) constructor {
 	id = _id;
 	xp = 0;
-	level = 0;
+	level = 1;
 	
 	static setXp = function (_xp) {
 		xp = _xp;
