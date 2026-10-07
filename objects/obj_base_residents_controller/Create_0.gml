@@ -29,11 +29,11 @@ holding_npc_scale = 1;                          // Escala do NPC sendo arrastado
 modal_opening_pop = 0.8;                        // Escala de impacto ao abrir o modal
 
 attributes = [
-	new BaseAttributeDisplay(baseAttribute.crafting, "Criação", spr_attribute_crafting),
-	new BaseAttributeDisplay(baseAttribute.production, "Produção e reciclagem", spr_attribute_production),
-	new BaseAttributeDisplay(baseAttribute.supplies, "Suprimentos", spr_attribute_supply),
-	new BaseAttributeDisplay(baseAttribute.economy, "Ecônomia", spr_attribute_economy),
-	new BaseAttributeDisplay(baseAttribute.battle, "Combate", spr_attribute_battle)
+	global.attributes[baseAttribute.crafting],
+	global.attributes[baseAttribute.production],
+	global.attributes[baseAttribute.supplies],
+	global.attributes[baseAttribute.economy],
+	global.attributes[baseAttribute.battle]
 ];
 
 npcAttributesUiValues = {
@@ -88,7 +88,7 @@ hoverUiFurnitureIndicator =  {
 };
 
 // TODO: mock de residentes só para testes
-#macro DEBUG_MOCK_RESIDENTS true
+#macro DEBUG_MOCK_RESIDENTS false
 
 function loadNpcMock() {
 	if (variable_global_exists("residentMockLoaded") && global.residentMockLoaded) return;
@@ -132,6 +132,17 @@ function loadNpcMock() {
 
 function loadResidentList(){
 	residentList = getBaseResidentList();
+	sortResidentListByFilter();
+}
+
+function sortResidentListByFilter() {
+	if (attributeFilter == -1) return;
+
+	array_sort(residentList, function(a, b) {
+		var attrA = a.attributes[attributeFilter];
+		var attrB = b.attributes[attributeFilter];
+		return (attrA.level != attrB.level) ? attrB.level - attrA.level : attrB.xp - attrA.xp;
+	});
 }
 
 function verifyMenuInput(){
@@ -539,14 +550,10 @@ function handleCategoryClick(_attributeId) {
 	residentDisplayOffset = 0;
 	productiveFurnitureDisplayOffset = 0;
 	
+	loadResidentList();
+
 	if (attributeFilter == -1) { loadDisplayFurnitures(); return; }
-	
-	array_sort(residentList, function(a, b) {
-		var attrA = a.attributes[attributeFilter];
-		var attrB = b.attributes[attributeFilter];
-		return (attrA.level != attrB.level) ? attrB.level - attrA.level : attrB.xp - attrA.xp;
-	});
-	
+
 	productiveFurnitureList = array_filter(global.baseProductiveFurnitures, function (_item) {
 		return global.productiveFurnitures[? _item.furnitureId].attribute == attributeFilter;
 	});
@@ -665,7 +672,7 @@ function handleWorkerBoxHover(_x, _y, _x2, _y2, _fId, _oId, i, _hNpc, _able){
 	if (_hNpc == -1) {
 		var _w = getFurnitureWorkers(_fId, _oId)[i];
 		hoverUiFurnitureIndicator.isHoveringTarget = true;
-		if (_w != -1 && mouse_check_button(mb_left)) holdNpcFromFurniture(_w);
+		if (is_struct(_w) && mouse_check_button_pressed(mb_left)) holdNpcFromFurniture(_w);
 	
 		return true;
 	}
@@ -688,10 +695,6 @@ function handleWorkerBoxHover(_x, _y, _x2, _y2, _fId, _oId, i, _hNpc, _able){
 function holdNpcFromFurniture(_worker) {
 	playClickSound();
 	holdingNpcIndex = findWorkerIndexInDisplayListByNpcId(_worker.residentId);
-}
-
-function drawFurnitureLevel(_x, _y, _margin, _size, _boxX2, _furniture) {
-	var _productiveFurniture = global.productiveFurnitures[? _furniture.furnitureId]
 }
 
 function drawFurnitureTitle(_x, _y, _margin, _size, _furniture, _maxWidth) {

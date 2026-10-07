@@ -796,7 +796,6 @@ As mobílias são salvas com:
 - ângulo;
 - `furnitureInfo`;
 - `furniture`;
-- `furnitureHealth`;
 - dados de container, se for baú;
 - dados produtivos, se existirem.
 

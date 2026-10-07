@@ -46,11 +46,6 @@ function checkInventoryInput(){
 	}
 }
 
-function getNpcListFromDatabase(){
-	var _requestHandler = instance_create_layer(0, 0, layer, obj_http_controller);
-	_requestHandler.queryNpcList();
-}
-
 function pauseGame() {
 	pauseSystems();
 	isGamePaused = true;

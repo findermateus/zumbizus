@@ -1,38 +1,30 @@
-// ============================
-// Furniture Data System
-// ============================
-
 global.baseProductiveFurnitureData = ds_map_create();
 
-/// @desc Define um dado específico da mobília
 function setFurnitureData(_furnitureId, _objectId, _value) {
-    if (!getFurnitureData(_furnitureId, _objectId)) {
-		array_push(global.baseProductiveFurnitureData[? _furnitureId], _value);
-		return;
-	}
-	
-	if (!ds_map_exists(global.baseProductiveFurnitureData, _furnitureId)) return undefined;
-	
-	for (var i = 0; i < array_length(global.baseProductiveFurnitureData[? _furnitureId]); i++) {
-		var _furnitureData = global.baseProductiveFurnitureData[? _furnitureId][i];
-		
-		if (_furnitureData.objectId == _objectId){
-			global.baseProductiveFurnitureData[? _furnitureId][i] = _value;
-		}
-	}
-}
-
-/// @desc Retorna um dado específico da mobília
-function getFurnitureData(_furnitureId, _objectId) {
 	if (!ds_map_exists(global.baseProductiveFurnitureData, _furnitureId)) {
 		global.baseProductiveFurnitureData[? _furnitureId] = [];
-		return undefined;
 	}
-	for (var i = 0; i < array_length(global.baseProductiveFurnitureData[? _furnitureId]); i++) {
-		var _furnitureData = global.baseProductiveFurnitureData[? _furnitureId][i];
-		
-		if (_furnitureData.objectId == _objectId) return _furnitureData;
+
+	var _furnitureDataList = global.baseProductiveFurnitureData[? _furnitureId];
+
+	for (var i = 0; i < array_length(_furnitureDataList); i++) {
+		if (_furnitureDataList[i].objectId == _objectId) {
+			_furnitureDataList[i] = _value;
+			return;
+		}
 	}
-    
-    return undefined;
+
+	array_push(_furnitureDataList, _value);
+}
+
+function getFurnitureData(_furnitureId, _objectId) {
+	if (!ds_map_exists(global.baseProductiveFurnitureData, _furnitureId)) return undefined;
+
+	var _furnitureDataList = global.baseProductiveFurnitureData[? _furnitureId];
+
+	for (var i = 0; i < array_length(_furnitureDataList); i++) {
+		if (_furnitureDataList[i].objectId == _objectId) return _furnitureDataList[i];
+	}
+
+	return undefined;
 }
