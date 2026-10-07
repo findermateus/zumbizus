@@ -671,7 +671,7 @@ function getExploreDumpQuest() {
 			[
 				[0,  "Ora, ora... você voltou. E trouxe companhia."],
 				[1,  "Você! Seu desgraçado!"],
-				[-1, "É verdade Hank? Você tentou matar ela no hospital."],
+				[-1, "É verdade Hank? Você tentou matar ela no hospital?"],
 				[0,  "Calma aí. Não é bem assim que as coisas aconteceram."],
 				[1,  "Não? Você me apunhalou pelas costas pra roubar minha mochila!"],
 				[0,  "Eu fiz o que precisava pra sobreviver. Qualquer um faria o mesmo."],

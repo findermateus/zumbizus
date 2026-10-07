@@ -3,7 +3,7 @@ containerInitializer = function() {
 	
 	var _lamp = instance_create_layer(880, 340, "Particles", obj_light_lamp, {
 		light_initial_radius: 150,
-		image_blend: #FFFFFF,
+		image_blend: c_yellow,
 		image_alpha: .25
 	});
 	
