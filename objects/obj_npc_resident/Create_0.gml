@@ -1,3 +1,19 @@
+var _residentData = getBaseResident(residentId);
+
+if (is_struct(_residentData)) {
+	name = _residentData.name;
+	genderId = _residentData.genderId;
+	skinColor = _residentData.skinColor;
+	hairOption = _residentData.hairOption;
+	hairColor = _residentData.hairColor;
+	eyeId = _residentData.eyeId;
+	outfitId = _residentData.outfitId;
+	helmetId = _residentData.helmetId;
+	bagId = _residentData.bagId;
+} else {
+	show_debug_message("AVISO: obj_npc_resident criado sem residente válido (residentId: " + string(residentId) + ")");
+}
+
 event_inherited();
 
 canTalk = false;
@@ -59,7 +75,7 @@ greetingOptions = [
 ];
 
 function updateWorkerData() {
-	var _resident = getBaseResident(workerId);
+	var _resident = getBaseResident(residentId);
 	var _workplace = is_struct(_resident) ? _resident.workplace : undefined;
 
 	workerData = is_struct(_workplace) ? _workplace : false;
@@ -71,29 +87,25 @@ function updateWorkerData() {
 	}
 }
 
-function getInstanceByObjectId(_objectId) {
-	with(obj_furniture) {
-		if (objectId == _objectId) return self;
-	}
-	
-	return false;
-}
-
 function handleWorkingStation() {
-    var _newFurniture = getInstanceByObjectId(workerData.objectId);
-    
-    if (_newFurniture == false) {
-        furniture = false;
-        currentState = iddle;
-        return;
-    }
-    
-    var _isNewDestination = (furniture == false) || (furniture != _newFurniture);
-    
-    if (_isNewDestination) {
-        furniture = _newFurniture;
-        currentState = goingToWork;
-    }
+	// Só procura a mobília de novo quando o local de trabalho muda ou a instância deixa de existir
+	var _isSameFurniture = furniture != false
+		&& instance_exists(furniture)
+		&& furniture.objectId == workerData.objectId
+		&& furniture.furnitureId == workerData.furnitureId;
+
+	if (_isSameFurniture) return;
+
+	var _newFurniture = getFurnitureInstance(workerData.furnitureId, workerData.objectId);
+
+	if (_newFurniture == noone) {
+		furniture = false;
+		currentState = iddle;
+		return;
+	}
+
+	furniture = _newFurniture;
+	currentState = goingToWork;
 }
 
 function goingToWork() {

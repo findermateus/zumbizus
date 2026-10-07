@@ -87,6 +87,15 @@ function unassignFurnitureWorkers(_furnitureId, _objectId) {
 	invalidateFurnitureWorkersCache();
 }
 
+/// @returns {Id.Instance} | noone
+function getFurnitureInstance(_furnitureId, _objectId) {
+	with (obj_furniture) {
+		if (objectId == _objectId && furnitureId == _furnitureId) return id;
+	}
+
+	return noone;
+}
+
 function canResidentWorkAt(_resident, _furnitureId) {
 	var _furniturePreset = global.productiveFurnitures[? _furnitureId];
 

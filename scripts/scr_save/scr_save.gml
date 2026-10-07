@@ -414,7 +414,6 @@ function loadBaseFurnitures(_furnitures){
 		
 		_furniture.furniture = _furnitureInfo.objectInfo.furniture;
 		_furniture.furnitureId = _furniture.furniture[$ "furnitureId"] ?? _furniture.furnitureId;
-		_furniture.furnitureHealth = _furnitureInfo.objectInfo.furnitureHealth;
 		_furniture.furnitureInfo = _furnitureInfo.objectInfo.furnitureInfo;
 		_furniture.objectId = _furnitureInfo.objectId;
 		
@@ -484,7 +483,6 @@ function getPlayerBaseFurnitures(){
 				sprite_index: sprite_index,
 				furnitureInfo: furnitureInfo,
 				furniture: furniture,
-				furnitureHealth: furnitureHealth,
 			}
 		}
 		if (object_index == obj_chest){

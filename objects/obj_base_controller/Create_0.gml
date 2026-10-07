@@ -5,7 +5,7 @@ function createNpcs() {
 	var _existingResidentIds = [];
 	
 	with (obj_npc_resident) {
-		array_push(_existingResidentIds, workerId);
+		array_push(_existingResidentIds, residentId);
 	}
 	
 	for (var i = 0; i < array_length(_residents); i ++) {
@@ -13,18 +13,7 @@ function createNpcs() {
 		
 		if (array_contains(_existingResidentIds, _resident.residentId)) continue;
 		
-		instance_create_layer(irandom_range(64, room_width - 64), irandom_range(64, room_height - 64), "Instances", obj_npc_resident, {
-			name: _resident.name,
-			hairOption: _resident.hairOption,
-			hairColor: _resident.hairColor,
-			skinColor: _resident.skinColor,
-			genderId: _resident.genderId,
-			eyeId: _resident.eyeId,
-			outfitId: _resident.outfitId,
-			helmetId: _resident.helmetId,
-			bagId: _resident.bagId,
-			workerId: _resident.residentId
-		});
+		spawnResidentInstance(_resident.residentId, irandom_range(64, room_width - 64), irandom_range(64, room_height - 64));
 	}
 }
 

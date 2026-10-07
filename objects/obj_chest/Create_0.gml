@@ -42,7 +42,6 @@ function setFurniture(_furniture, _furnitureInfo = {}){
 	containerData = ds_grid_create(_furnitureInfo.gridWidth, _furnitureInfo.gridHeight);
 	ds_grid_clear(containerData, BLANK_INVENTORY_SPACE);
 	sprite_index = _furnitureInfo.sprite;
-	furnitureHealth = _furnitureInfo.furnitureHealth;
 	xPosition = x;
 	yPosition = y;
 }

@@ -22,6 +22,12 @@ function createActiveCompanion() {
     }
 }
 
+function spawnResidentInstance(_residentId, _x, _y) {
+	return instance_create_layer(_x, _y, "Instances", obj_npc_resident, {
+		residentId: _residentId
+	});
+}
+
 function convertNpcToResident(_npc) {
 	if (!instance_exists(_npc)) return noone;
 
@@ -34,18 +40,7 @@ function convertNpcToResident(_npc) {
 			global.activeCompanionPreset = "";
 		}
 
-		_resident = instance_create_layer(x, y, "Instances", obj_npc_resident, {
-			name: name,
-			genderId: genderId,
-			skinColor: skinColor,
-			hairOption: hairOption,
-			hairColor: hairColor,
-			eyeId: eyeId,
-			outfitId: outfitId,
-			helmetId: helmetId,
-			bagId: bagId,
-			workerId: _residentId
-		});
+		_resident = spawnResidentInstance(_residentId, x, y);
 
 		with (_resident) {
 			currentDirection = other.currentDirection;

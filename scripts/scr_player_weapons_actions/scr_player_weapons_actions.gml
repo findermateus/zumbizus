@@ -335,16 +335,7 @@ function hitEnemies(_hitBox, _weapon){
 		createHitBoxImpact(_xPosition, _yPosition, 10, 20);
 		weaponAction.info.durability -= weaponAction.info.durabilityDecrease;
 	}
-	
-	_num = _hitBox.getHitObjects(obj_furniture);
-	var _hitFurniture = _hitBox.objectsHit;
-	if (_num > 0){
-		for(var _i = 0; _i < ds_list_size(_hitFurniture); _i ++){
-			_hitFurniture[| _i].getHit(_damage);
-		}
-		createHitBoxImpact(_xPosition, _yPosition, 10, 20);
-		weaponAction.info.durability -= weaponAction.info.durabilityDecrease;
-	}
+
 	instance_destroy(_hitBox);
 }
 

@@ -6,8 +6,7 @@ function containerConfig() {
 		gridHeight: 1,
 		sprite: spr_item_default,
 		soundOpen: snd_open_container,
-		soundClose: snd_close_inventory,
-		furnitureHealth: 100
+		soundClose: snd_close_inventory
 	}
 }
 
