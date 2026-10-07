@@ -568,11 +568,15 @@ function getExploreDumpQuest() {
 
 	_exploreDumpStep.onStart = method(_exploreDumpStep, function () {
 		unlockMap(self.quest.mapId, MapAccessType.Quest, self.quest.id, self.quest.name);
+		
+		obj_room_controller.trailPoint = obj_furniture_map_selector;
 	});
 	
 	_exploreDumpStep.onEvent = method(_exploreDumpStep, function (_event, _data) {
 		if (_event != QuestEvent.AreaEntered) return;
 		if (_data.area != self.area) return;
+
+		obj_room_controller.trailPoint = noone;
 
 		self.quest.completeCurrentStep();
 	})

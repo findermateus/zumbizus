@@ -33,6 +33,12 @@ function hitShit(){
 		}
 		var _enemyCol = instance_place(_xPosition, _yPosition, obj_hittable);
 		if (_enemyCol){
+			if (variable_instance_exists(_enemyCol, "defeated")) {
+				if (_enemyCol.defeated) {
+					continue;
+				}
+			}
+			
 			actualDistance = point_distance(x, y, _enemyCol.x, _enemyCol.y);
 			_enemyCol.getHit(damage, bulletDirection, damage, weaponTypes.shoot);
 			break;

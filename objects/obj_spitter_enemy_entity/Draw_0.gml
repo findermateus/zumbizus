@@ -5,11 +5,14 @@ if (chargeAmount > 0.6) {
     _shakeY = random_range(-1.5, 1.5) * chargeAmount;
 }
 
-var _finalXScale = image_xscale * drawScaleX;
+_shakeX += getHitShakeOffset();
 
-draw_sprite_ext(spriteToDrawShadow, currentSpriteFrame, x + _shakeX, y + _shakeY, _finalXScale, drawScaleY, 0, c_white, 1);
+var _finalXScale = image_xscale * drawScaleX * hitScaleX;
+var _finalYScale = drawScaleY * hitScaleY;
 
-drawHitFlash(spriteToDrawShadow, currentSpriteFrame, x + _shakeX, y + _shakeY, _finalXScale, drawScaleY, image_angle, c_white);
+draw_sprite_ext(spriteToDrawShadow, currentSpriteFrame, x + _shakeX, y + _shakeY, _finalXScale, _finalYScale, 0, c_white, 1);
+
+drawHitFlash(spriteToDrawShadow, currentSpriteFrame, x + _shakeX, y + _shakeY, _finalXScale, _finalYScale, image_angle, c_white);
 
 var _color = #32CD32;
 

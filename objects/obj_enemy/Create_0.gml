@@ -68,3 +68,26 @@ genericCollision = function(_positionX, _posititonY) {
 
 	return false;
 }
+
+#region
+hitShakePower = 0;
+hitShakeDecay = 0.25;
+hitScaleX = 1;
+hitScaleY = 1;
+
+function applyHitShake() {
+	hitShakePower = 5;
+	hitScaleX = 1.2;
+	hitScaleY = 0.6;
+}
+
+function updateHitShake() {
+	hitScaleX = lerp(hitScaleX, 1, 0.15);
+	hitScaleY = lerp(hitScaleY, 1, 0.15);
+	hitShakePower = max(0, hitShakePower - hitShakeDecay);
+}
+
+function getHitShakeOffset() {
+	return random_range(-hitShakePower, hitShakePower);
+}
+#endregion

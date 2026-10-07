@@ -8,7 +8,7 @@ father = noone;
 	part_type_shape(faiscaParticleType, pt_shape_pixel);
 	part_type_size(faiscaParticleType, 1, 3, 0, 0);
 	part_type_color1(faiscaParticleType, c_orange);
-	part_type_alpha1(faiscaParticleType, 1);
+	part_type_alpha2(faiscaParticleType, 1, 0);
 	part_type_speed(faiscaParticleType, 3, 6, 0, 0);
 	part_type_direction(faiscaParticleType, 80, 100, 0, 0);
 	part_type_gravity(faiscaParticleType, 0.1, 270);
@@ -153,8 +153,6 @@ function getWeaponBackDrawData(){
 }
 
 function weaponAim(_comingFromAttack = false){
-	obj_camera.setDefaultValues();
-	
 	if (_comingFromAttack && !mouse_check_button(mb_right)) {
 		setStateIdle();
 		exit;

@@ -83,6 +83,11 @@ function adjustDirection(_hSpeed) {
 	shadowDirection = spriteXScale;
 }
 
+function faceTowardsX(_targetX, _deadZone = 2) {
+	var _deltaX = _targetX - x;
+	if (abs(_deltaX) > _deadZone) adjustDirection(_deltaX);
+}
+
 function updateSpriteWithState(_sprite, _state){
 	if(state != _state){
 		state = _state;
@@ -114,7 +119,7 @@ function enemyChasePlayerState(){
 	var _playerX = obj_player.x;
 	var _playerY = obj_player.y;
 	pathHandler.calculatePath(chasingVel, _playerX, _playerY);
-	adjustDirection(pathHandler.currentDirection < x ? -1 : 1);
+	faceTowardsX(pathHandler.x);
 	handlePositionWithPathHandler();
 	if (point_distance(x, y, _playerX, _playerY) < attackDistance) {
 		currentState = setUpAttackState;
@@ -227,6 +232,7 @@ function fadeOutOfExistence() {
 function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weaponId = noone){
 	hitFlash = 1;
 	if (state == states.dying || currentState == getKilledState) return;
+	applyHitShake();
 	audio_play_sound(snd_enemy_hit, 0, false);
 	
 	enemyHealth -= _damage;
@@ -331,7 +337,7 @@ function chasePoint(){
 		
 	var _canWalk = pathHandler.calculatePath(chasingVel, destinyX, destinyY);
 	
-	adjustDirection(pathHandler.currentDirection < x ? -1 : 1);
+	faceTowardsX(pathHandler.x);
 	
 	handlePositionWithPathHandler();
 	switchToChase();

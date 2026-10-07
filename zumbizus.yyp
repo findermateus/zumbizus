@@ -370,7 +370,6 @@
     {"id":{"name":"obj_menu_option","path":"objects/obj_menu_option/obj_menu_option.yy",},},
     {"id":{"name":"obj_npc_resident","path":"objects/obj_npc_resident/obj_npc_resident.yy",},},
     {"id":{"name":"obj_npc","path":"objects/obj_npc/obj_npc.yy",},},
-    {"id":{"name":"obj_particle","path":"objects/obj_particle/obj_particle.yy",},},
     {"id":{"name":"obj_path_handler","path":"objects/obj_path_handler/obj_path_handler.yy",},},
     {"id":{"name":"obj_player_bleeding_handler","path":"objects/obj_player_bleeding_handler/obj_player_bleeding_handler.yy",},},
     {"id":{"name":"obj_player_buff_controller","path":"objects/obj_player_buff_controller/obj_player_buff_controller.yy",},},

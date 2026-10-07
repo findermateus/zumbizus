@@ -356,10 +356,8 @@ function createHitBoxImpact(_xPosition, _yPosition, _range1, _range2){
 function createMeleeImpact(_x, _y, _intensity) {
     part_system_depth(explosionParticleSystem, -10000);
 	part_type_direction(faiscaParticleType, 0, 359, 0, 0);
-	part_type_direction(smokeParticleType, 0, 359, 0, 0);
 	part_emitter_region(explosionParticleSystem, ps_emissor, _x, _x, _y, _y, ps_shape_ellipse, ps_distr_linear);
-	part_emitter_burst(explosionParticleSystem, ps_emissor, faiscaParticleType, clamp(round(15 * _intensity), 5, 50));
-	part_emitter_burst(explosionParticleSystem, ps_emissor, smokeParticleType, clamp(round(5 * _intensity), 2, 15));
+	part_emitter_burst(explosionParticleSystem, ps_emissor, faiscaParticleType, irandom_range(10, 20));
 }
 
 function checkDurability(){

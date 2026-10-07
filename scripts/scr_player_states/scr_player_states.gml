@@ -88,13 +88,13 @@ function playerAttackState(){
 		return;
 	}
 	
-	// Se o botão direito ainda estiver segurado, volta a mirar
 	if (mouse_check_button(mb_right) && global.activeEquipedItem != BLANK_INVENTORY_SPACE) {
 		currentState = aimWeaponState;
 		
 		return;
 	}
 	
+	obj_camera.setDefaultValues();
 	obj_weapon.setStateIdle(); 
 	currentState = playerIddleState;
 }
@@ -109,11 +109,20 @@ function switchToAimState(){
 }
 
 function aimWeaponState(){
-	if (!mouse_check_button(mb_right) || global.activeEquipedItem == BLANK_INVENTORY_SPACE || isMenuOpen()){
+	var _isMenuOpen = isMenuOpen();
+	
+	if (!mouse_check_button(mb_right) || global.activeEquipedItem == BLANK_INVENTORY_SPACE || _isMenuOpen){
 		obj_weapon.setStateIdle();
+		
+		if (!_isMenuOpen) {
+			obj_camera.setDefaultValues();
+		}
+		
 		currentState = playerIddleState;
 		return;
 	}
+	
+	obj_camera.destinyCameraScale = .9;
 	
 	adjustPlayerInteractions(false);
 	
