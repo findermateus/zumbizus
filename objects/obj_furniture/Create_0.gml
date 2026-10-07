@@ -75,6 +75,7 @@ function getHit(_damage = 1){
 	yPosition = y;
 	currentState = shake;
 	if (furnitureHealth <= 0){
+		unassignFurnitureWorkers(furnitureId, objectId);
 		instance_destroy(id, true);
 	}
 }

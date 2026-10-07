@@ -26,15 +26,14 @@ function drawEmptyNpcInsideBlock(_x, _y, _size, _alpha) {
 
 function drawNpcInsideBlock(_x, _y, _size, _hair, _skinColor, _gender, _eyeId, _alpha) {
 	draw_sprite_stretched_ext(spr_builder_furniture_box, 0, _x, _y, _size, _size, c_white, _alpha);
-		
-	var _hSkinColor = getHexFromString(_skinColor);
+
 	drawNpcHead(
 		_x + _size /2,
 		_y,
 		_size * .5,
 		_size,
 		_hair,
-		_hSkinColor,
+		_skinColor,
 		_gender,
 		_eyeId
 	);

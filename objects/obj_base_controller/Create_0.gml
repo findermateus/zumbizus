@@ -1,40 +1,31 @@
 function createNpcs() {
-	var _npcListSize = array_length(global.baseResidents);
-	if (!_npcListSize) return;
+	var _residents = getBaseResidentList();
+	if (!array_length(_residents)) return;
 	
-	var _existingNpcs = [];
+	var _existingResidentIds = [];
 	
 	with (obj_npc_resident) {
-		array_push(_existingNpcs, name);
+		array_push(_existingResidentIds, workerId);
 	}
 	
-	for (var i = 0; i < _npcListSize; i ++) {
-		var _npcData = global.baseResidents[i];
+	for (var i = 0; i < array_length(_residents); i ++) {
+		var _resident = _residents[i];
 		
-		if (!is_struct(_npcData)) continue;
+		if (array_contains(_existingResidentIds, _resident.residentId)) continue;
 		
-		if(verifyIfNpcIsAlreadyCreated(_npcData.name, _existingNpcs)) continue;
-		
-		var _npc = instance_create_layer(irandom_range(64, room_width - 64), irandom_range(64, room_height - 64), "Instances", obj_npc_resident, {
-			name: _npcData.name,
-			hairOption: _npcData.hair.hairId,
-			hairColor: _npcData.hair.color,
-			skinColor: getHexFromString(_npcData.skinColor),
-			genderId: _npcData.gender,
-			eyeId: _npcData.eyeId,
-			outfitId: _npcData[$ "outfitId"] ?? -1,
-			helmetId: _npcData[$ "helmetId"] ?? -1,
-			bagId: _npcData[$ "bagId"] ?? -1,
-			workerId: _npcData.id
+		instance_create_layer(irandom_range(64, room_width - 64), irandom_range(64, room_height - 64), "Instances", obj_npc_resident, {
+			name: _resident.name,
+			hairOption: _resident.hairOption,
+			hairColor: _resident.hairColor,
+			skinColor: _resident.skinColor,
+			genderId: _resident.genderId,
+			eyeId: _resident.eyeId,
+			outfitId: _resident.outfitId,
+			helmetId: _resident.helmetId,
+			bagId: _resident.bagId,
+			workerId: _resident.residentId
 		});
 	}
-}
-
-function verifyIfNpcIsAlreadyCreated(_name, _npcList) {
-	for (var i = 0; i < array_length(_npcList); i ++) {
-		if (_npcList[i] == _name) return true;
-	}
-	return false;
 }
 
 function setUpBaseForQuests() {

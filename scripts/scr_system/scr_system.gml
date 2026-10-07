@@ -120,19 +120,6 @@ function closeMenu() {
 	global.activeMenuOnEscape = undefined;
 }
 
-function getHexStringFromColor(_color) {
-	var _hexDigits = "0123456789ABCDEF";
-	var _channels = [color_get_red(_color), color_get_green(_color), color_get_blue(_color)];
-	var _hex = "#";
-
-	for (var i = 0; i < 3; i++) {
-		_hex += string_char_at(_hexDigits, (_channels[i] div 16) + 1);
-		_hex += string_char_at(_hexDigits, (_channels[i] mod 16) + 1);
-	}
-
-	return _hex;
-}
-
 function getHexFromString(_hexcodeString){
 	var _color = int64(ptr(string_replace(_hexcodeString, "#", "")));
 	return ((_color & 0xFF0000) >> 16) | (_color & 0x00FF00) | ((_color & 0x0000FF) << 16);

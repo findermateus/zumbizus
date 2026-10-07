@@ -1,11 +1,6 @@
 global.currentBaseMenuOption = -1;
 global.baseFurnitures = [];
 global.baseProductiveFurnitures = [];
-global.workingNpcs = [];
-
-function Worker(_id) constructor {
-	id = _id;
-}
 
 function loadBaseFurnituresData() {
 	if (room != rm_player_base) return;

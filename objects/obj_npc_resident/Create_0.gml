@@ -59,7 +59,10 @@ greetingOptions = [
 ];
 
 function updateWorkerData() {
-	workerData = workerId != -1 ? getWorkerData(workerId) : false;
+	var _resident = getBaseResident(workerId);
+	var _workplace = is_struct(_resident) ? _resident.workplace : undefined;
+
+	workerData = is_struct(_workplace) ? _workplace : false;
 	
 	if (workerData != false) {
 		handleWorkingStation();

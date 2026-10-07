@@ -7,11 +7,11 @@ function NpcAttribute(_id) constructor {
 	id = _id;
 	xp = 0;
 	level = 1;
-	
+
 	static setXp = function (_xp) {
 		xp = _xp;
 	}
-	
+
 	static increaseXp = function (_quantity) {
 		xp += _quantity;
 		if (xp >= 100) {
@@ -21,44 +21,87 @@ function NpcAttribute(_id) constructor {
 	}
 }
 
-function NPC(_name, _id, _gender, _skinColor, _hair, _eyeId, _outfitId = -1, _helmetId = -1, _bagId = -1) constructor {
-	name = _name;
-	id = _id;
-	gender = _gender;
-	skinColor = _skinColor;
-	hair = _hair;
-	eyeId = _eyeId;
-	outfitId = _outfitId;
-	helmetId = _helmetId;
-	bagId = _bagId;
+/// @param {Real} _residentId
+/// @param {Struct} _data { name, genderId, skinColor, hairOption, hairColor, eyeId, outfitId?, helmetId?, bagId? }
+function BaseResident(_residentId, _data) constructor {
+	residentId = _residentId;
+
+	name = _data.name;
+	genderId = _data.genderId;
+	skinColor = _data.skinColor;
+	hairOption = _data.hairOption;
+	hairColor = _data.hairColor;
+	eyeId = _data.eyeId;
+	outfitId = _data[$ "outfitId"] ?? -1;
+	helmetId = _data[$ "helmetId"] ?? -1;
+	bagId = _data[$ "bagId"] ?? -1;
+
+	// Indexado por baseAttribute
 	attributes = [];
-	attributes[sectorList.crafting] = new NpcAttribute(sectorList.crafting);
-	attributes[sectorList.defense] = new NpcAttribute(sectorList.defense);
-	attributes[sectorList.production] = new NpcAttribute(sectorList.production);
-	attributes[sectorList.supply] = new NpcAttribute(sectorList.supply);
-	attributes[sectorList.trade] = new NpcAttribute(sectorList.trade);
+	attributes[baseAttribute.crafting] = new NpcAttribute(baseAttribute.crafting);
+	attributes[baseAttribute.production] = new NpcAttribute(baseAttribute.production);
+	attributes[baseAttribute.supplies] = new NpcAttribute(baseAttribute.supplies);
+	attributes[baseAttribute.battle] = new NpcAttribute(baseAttribute.battle);
+	attributes[baseAttribute.economy] = new NpcAttribute(baseAttribute.economy);
+
+	// { furnitureId, objectId, slot } | undefined
+	workplace = undefined;
+
+	static getHair = function () {
+		return new PersonHair(hairOption, hairColor);
+	}
 }
 
-global.baseResidents = [];
+// residentId (string) -> BaseResident
+global.baseResidents = {};
+global.nextResidentId = 0;
 
-function addBaseResident(_npc) {
-	var _residentId = array_length(global.baseResidents);
+function getBaseResident(_residentId) {
+	return global.baseResidents[$ string(_residentId)];
+}
 
-	global.baseResidents[_residentId] = new NPC(
-		_npc.name,
-		_residentId,
-		_npc.genderId,
-		getHexStringFromColor(_npc.skinColor),
-		new PersonHair(_npc.hairOption, _npc.hairColor),
-		_npc.eyeId,
-		_npc.outfitId,
-		_npc.helmetId,
-		_npc.bagId
-	);
+/// @returns {Array<Struct.BaseResident>}
+function getBaseResidentList() {
+	var _keys = variable_struct_get_names(global.baseResidents);
+	var _list = [];
+
+	for (var i = 0; i < array_length(_keys); i++) {
+		array_push(_list, global.baseResidents[$ _keys[i]]);
+	}
+
+	array_sort(_list, function (_a, _b) {
+		return _a.residentId - _b.residentId;
+	});
+
+	return _list;
+}
+
+/// @returns {Struct.BaseResident}
+function createBaseResident(_data) {
+	var _resident = new BaseResident(global.nextResidentId, _data);
+
+	global.nextResidentId++;
+	global.baseResidents[$ string(_resident.residentId)] = _resident;
 
 	with (obj_base_residents_controller) {
 		loadResidentList();
 	}
 
-	return _residentId;
+	return _resident;
+}
+
+function addBaseResident(_npc) {
+	var _resident = createBaseResident({
+		name: _npc.name,
+		genderId: _npc.genderId,
+		skinColor: _npc.skinColor,
+		hairOption: _npc.hairOption,
+		hairColor: _npc.hairColor,
+		eyeId: _npc.eyeId,
+		outfitId: _npc.outfitId,
+		helmetId: _npc.helmetId,
+		bagId: _npc.bagId
+	});
+
+	return _resident.residentId;
 }

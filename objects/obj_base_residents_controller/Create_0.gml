@@ -88,7 +88,7 @@ hoverUiFurnitureIndicator =  {
 };
 
 // TODO: mock de residentes só para testes
-#macro DEBUG_MOCK_RESIDENTS false
+#macro DEBUG_MOCK_RESIDENTS true
 
 function loadNpcMock() {
 	if (variable_global_exists("residentMockLoaded") && global.residentMockLoaded) return;
@@ -112,33 +112,26 @@ function loadNpcMock() {
 
 	for (var i = 0; i < array_length(_mockData); i++) {
 		var _data = _mockData[i];
-		var _residentId = array_length(global.baseResidents);
 
-		var _resident = new NPC(
-			_data[0],
-			_residentId,
-			_data[1],
-			_data[2],
-			new PersonHair(_data[3], _data[4]),
-			_data[5],
-			_data[6]
-		);
+		var _resident = createBaseResident({
+			name: _data[0],
+			genderId: _data[1],
+			skinColor: getHexFromString(_data[2]),
+			hairOption: _data[3],
+			hairColor: getHexFromString(_data[4]),
+			eyeId: _data[5],
+			outfitId: _data[6]
+		});
 
 		for (var j = 0; j < array_length(_resident.attributes); j++) {
 			_resident.attributes[j].level = irandom_range(1, 3);
 			_resident.attributes[j].xp = irandom(90);
 		}
-
-		global.baseResidents[_residentId] = _resident;
 	}
 }
 
 function loadResidentList(){
-	residentList = [];
-	for (var i = 0; i < array_length(global.baseResidents); i++) {
-		if (!is_struct(global.baseResidents[i])) continue;
-		array_push(residentList, global.baseResidents[i]);
-	}
+	residentList = getBaseResidentList();
 }
 
 function verifyMenuInput(){
@@ -432,9 +425,9 @@ function drawNpcList(_guiModal, _currentModal) {
 	_guiModal.x = _xEndPosition;
 }
 
-function findWorkerIndexInDisplayListByNpcId(_id){
+function findWorkerIndexInDisplayListByNpcId(_residentId){
 	for (var i = 0; i < array_length(residentList); i++) {
-		if (residentList[i].id == _id) return i;
+		if (residentList[i].residentId == _residentId) return i;
 	}
 	return -1;
 }
@@ -455,7 +448,7 @@ function handleHoldNpc(_isHoveringNpc){
 		var _boxSize = 90 * holding_npc_scale;
 		
 		draw_set_alpha(.7);
-		drawNpcHead(_mouseX, _mouseY - _boxSize*.1, _boxSize, _boxSize, _npc.hair, getHexFromString(_npc.skinColor), _npc.gender, _npc.eyeId);
+		drawNpcHead(_mouseX, _mouseY - _boxSize*.1, _boxSize, _boxSize, _npc.getHair(), _npc.skinColor, _npc.genderId, _npc.eyeId);
 		draw_set_alpha(1);
 	}
 	
@@ -633,7 +626,7 @@ function drawFurnitureWorkers(_x, _y, _margin, _boxHeight, _boxX2, _furniture) {
 	
 	var _workerIsAbleToWork = false;
 	var _holdingNpc = (holdingNpcIndex != -1) ? residentList[holdingNpcIndex] : -1;
-	if (_holdingNpc != -1) _workerIsAbleToWork = verifyAllFurnitureWorkerRequirements(_productiveFurniture.workerRequirements, _holdingNpc);
+	if (_holdingNpc != -1) _workerIsAbleToWork = canResidentWorkAt(_holdingNpc, _furniture.furniture.furnitureId);
 	
 	for (var i = 0; i < _totalWorkers; i++) {
 		var _boxX = _x + i * (_adjustedSize + _margin);
@@ -661,8 +654,7 @@ function drawFurnitureWorker(_x, _y, _size, _furnitureId, _objectId, _index){
 		draw_text_scribble(_x, _y + _size / 2, "[fa_center][fa_middle][scale," + string(_scale) + "]Lv " + string(_lvl));
 		return;
 	}
-	var _npc = global.baseResidents[_worker.id];
-	drawNpcHead(_x, _y, _size * .6, _size, _npc.hair, getHexFromString(_npc.skinColor), _npc.gender, _npc.eyeId);
+	drawNpcHead(_x, _y, _size * .6, _size, _worker.getHair(), _worker.skinColor, _worker.genderId, _worker.eyeId);
 }
 
 function handleWorkerBoxHover(_x, _y, _x2, _y2, _fId, _oId, i, _hNpc, _able){
@@ -687,7 +679,7 @@ function handleWorkerBoxHover(_x, _y, _x2, _y2, _fId, _oId, i, _hNpc, _able){
 	hoverUiFurnitureIndicator.isHoveringTarget = true;
 	if (mouse_check_button_released(mb_left)) {
 		playTickSound();
-		addWorkerToFurniture(_fId, _oId, i, _hNpc.id);
+		assignResidentToFurniture(_hNpc.residentId, _fId, _oId, i);
 	}
 	
 	return true;
@@ -695,13 +687,7 @@ function handleWorkerBoxHover(_x, _y, _x2, _y2, _fId, _oId, i, _hNpc, _able){
 
 function holdNpcFromFurniture(_worker) {
 	playClickSound();
-	holdingNpcIndex = findWorkerIndexInDisplayListByNpcId(_worker.id);
-}
-
-function verifyAllFurnitureWorkerRequirements(_reqs, _worker) {
-	var _can = true;
-	for (var i = 0; i < array_length(_reqs); i ++) if (!_reqs[i].verifyWorker(_worker)) _can = false;
-	return _can;
+	holdingNpcIndex = findWorkerIndexInDisplayListByNpcId(_worker.residentId);
 }
 
 function drawFurnitureLevel(_x, _y, _margin, _size, _boxX2, _furniture) {
@@ -787,7 +773,7 @@ function drawNpcInsideBox(_x, _y, _npc, _size, i) {
 	var _midX = _x + (_size/2);
 	var _scale = min(1, _size / string_width(_npc.name)) * (guiModal.width / guiModalOpen.destinyWidth);
 	
-	drawNpcHead(_midX, _y, 110, _size, _npc.hair, getHexFromString(_npc.skinColor), _npc.gender, _npc.eyeId);
+	drawNpcHead(_midX, _y, 110, _size, _npc.getHair(), _npc.skinColor, _npc.genderId, _npc.eyeId);
 	draw_set_halign(fa_center); draw_set_valign(fa_middle);
 	drawTextShadow(_midX, _y + _size*.9, _npc.name, 1, 4, _scale);
 	draw_text_transformed(_midX, _y + _size*.9, _npc.name, _scale, _scale, 0);
