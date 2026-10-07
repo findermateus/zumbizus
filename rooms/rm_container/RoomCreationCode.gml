@@ -1,5 +1,3 @@
-loadPlayerData();
-
 var _roomId = global.persistentRoomId;
 
 if (variable_struct_exists(global.visitedPersistentRooms, _roomId)) {

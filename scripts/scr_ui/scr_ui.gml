@@ -1,4 +1,5 @@
 #macro PRIMARY_COLOR #1f8e00
+#macro QUEST_COLOR #FFE566
 
 function createTextInputTutorial(_text, _keys, _requireAll = false) {
     return instance_create_layer(0, 0, "Controllers", obj_input_tutorial, {

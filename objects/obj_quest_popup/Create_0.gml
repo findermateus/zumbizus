@@ -17,7 +17,7 @@ switch (popupType) {
         break;
     case QUEST_POPUP_TYPE.QUEST_ADDED:
         textScale  = 1.4;
-        textColor  = #FFE566;
+        textColor  = QUEST_COLOR;
         waitTime   = 180;
         label      = "QUEST ADICIONADA";
         showLine   = false;

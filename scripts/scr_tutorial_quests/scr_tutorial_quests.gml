@@ -10,6 +10,8 @@ function getCreateCampfireQuest() {
 	_goToForestStep.area = rm_forest;
 	
 	_goToForestStep.onStart = method(_goToForestStep, function () {
+		obj_room_controller.trailPoint = obj_furniture_map_selector;
+		
 		unlockMap("forest");
 		
 		if (room == self.area) {
@@ -88,25 +90,29 @@ function getCookMeatQuest() {
 
 	_cookMeatStep.onStart = method(_cookMeatStep, function () {
 		var _dialogue = new Dialogue(
-		[
-			new DialogueText("Agora que temos uma fogueira, podemos preparar alguma coisa para comer.", false),
-			new DialogueText("Espera... eu encontrei um pedaço de carne antes.", false),
-			new DialogueText("Podemos cozinhar ela na fogueira.", false),
-			new DialogueText("Toma, fica com ela. Você pode colocar na fogueira.", false),
-			new DialogueText("Boa ideia. Vou preparar a carne.", true)
-		],
-		new DialogueParticipant(
-			global.tutorialGuide.name,
-			global.tutorialGuide.genderId,
-			global.tutorialGuide.skinColor,
-			global.tutorialGuide.hairColor,
-			global.tutorialGuide.hairOption,
-			global.tutorialGuide.eyeId,
-			global.tutorialGuide.outfitId,
-			global.tutorialGuide.helmetId,
-			global.tutorialGuide.bagId
-		)
-	);
+			[
+				new DialogueText("Agora que temos uma fogueira, podemos preparar alguma coisa para comer.", false),
+				new DialogueText("Espera... eu encontrei um pedaço de carne antes.", false),
+				new DialogueText("Podemos cozinhar ela na fogueira.", false),
+				new DialogueText("Toma, fica com ela. Você pode colocar na fogueira.", false),
+				new DialogueText("Boa ideia. Vou preparar a carne.", true)
+			],
+			new DialogueParticipant(
+				global.tutorialGuide.name,
+				global.tutorialGuide.genderId,
+				global.tutorialGuide.skinColor,
+				global.tutorialGuide.hairColor,
+				global.tutorialGuide.hairOption,
+				global.tutorialGuide.eyeId,
+				global.tutorialGuide.outfitId,
+				global.tutorialGuide.helmetId,
+				global.tutorialGuide.bagId
+			)
+		);
+		
+		_dialogue.onEnd = method(_dialogue, function () {
+			obj_room_controller.trailPoint = obj_furniture_campfire;
+		});
 
 		instance_create_layer(0, 0, "Controllers", obj_dialogue, {
 			target: global.tutorialGuide,
@@ -129,6 +135,8 @@ function getCookMeatQuest() {
 
 	_quest.onComplete = method(_quest, function () {
 		self.applyReward();
+		
+		obj_room_controller.trailPoint = noone;
 	});
 
 	var _reward = new QuestReward(15);
@@ -178,6 +186,10 @@ function getCreateAxeQuest(_npc) {
 
 	var _thirdStep = new QuestStep("craft_axe", "Faça o machado");
 
+	_thirdStep.onStart = method(_thirdStep, function () {
+		obj_room_controller.trailPoint = obj_furniture_simple_crafting_station;
+	});
+
 	_thirdStep.itemType = itemType.weapons;
 	_thirdStep.itemId = weaponItems.axe;
 	
@@ -187,6 +199,10 @@ function getCreateAxeQuest(_npc) {
 		if (_data.itemType == self.itemType && _data.itemId == self.itemId) {
 			self.quest.completeCurrentStep();
 		}
+	});
+	
+	_thirdStep.onComplete = method(_thirdStep, function () {
+		obj_room_controller.trailPoint = noone;
 	});
 	
 	_quest.addStep(_thirdStep);

@@ -1,3 +1,7 @@
+if (!instance_exists(trailPoint)) {
+	trailPoint = noone;
+}
+
 if (instance_exists(extractionPointInstance)) {
 	exit;
 }
