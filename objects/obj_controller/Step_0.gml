@@ -11,7 +11,9 @@ if (keyboard_check_pressed(ord("J"))){
 }
 
 if (global.debug && keyboard_check_released(ord("Z"))) {
-	instance_create_layer(mouse_x, mouse_y, "Instances", obj_horde_enemy_entity)
+	var _zombie = choose(obj_horde_enemy_entity, obj_horde_enemy_entity, obj_spitter_enemy_entity);
+	
+	instance_create_layer(mouse_x, mouse_y, "Instances", _zombie)
 }
 
 if (keyboard_check_pressed(ord("C"))) {

@@ -232,25 +232,23 @@ function fadeOutOfExistence() {
 function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weaponId = noone){
 	hitFlash = 1;
 	if (state == states.dying || currentState == getKilledState) return;
-	applyHitShake();
-	audio_play_sound(snd_enemy_hit, 0, false);
-	
+	audio_play_sound(snd_enemy_hit, 0, false, 1, 0, random_range(.9, 1.1));
+
 	enemyHealth -= _damage;
-	
-	if(_attackType) playWeaponEffectSound(_attackType);	
-	
-	addDamageToGuiList(x, y - sprite_get_height(enemySprite), _damage);
-	
-	if (enemyHealth <= 0) {
+	var _isKill = enemyHealth <= 0;
+
+	if(_attackType) playWeaponEffectSound(_attackType);
+
+	addDamageToGuiList(x, y - sprite_get_height(enemySprite), _damage, _isKill);
+	playHitFeedback(_damage, _direction, _force, _isKill);
+
+	if (_isKill) {
 		if (_attackType == weaponTypes.shoot) sprites.death = sprites.deathByShot;
-		createBloodEffect(_force * 2, _direction, getMiddlePoint(bbox_left, bbox_right), getMiddlePoint(bbox_top, bbox_bottom), _damage);
 		getKilled();
-	
+
 		return;
 	}
-	
-	createBloodEffect(_force, _direction, getMiddlePoint(bbox_left, bbox_right), getMiddlePoint(bbox_top, bbox_bottom), _damage);
-	
+
 	pushForce = _force;
 	fallDirection = _direction;
 	velh = lengthdir_x(pushForce, fallDirection);

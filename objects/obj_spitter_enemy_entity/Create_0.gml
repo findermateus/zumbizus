@@ -218,8 +218,9 @@ function getKilled(_force, _direction, _damage) {
 	
 	obj_quest_manager.notifyEvent(QuestEvent.EnemyKilled, {enemyType: obj_spitter_enemy_entity, enemyId: id})
 	
-	createBloodEffect(_force, _direction, getMiddlePoint(bbox_left, bbox_right), getMiddlePoint(bbox_top, bbox_bottom), 50);
-	
+	createBloodEffect(_force * 2, _direction, getMiddlePoint(bbox_left, bbox_right), getMiddlePoint(bbox_top, bbox_bottom), 50, bbox_bottom);
+	createBloodPool(x, bbox_bottom, 8);
+
 	if (instance_exists(obj_player_sound_controller)) {
 	    obj_player_sound_controller.addSound(150, x, y, soundIntensity.high);
 	}
@@ -236,21 +237,24 @@ function getKilled(_force, _direction, _damage) {
 
 function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weaponId = noone){
 	hitFlash = 1;
-	applyHitShake();
-	audio_play_sound(snd_enemy_hit, 0, false);
+	audio_play_sound(snd_enemy_hit, 0, false, 1, 0, random_range(.9, 1.1));
 	currentHealth -= _damage;
-	
-	if(_attackType) playWeaponEffectSound(_attackType);	
-	
-	addDamageToGuiList(x, y - sprite_get_height(spriteToDrawShadow), _damage);
-	
-	if (currentHealth <= 0) {
+	var _isKill = currentHealth <= 0;
+
+	if(_attackType) playWeaponEffectSound(_attackType);
+
+	addDamageToGuiList(x, y - sprite_get_height(spriteToDrawShadow), _damage, _isKill);
+
+	if (_isKill) {
 		getKilled(_force, _direction, _damage);
-	
+
 		return;
 	}
-	
-	createBloodEffect(_force, _direction, getMiddlePoint(bbox_left, bbox_right), getMiddlePoint(bbox_top, bbox_bottom), _damage);
+
+	playHitFeedback(_damage, _direction, _force, false);
+
+	attackTimer = max(attackTimer, 20);
+	chargeAmount = 0;
 
 	warnOtherEnemies();
 }

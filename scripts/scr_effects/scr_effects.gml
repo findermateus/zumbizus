@@ -96,10 +96,10 @@ function drawSpriteFitCentered(_sprite, _cx, _cy, _maxSize, _scaleMultiplier = 1
 	draw_sprite_ext(_sprite, 0, _cx - _offset[0], _cy - _offset[1], _scale, _scale, _angle, _color, _alpha);
 }
 
-function addDamageToGuiList(_x, _y, _value){
+function addDamageToGuiList(_x, _y, _value, _isKill = false){
 	if (!instance_exists(obj_damage_controller)) return;
 	with (obj_damage_controller) {
-		var _damage = new Damage(_x, _y, _value);
+		var _damage = new Damage(_x, _y, _value, _isKill);
 		array_push(damageList, _damage);
 	}
 }

@@ -1,9 +1,13 @@
-var _shakeX = getHitShakeOffset();
+var _drawX = x + getHitOffsetX();
+var _drawY = y + getHitOffsetY();
 var _xScale = spriteXScale * hitScaleX;
 var _yScale = abs(spriteXScale) * hitScaleY;
+var _angle = image_angle + hitTilt;
 
-draw_sprite_ext(enemySprite, currentSpriteFrame, x + _shakeX, y, _xScale, _yScale, image_angle, c_white, image_alpha);
-drawHitFlash(enemySprite, currentSpriteFrame, x + _shakeX, y, _xScale, _yScale, image_angle, c_white);
+draw_sprite_ext(enemySprite, currentSpriteFrame, _drawX, _drawY, _xScale, _yScale, _angle, c_white, image_alpha);
+drawHitTint(enemySprite, currentSpriteFrame, _drawX, _drawY, _xScale, _yScale, _angle);
+drawHitFlash(enemySprite, currentSpriteFrame, _drawX, _drawY, _xScale, _yScale, _angle, c_white);
+drawHitImpact();
 
 if (global.debug) {
 	draw_text(x, y, "VELH: " + string(velh));
