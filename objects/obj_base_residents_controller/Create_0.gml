@@ -11,6 +11,7 @@ residentHover = -1;
 furnitureHover = -1;
 productiveFurnitureList = [];
 productiveFurnitureDisplayOffset = 0;
+furnitureAreaX = 0;
 guiHeight = display_get_gui_height();
 guiWidth = display_get_gui_width();
 guiMouseX = 0;
@@ -88,7 +89,7 @@ hoverUiFurnitureIndicator =  {
 };
 
 // TODO: mock de residentes só para testes
-#macro DEBUG_MOCK_RESIDENTS false
+#macro DEBUG_MOCK_RESIDENTS true
 
 function loadNpcMock() {
 	if (variable_global_exists("residentMockLoaded") && global.residentMockLoaded) return;
@@ -221,7 +222,6 @@ function drawModalState() {
 	_guiModalData.y2 = _guiModalData.y + guiModal.height - guiModal.verticalMargin * 2;
 	
 	drawNpcList(_guiModalData, _modal);
-	drawNpcPagination(_guiModalData);
 	drawAttributeCategories(_guiModalData, _guiModalData.x, _guiModalData.y);
 	drawProductiveFurnitures(_guiModalData, _guiModalData.x, _guiModalData.y);
 	
@@ -301,70 +301,56 @@ function drawNpcInformationModal() {
 
 // --- PAGINAÇÃO E OFFSETS ---
 
-function increaseNpcDisplayOffset() {
-	var _auxMax = array_length(residentList) - RESIDENT_OFFSET_VALUE * 3;
-	var _max = _auxMax >= 0 ? _auxMax : 0;
-	if (residentDisplayOffset < _max) {
-		residentDisplayOffset += RESIDENT_OFFSET_VALUE;
-		return true;
-	}
-	playFailSound();
-	return false;
+function getMaxResidentOffset() {
+	var _rows = ceil(array_length(residentList) / RESIDENT_OFFSET_VALUE);
+	return max(0, _rows - 3) * RESIDENT_OFFSET_VALUE;
 }
 
-function decreaseNpcDisplayOffset() { 
-	if (residentDisplayOffset > 0) {
-		residentDisplayOffset -= RESIDENT_OFFSET_VALUE;
-		return true;
-	}
-	playFailSound();
-	return false;
+function getMaxFurnitureOffset() {
+	return max(0, array_length(productiveFurnitureList) - FURNITURE_COUNT_PER_PAGE);
 }
 
-function increaseFurnitureDisplayOffset() {
-	var _max = max(array_length(productiveFurnitureList) - FURNITURE_COUNT_PER_PAGE, 0);
-	if (productiveFurnitureDisplayOffset < _max) {
-		productiveFurnitureDisplayOffset += FURNITURE_OFFSET_VALUE;
-		return true;
-	}
-	playFailSound();
-	return false;
+function isMouseOnFurnitureArea() {
+	return furnitureAreaX > 0 && guiMouseX >= furnitureAreaX;
 }
 
-function decreaseFurnitureDisplayOffset() { 
-	if (productiveFurnitureDisplayOffset > 0) {
-		productiveFurnitureDisplayOffset -= FURNITURE_OFFSET_VALUE;
-		return true;
+function handleResidentMenuScroll() {
+	if (guiModal.destinyWidth != guiModalOpen.destinyWidth) return;
+
+	var _direction = mouse_wheel_down() - mouse_wheel_up();
+	if (_direction == 0) return;
+
+	if (isMouseOnFurnitureArea()) {
+		var _lastFurnitureOffset = productiveFurnitureDisplayOffset;
+		productiveFurnitureDisplayOffset = clamp(productiveFurnitureDisplayOffset + _direction * FURNITURE_OFFSET_VALUE, 0, getMaxFurnitureOffset());
+		if (_lastFurnitureOffset != productiveFurnitureDisplayOffset) playHoverSound();
+
+		return;
 	}
-	playFailSound();
-	return false;
+
+	var _lastResidentOffset = residentDisplayOffset;
+	residentDisplayOffset = clamp(residentDisplayOffset + _direction * RESIDENT_OFFSET_VALUE, 0, getMaxResidentOffset());
+	if (_lastResidentOffset != residentDisplayOffset) playHoverSound();
 }
 
-function drawNpcPagination(_guiModalData) {
-	static _button1Y = getButton1Value();
-	static _button2Y = getButton2Value();
-	static _hoverPagination = -1;
-	var _isHovering = drawPaginationButton(_guiModalData, _button1Y, _button2Y, decreaseNpcDisplayOffset, increaseNpcDisplayOffset);
-	var _canApply = verifyConditionsToApplyHoverEffects();
-	
-	if (!_canApply) {
-		_button1Y = getButton1Value();
-		_button2Y = getButton2Value();
-	} else {
-		_button1Y = lerp(_button1Y, getButton1Value() + (_isHovering.up ? -MARGIN_WHEN_HOVER : 0), .1);
-		_button2Y = lerp(_button2Y, getButton2Value() + (_isHovering.down ? MARGIN_WHEN_HOVER : 0), .1);
-		if (_isHovering.up || _isHovering.down) {
-			var _val = _isHovering.up ? 1 : 2;
-			if (_hoverPagination != _val) playHoverSound();
-			_hoverPagination = _val;
-		}
-	}
-}
+function drawScrollArrows(_x1, _x2, _yTop, _yBottom, _canUp, _canDown, _alpha) {
+	if (!_canUp && !_canDown) return;
 
-function getButton1Value(){ return guiModal.y + guiModal.verticalMargin; }
-function getButton2Value() {
-	var _usableHeight = guiModal.height - (guiModal.verticalMargin * 2);
-	return (guiModal.y + guiModal.verticalMargin) + (_usableHeight * 0.48) + (_usableHeight - (2 * (_usableHeight * 0.48)));
+	var _arrowScale = getScale(20, sprite_get_height(spr_arrow_indicator));
+	var _arrowX = getMiddlePoint(_x1, _x2);
+	var _bobbing = sin(current_time / 150) * 3;
+
+	if (_canUp) {
+		var _upY = _yTop + _bobbing;
+		drawSpriteShadow(_arrowX, _upY, spr_arrow_indicator, 0, 0, _arrowScale, _arrowScale, 4, 4, _alpha);
+		draw_sprite_ext(spr_arrow_indicator, 0, _arrowX, _upY, _arrowScale, _arrowScale, 0, c_white, _alpha);
+	}
+
+	if (_canDown) {
+		var _downY = _yBottom - _bobbing;
+		drawSpriteShadow(_arrowX, _downY, spr_arrow_indicator, 0, 0, _arrowScale, -_arrowScale, 4, 4, _alpha);
+		draw_sprite_ext(spr_arrow_indicator, 0, _arrowX, _downY, _arrowScale, -_arrowScale, 0, c_white, _alpha);
+	}
 }
 
 function drawNpcModal(_modal) {
@@ -433,6 +419,10 @@ function drawNpcList(_guiModal, _currentModal) {
 	    }
 	}
 	if (!_isHoveringAny) residentHover = -1;
+
+	var _arrowAlpha = guiModal.alpha * (isMouseOnFurnitureArea() ? .4 : 1);
+	drawScrollArrows(_xStart, _xEndPosition - _margin, _guiModal.y - 40, _guiModal.y2 + 40, residentDisplayOffset > 0, residentDisplayOffset < getMaxResidentOffset(), _arrowAlpha);
+
 	_guiModal.x = _xEndPosition;
 }
 
@@ -459,7 +449,7 @@ function handleHoldNpc(_isHoveringNpc){
 		var _boxSize = 90 * holding_npc_scale;
 		
 		draw_set_alpha(.7);
-		drawNpcHead(_mouseX, _mouseY - _boxSize*.1, _boxSize, _boxSize, _npc.getHair(), _npc.skinColor, _npc.genderId, _npc.eyeId);
+		drawNpcHead(_mouseX, _mouseY - _boxSize*.1, _boxSize, _boxSize, _npc.getHair(), _npc.skinColor, _npc.genderId, _npc.eyeId, _npc.outfitId, _npc.helmetId, _npc.bagId);
 		draw_set_alpha(1);
 	}
 	
@@ -468,36 +458,6 @@ function handleHoldNpc(_isHoveringNpc){
 		holdingNpcIndex = -1;
 		holding_npc_scale = 1;
 	}
-}
-
-function drawPaginationButton(_gui, _button1Y, _button2Y, _actionUp, _actionDown) {
-	var _buttonWidth = 60;
-	var _usableHeight = guiModal.height - (guiModal.verticalMargin * 2);
-	var _buttonHeight = _usableHeight * 0.48;
-	var _isHovering = { up: false, down: false }
-	
-	// Botão Up
-	var _hUp = mouseIsOnRectangle(_gui.x, _button1Y - MARGIN_WHEN_HOVER, _gui.x + _buttonWidth, _button1Y + _buttonHeight);
-	if (_hUp) {
-		_isHovering.up = true;
-		drawSpriteShadowStretched(_gui.x, _button1Y, spr_selectable_grid, 0, 0, _buttonWidth, _buttonHeight, 0);
-		if (mouse_check_button_released(mb_left)) { playClickSound(); _actionUp(); }
-	}
-	draw_sprite_stretched(spr_selectable_grid, _hUp, _gui.x, _button1Y, _buttonWidth, _buttonHeight);
-	draw_sprite_ext(spr_arrow_indicator, 0, _gui.x + _buttonWidth/2, _button1Y + _buttonHeight/2, _hUp ? 1.4 : 1.2, _hUp ? 1.4 : 1.2, 0, c_white, 1);
-	
-	// Botão Down
-	var _hDown = mouseIsOnRectangle(_gui.x, _button2Y, _gui.x + _buttonWidth, _button2Y + _buttonHeight + MARGIN_WHEN_HOVER);
-	if (_hDown) {
-		_isHovering.down = true;
-		drawSpriteShadowStretched(_gui.x, _button2Y, spr_selectable_grid, 0, 0, _buttonWidth, _buttonHeight, 0, -4);
-		if (mouse_check_button_released(mb_left)) { playClickSound(); _actionDown(); }
-	}
-	draw_sprite_stretched(spr_selectable_grid, _hDown, _gui.x, _button2Y, _buttonWidth, _buttonHeight);
-	draw_sprite_ext(spr_arrow_indicator, 0, _gui.x + _buttonWidth/2, _button2Y + _buttonHeight/2, _hDown ? 1.4 : 1.2, _hDown ? -1.4 : -1.2, 0, c_white, 1);
-	
-	_gui.x += _buttonWidth + 30;
-	return _isHovering;
 }
 
 function drawAttributeCategories(_gui, _x, _y) {
@@ -564,8 +524,9 @@ function drawProductiveFurnitures(_gui, _x, _y) {
 	var _spacing = 20;
 	var _usableHeight = guiModal.height - (guiModal.verticalMargin * 2);
 	var _boxHeight = (_usableHeight - ((_totalItemsPerPage - 1) * _spacing)) / _totalItemsPerPage;
-	var _boxWidth = ((guiModal.x + guiModal.width) - guiModal.horizontalMargin * 2) - _gui.x - 60;
+	var _boxWidth = ((guiModal.x + guiModal.width) - guiModal.horizontalMargin * 2) - _gui.x;
 	var _startY = guiModal.y + guiModal.verticalMargin;
+	furnitureAreaX = _x;
 	static furnitureUiValues = getFurnitureUIValues(FURNITURE_COUNT_PER_PAGE);
 	hoverUiFurnitureIndicator.isHoveringTarget = false;
 	static hoverFurniture = -1;
@@ -602,8 +563,11 @@ function drawProductiveFurnitures(_gui, _x, _y) {
 	}
 	loadFurnitureHoverIndicatorValues();
 	drawFurnitureHoverIndicatorValues();
+
+	var _arrowAlpha = guiModal.alpha * (isMouseOnFurnitureArea() ? 1 : .4);
+	drawScrollArrows(_x, _x + _boxWidth, _startY - 40, _startY + _usableHeight + 40, productiveFurnitureDisplayOffset > 0, productiveFurnitureDisplayOffset < getMaxFurnitureOffset(), _arrowAlpha);
+
 	_gui.x += _boxWidth + 15;
-	drawFurniturePagination(_gui)
 }
 
 // --- AUXILIARES E INDICADORES ---
@@ -661,7 +625,7 @@ function drawFurnitureWorker(_x, _y, _size, _furnitureId, _objectId, _index){
 		draw_text_scribble(_x, _y + _size / 2, "[fa_center][fa_middle][scale," + string(_scale) + "]Lv " + string(_lvl));
 		return;
 	}
-	drawNpcHead(_x, _y, _size * .6, _size, _worker.getHair(), _worker.skinColor, _worker.genderId, _worker.eyeId);
+	drawNpcHead(_x, _y, _size * .6, _size, _worker.getHair(), _worker.skinColor, _worker.genderId, _worker.eyeId, _worker.outfitId, _worker.helmetId, _worker.bagId);
 }
 
 function handleWorkerBoxHover(_x, _y, _x2, _y2, _fId, _oId, i, _hNpc, _able){
@@ -726,19 +690,6 @@ function drawProductiveFurnitureIcon(_x, _y, _size, _margin, _furniture){
 	return _x + _actualSize;
 }
 
-function drawFurniturePagination(_gui) {
-	static _b1Y = getButton1Value();
-	static _b2Y = getButton2Value();
-	static _hPag = -1;
-	var _isH = drawPaginationButton(_gui, _b1Y, _b2Y, decreaseFurnitureDisplayOffset, increaseFurnitureDisplayOffset);
-	if (!verifyConditionsToApplyHoverEffects()) { _b1Y = getButton1Value(); _b2Y = getButton2Value(); }
-	else {
-		_b1Y = lerp(_b1Y, getButton1Value() + (_isH.up ? -MARGIN_WHEN_HOVER : 0), .1);
-		_b2Y = lerp(_b2Y, getButton2Value() + (_isH.down ? MARGIN_WHEN_HOVER : 0), .1);
-		if (_isH.up || _isH.down) { var _v = _isH.up ? 1 : 2; if (_hPag != _v) playHoverSound(); _hPag = _v; }
-	}
-}
-
 function npcAttributesInitialStats(_total) {
 	var _v = [];
 	for (var i = 0; i < _total; i++) _v[i] = { hOffset: 0, vOffset: 0, x: 0, y: 0 };
@@ -776,7 +727,7 @@ function drawNpcInsideBox(_x, _y, _npc, _size, i) {
 	var _midX = _x + (_size/2);
 	var _scale = min(1, _size / string_width(_npc.name)) * (guiModal.width / guiModalOpen.destinyWidth);
 	
-	drawNpcHead(_midX, _y, 110, _size, _npc.getHair(), _npc.skinColor, _npc.genderId, _npc.eyeId);
+	drawNpcHead(_midX, _y, 110, _size, _npc.getHair(), _npc.skinColor, _npc.genderId, _npc.eyeId, _npc.outfitId, _npc.helmetId, _npc.bagId);
 	draw_set_halign(fa_center); draw_set_valign(fa_middle);
 	drawTextShadow(_midX, _y + _size*.9, _npc.name, 1, 4, _scale);
 	draw_text_transformed(_midX, _y + _size*.9, _npc.name, _scale, _scale, 0);
@@ -812,8 +763,8 @@ function getNpcModal(){
 }
 
 function handleOffsetCount() {
-	residentDisplayOffset = clamp(residentDisplayOffset, 0, max(array_length(residentList) - RESIDENT_OFFSET_VALUE * 3, 0));
-	productiveFurnitureDisplayOffset = clamp(productiveFurnitureDisplayOffset, 0, max(array_length(productiveFurnitureList) - FURNITURE_COUNT_PER_PAGE, 0));
+	residentDisplayOffset = clamp(residentDisplayOffset, 0, getMaxResidentOffset());
+	productiveFurnitureDisplayOffset = clamp(productiveFurnitureDisplayOffset, 0, getMaxFurnitureOffset());
 }
 
 if (DEBUG_MOCK_RESIDENTS) {
