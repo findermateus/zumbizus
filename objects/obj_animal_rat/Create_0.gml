@@ -244,16 +244,14 @@ function dying() {
 function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weaponId = noone){
 	if (currentState == dying) return;
 
-	addDamageToGuiList(x, y - sprite_get_height(spriteToDraw) * scale, _damage);
-	screenShake(_damage);
-
-	var _xMiddlePoint = getMiddlePoint(bbox_left, bbox_right);
-	var _yMiddlePoint = getMiddlePoint(bbox_top, bbox_bottom);
-
-	createBloodEffect(_force, _direction, _xMiddlePoint, _yMiddlePoint, _damage * 2);
 	currentHealth -= _damage;
+	var _isKill = currentHealth <= 0;
 
-	if (currentHealth <= 0) {
+	hitFlash = 1;
+	addDamageToGuiList(x, y - sprite_get_height(spriteToDraw) * scale, _damage, _isKill);
+	playHitFeedback(_damage, _direction, _force, _isKill);
+
+	if (_isKill) {
 		switchState(dying);
 
 		return;

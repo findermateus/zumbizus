@@ -1,5 +1,7 @@
 event_inherited();
 
+initHitJuice();
+
 animalId = noone;
 
 spriteToDraw = spr_pixel;
