@@ -48,6 +48,12 @@ hoverFurnitureForUI = {
 	desY: 0
 }
 requirementsCheck = false;
+trashButtonUI = {
+	scale: 0,
+	hoverScale: 1,
+	angle: 0,
+	isHovering: false
+};
 
 function hide(){
 	return;
@@ -124,6 +130,134 @@ function displayFurniture(){
 	var _arrowXPosition = drawMenuTitle(_box);
 	drawIndicationArrow(_box, _arrowXPosition);
 	drawFurnitureMenu(_box);
+	drawTrashButton();
+}
+
+function drawTrashButton() {
+	var _isActive = alreadyPlacedSelectedFurniture != noone && instance_exists(alreadyPlacedSelectedFurniture);
+	trashButtonUI.scale = lerp(trashButtonUI.scale, _isActive, .2);
+
+	if (trashButtonUI.scale < .05) {
+		trashButtonUI.isHovering = false;
+		return;
+	}
+
+	var _size = 96;
+	var _margin = 40;
+	var _centerX = display_get_gui_width() - _margin - _size / 2;
+	var _centerY = _margin + _size / 2;
+	var _isHovering = _isActive && mouseIsOnRectangle(_centerX - _size / 2, _centerY - _size / 2, _centerX + _size / 2, _centerY + _size / 2);
+
+	if (_isHovering && !trashButtonUI.isHovering) playHoverSound();
+	trashButtonUI.isHovering = _isHovering;
+
+	trashButtonUI.hoverScale = lerp(trashButtonUI.hoverScale, _isHovering ? 1.25 : 1, .2);
+	trashButtonUI.angle = _isHovering ? sin(current_time / 60) * 8 : lerp(trashButtonUI.angle, 0, .2);
+
+	var _drawSize = _size * trashButtonUI.scale * trashButtonUI.hoverScale;
+	var _boxX = _centerX - _drawSize / 2;
+	var _boxY = _centerY - _drawSize / 2;
+
+	drawSpriteShadowStretched(_boxX, _boxY, spr_builder_furniture_box, _isHovering, 0, _drawSize, _drawSize);
+	draw_sprite_stretched_ext(spr_builder_furniture_box, _isHovering, _boxX, _boxY, _drawSize, _drawSize, _isHovering ? #ff6b6b : c_white, 1);
+
+	var _icon = spr_trash_icon;
+	var _iconScale = getScale(_drawSize * .6, sprite_get_width(_icon));
+	var _iconHalf = sprite_get_width(_icon) * _iconScale / 2;
+	// a origem do ícone é no canto superior esquerdo, então rotaciona em volta do centro
+	var _iconX = _centerX - lengthdir_x(_iconHalf, trashButtonUI.angle) - lengthdir_x(_iconHalf, trashButtonUI.angle - 90);
+	var _iconY = _centerY - lengthdir_y(_iconHalf, trashButtonUI.angle) - lengthdir_y(_iconHalf, trashButtonUI.angle - 90);
+
+	drawSpriteShadow(_iconX, _iconY, _icon, 0, trashButtonUI.angle, _iconScale, _iconScale, 3, 3);
+	draw_sprite_ext(_icon, 0, _iconX, _iconY, _iconScale, _iconScale, trashButtonUI.angle, c_white, 1);
+
+	if (_isHovering && mouse_check_button_released(mb_left)) {
+		dismantleSelectedFurniture();
+	}
+}
+
+function getFurnitureBuildRequirements(_instance) {
+	if (_instance.object_index == obj_furniture_map_selector) return undefined;
+
+	// baús guardam o tipo real da mobília no containerId
+	var _furnitureId = _instance.object_index == obj_chest ? global.containerMapping[? _instance.containerId] : _instance.furnitureId;
+
+	for (var i = 0; i < array_length(global.furniture); i++) {
+		var _category = global.furniture[i];
+
+		for (var j = 0; j < array_length(_category); j++) {
+			if (_category[j].furnitureId == _furnitureId) return _category[j].requirements;
+		}
+	}
+
+	return undefined;
+}
+
+function giveDismantledItem(_item, _instance) {
+	if (addAbsoluteItemToGrid(global.inventory, _item)) {
+		createIndicatorModal(_item, variable_struct_exists(_item, "quantity") ? _item.quantity : 1);
+		return;
+	}
+
+	createItemByObjectId(_instance, _item, true);
+}
+
+function giveDismantleRequirements(_requirements, _instance) {
+	for (var i = 0; i < array_length(_requirements); i++) {
+		var _requirement = _requirements[i];
+		var _itemData = global.items[_requirement.type][_requirement.itemId];
+		var _limit = max(1, _itemData[$ "limit"] ?? _requirement.quantity);
+		var _quantityLeft = _requirement.quantity;
+
+		while (_quantityLeft > 0) {
+			var _stackQuantity = min(_quantityLeft, _limit);
+			var _item = constructItem(_requirement.type, _itemData);
+			_item.quantity = _stackQuantity;
+			giveDismantledItem(_item, _instance);
+			_quantityLeft -= _stackQuantity;
+		}
+	}
+}
+
+function giveChestContent(_instance) {
+	var _container = _instance.containerData;
+
+	for (var i = 0; i < ds_grid_width(_container); i++) {
+		for (var j = 0; j < ds_grid_height(_container); j++) {
+			var _item = _container[# i, j];
+			if (_item == BLANK_INVENTORY_SPACE || !is_struct(_item)) continue;
+
+			giveDismantledItem(_item, _instance);
+			_container[# i, j] = BLANK_INVENTORY_SPACE;
+		}
+	}
+}
+
+function dismantleSelectedFurniture() {
+	var _instance = alreadyPlacedSelectedFurniture;
+	var _requirements = getFurnitureBuildRequirements(_instance);
+
+	if (_requirements == undefined) {
+		playFailSound();
+		createGUINotifyIndicator("Essa mobília não pode ser desmontada", device_mouse_x_to_gui(0), device_mouse_y_to_gui(0));
+		return;
+	}
+
+	playClickSound();
+
+	if (_instance.object_index == obj_chest) giveChestContent(_instance);
+	giveDismantleRequirements(_requirements, _instance);
+
+	unassignFurnitureWorkers(_instance.furnitureId, _instance.objectId);
+	removeFurnitureData(_instance.furnitureId, _instance.objectId);
+
+	createRoomNotifyIndicator("Mobília desmontada", _instance.x, _instance.y, c_orange);
+	instance_destroy(_instance);
+
+	furnitureDisplay.isDisplaying = false;
+	requirementsCheck = false;
+	trashButtonUI.isHovering = false;
+	menuNotActiveSelectingFurnatureMenuButOnBuildMode();
 }
 
 function drawMenuTitle(_box){
@@ -409,6 +543,7 @@ function handleSelectionFurniture(){
 	selectedFurnitureIndex.category = selectedFurniture;
 	selectedFurnitureIndex.index = hoverFurniture;
 	selectedFurniture = _furniture;
+	furnitureDisplayInfo.angle = 0;
 	furnitureDisplay.setFurniture(_furniture.sprite);
 	furnitureDisplay.isDisplaying = true;
 	return _furniture;
@@ -564,6 +699,7 @@ function aimFurniture(){
 	}
 	if(mouseIsOnListOfFurniture) return;
 	if(activeSelectingFurniture) return;
+	if (trashButtonUI.isHovering) return;
 	if (selectedFurniture == BLANK_INVENTORY_SPACE){
 		if (alreadyPlacedSelectedFurniture == noone){
 			handleAlreadyPlacedFurnitures();
@@ -571,7 +707,6 @@ function aimFurniture(){
 		}
 	}
 	var _canBuild = verifyConditionsToBuildItem();
-	handleInputs();
 	if (_canBuild && requirementsCheck){
 		handleBuildable();
 		return;
@@ -683,12 +818,6 @@ function verifyConditionsToBuildItem(){
 	furnitureDisplayInfo.yPosition = furnitureDisplay.y;
 	furnitureDisplay.image_angle = furnitureDisplayInfo.angle;
 	return !furnitureDisplay.isColiding;
-}
-
-function handleInputs(){
-	var _rotateToRight = keyboard_check_released(ord("R"));
-	var _rotateToLeft = keyboard_check_released(ord("E"));
-	furnitureDisplayInfo.angle += (_rotateToLeft - _rotateToRight) * 90;
 }
 
 currentState = nothing;

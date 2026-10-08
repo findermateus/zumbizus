@@ -28,3 +28,16 @@ function getFurnitureData(_furnitureId, _objectId) {
 
 	return undefined;
 }
+
+function removeFurnitureData(_furnitureId, _objectId) {
+	if (!ds_map_exists(global.baseProductiveFurnitureData, _furnitureId)) return;
+
+	var _furnitureDataList = global.baseProductiveFurnitureData[? _furnitureId];
+
+	for (var i = 0; i < array_length(_furnitureDataList); i++) {
+		if (_furnitureDataList[i].objectId == _objectId) {
+			array_delete(_furnitureDataList, i, 1);
+			return;
+		}
+	}
+}

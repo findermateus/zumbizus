@@ -9,6 +9,7 @@ if (keyboard_check_pressed(ord("N"))){
 
 currentState();
 verifyMenuInput();
+handleResidentMenuScroll();
 
 
 handleOffsetCount();
