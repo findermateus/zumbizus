@@ -84,6 +84,18 @@ function drawCornerBrackets(_x1, _y1, _x2, _y2, _color, _alpha, _length = 8, _wi
 	draw_set_color(_oldColor);
 }
 
+function drawSpriteFitCentered(_sprite, _cx, _cy, _maxSize, _scaleMultiplier = 1, _angle = 0, _color = c_white, _alpha = 1) {
+	var _width = sprite_get_width(_sprite);
+	var _height = sprite_get_height(_sprite);
+	var _scale = getScale(_maxSize, max(_width, _height)) * _scaleMultiplier;
+	var _offset = rotateSpriteVector(
+		(_width / 2 - sprite_get_xoffset(_sprite)) * _scale,
+		(_height / 2 - sprite_get_yoffset(_sprite)) * _scale,
+		_angle
+	);
+	draw_sprite_ext(_sprite, 0, _cx - _offset[0], _cy - _offset[1], _scale, _scale, _angle, _color, _alpha);
+}
+
 function addDamageToGuiList(_x, _y, _value){
 	if (!instance_exists(obj_damage_controller)) return;
 	with (obj_damage_controller) {
