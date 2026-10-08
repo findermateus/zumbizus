@@ -14,6 +14,27 @@ yPositionToDrawShadow = yPosition;
 currentSpriteFrame = 0;
 shadowDirection = 0;
 
+placeSquash = 0;
+placeSquashVelocity = 0;
+
+function playPlaceBounce(_force = .3) {
+	placeSquash = _force;
+	placeSquashVelocity = 0;
+}
+
+function updatePlaceBounce() {
+	if (placeSquash == 0 && placeSquashVelocity == 0) return;
+
+	placeSquashVelocity += -placeSquash * .3;
+	placeSquashVelocity *= .75;
+	placeSquash += placeSquashVelocity;
+
+	if (abs(placeSquash) < .002 && abs(placeSquashVelocity) < .002) {
+		placeSquash = 0;
+		placeSquashVelocity = 0;
+	}
+}
+
 //IMPORTANTE, toda mobilia produtiva que permite workers deve adaptar esse método
 function loadSavedData(_data) {
 

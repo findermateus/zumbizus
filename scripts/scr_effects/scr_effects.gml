@@ -32,6 +32,58 @@ function drawSpriteShadowStretched(_x, _y, _sprite, _imageIndex, _angle, _xSize,
 	);
 }
 
+function rotateSpriteVector(_dx, _dy, _angle) {
+	var _cos = dcos(_angle);
+	var _sin = dsin(_angle);
+	return [_dx * _cos + _dy * _sin, -_dx * _sin + _dy * _cos];
+}
+
+function getSpriteBottomCenter(_sprite, _x, _y, _xScale = 1, _yScale = 1, _angle = 0) {
+	var _offset = rotateSpriteVector(
+		(sprite_get_width(_sprite) / 2 - sprite_get_xoffset(_sprite)) * _xScale,
+		(sprite_get_height(_sprite) - sprite_get_yoffset(_sprite)) * _yScale,
+		_angle
+	);
+	return [_x + _offset[0], _y + _offset[1]];
+}
+
+function drawSpriteFromBottomCenter(_sprite, _frame, _baseX, _baseY, _xScale, _yScale, _angle, _color, _alpha) {
+	var _offset = rotateSpriteVector(
+		(sprite_get_width(_sprite) / 2 - sprite_get_xoffset(_sprite)) * _xScale,
+		(sprite_get_height(_sprite) - sprite_get_yoffset(_sprite)) * _yScale,
+		_angle
+	);
+	draw_sprite_ext(_sprite, _frame, _baseX - _offset[0], _baseY - _offset[1], _xScale, _yScale, _angle, _color, _alpha);
+}
+
+function drawSpriteFromBottomCenterWithFog(_fogColor, _sprite, _frame, _baseX, _baseY, _xScale, _yScale, _angle, _alpha) {
+	gpu_set_fog(true, _fogColor, 0, 0);
+	drawSpriteFromBottomCenter(_sprite, _frame, _baseX, _baseY, _xScale, _yScale, _angle, c_white, _alpha);
+	gpu_set_fog(false, _fogColor, 0, 0);
+}
+
+function drawCornerBrackets(_x1, _y1, _x2, _y2, _color, _alpha, _length = 8, _width = 2) {
+	var _oldAlpha = draw_get_alpha();
+	var _oldColor = draw_get_color();
+	draw_set_alpha(_alpha);
+	draw_set_color(_color);
+
+	var _lengthX = min(_length, (_x2 - _x1) / 2);
+	var _lengthY = min(_length, (_y2 - _y1) / 2);
+
+	draw_line_width(_x1, _y1, _x1 + _lengthX, _y1, _width);
+	draw_line_width(_x1, _y1, _x1, _y1 + _lengthY, _width);
+	draw_line_width(_x2, _y1, _x2 - _lengthX, _y1, _width);
+	draw_line_width(_x2, _y1, _x2, _y1 + _lengthY, _width);
+	draw_line_width(_x1, _y2, _x1 + _lengthX, _y2, _width);
+	draw_line_width(_x1, _y2, _x1, _y2 - _lengthY, _width);
+	draw_line_width(_x2, _y2, _x2 - _lengthX, _y2, _width);
+	draw_line_width(_x2, _y2, _x2, _y2 - _lengthY, _width);
+
+	draw_set_alpha(_oldAlpha);
+	draw_set_color(_oldColor);
+}
+
 function addDamageToGuiList(_x, _y, _value){
 	if (!instance_exists(obj_damage_controller)) return;
 	with (obj_damage_controller) {

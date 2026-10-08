@@ -54,6 +54,16 @@ trashButtonUI = {
 	angle: 0,
 	isHovering: false
 };
+hoveredPlacedFurniture = noone;
+hoverPlacedUI = {
+	x1: 0,
+	y1: 0,
+	x2: 0,
+	y2: 0,
+	padding: 0,
+	pop: 0
+};
+placementEffects = [];
 
 function hide(){
 	return;
@@ -164,7 +174,6 @@ function drawTrashButton() {
 	var _icon = spr_trash_icon;
 	var _iconScale = getScale(_drawSize * .6, sprite_get_width(_icon));
 	var _iconHalf = sprite_get_width(_icon) * _iconScale / 2;
-	// a origem do ícone é no canto superior esquerdo, então rotaciona em volta do centro
 	var _iconX = _centerX - lengthdir_x(_iconHalf, trashButtonUI.angle) - lengthdir_x(_iconHalf, trashButtonUI.angle - 90);
 	var _iconY = _centerY - lengthdir_y(_iconHalf, trashButtonUI.angle) - lengthdir_y(_iconHalf, trashButtonUI.angle - 90);
 
@@ -252,6 +261,8 @@ function dismantleSelectedFurniture() {
 	removeFurnitureData(_instance.furnitureId, _instance.objectId);
 
 	createRoomNotifyIndicator("Mobília desmontada", _instance.x, _instance.y, c_orange);
+	addPlacementBurst(_instance, c_orange, 20);
+	screenShake(3);
 	instance_destroy(_instance);
 
 	furnitureDisplay.isDisplaying = false;
@@ -697,49 +708,95 @@ function aimFurniture(){
 	if (verifyConditionsToStopAimFurniture()){
 		return;
 	}
-	if(mouseIsOnListOfFurniture) return;
-	if(activeSelectingFurniture) return;
-	if (trashButtonUI.isHovering) return;
+	furnitureDisplay.isDimmed = trashButtonUI.isHovering;
+	drawSelectedFurnitureOrigin();
+	if (mouseIsOnListOfFurniture || activeSelectingFurniture || trashButtonUI.isHovering) {
+		hoveredPlacedFurniture = noone;
+		return;
+	}
 	if (selectedFurniture == BLANK_INVENTORY_SPACE){
 		if (alreadyPlacedSelectedFurniture == noone){
 			handleAlreadyPlacedFurnitures();
 			return;
 		}
 	}
+	hoveredPlacedFurniture = noone;
 	var _canBuild = verifyConditionsToBuildItem();
 	if (_canBuild && requirementsCheck){
 		handleBuildable();
 		return;
 	}
+	handleFailedPlacement();
 	handleNonBuildable();
+}
+
+function handleFailedPlacement() {
+	if (!mouse_check_button_released(mb_left)) return;
+	if (!furnitureDisplay.isDisplaying || !furnitureDisplay.isColiding) return;
+
+	playFailSound();
+	furnitureDisplay.addShake(5);
+}
+
+function getPlacedFurnitureUnderMouse() {
+	var _underMouse = collision_point(mouse_x, mouse_y, obj_furniture, false, true);
+	if (_underMouse != noone) return _underMouse;
+
+	var _nearest = instance_nearest(mouse_x, mouse_y, obj_furniture);
+	if (_nearest == noone) return noone;
+
+	var _centerX = getMiddlePoint(_nearest.bbox_left, _nearest.bbox_right);
+	var _centerY = getMiddlePoint(_nearest.bbox_top, _nearest.bbox_bottom);
+	return point_distance(mouse_x, mouse_y, _centerX, _centerY) <= 48 ? _nearest : noone;
 }
 
 function handleAlreadyPlacedFurnitures(){
 	if (!instance_exists(obj_furniture)) return;
-	var _hoverFurniture = noone;
-	var _col = instance_nearest(mouse_x, mouse_y, obj_furniture);
-	_hoverFurniture = _col;
-	handleAlreadyPlacedHoverFurniture(_hoverFurniture);
+	handleAlreadyPlacedHoverFurniture(getPlacedFurnitureUnderMouse());
+}
+
+function updateHoverBrackets(_instance) {
+	var _isNewHover = hoveredPlacedFurniture == noone;
+	var _lerpEffect = _isNewHover ? 1 : .35;
+
+	hoverPlacedUI.x1 = lerp(hoverPlacedUI.x1, _instance.bbox_left, _lerpEffect);
+	hoverPlacedUI.y1 = lerp(hoverPlacedUI.y1, _instance.bbox_top, _lerpEffect);
+	hoverPlacedUI.x2 = lerp(hoverPlacedUI.x2, _instance.bbox_right, _lerpEffect);
+	hoverPlacedUI.y2 = lerp(hoverPlacedUI.y2, _instance.bbox_bottom, _lerpEffect);
 }
 
 function handleAlreadyPlacedHoverFurniture(_hoverFurniture){
-	if (_hoverFurniture == noone) return;
 	if (alreadyPlacedSelectedFurniture != noone) return;
-	var _distance = point_distance(mouse_x, mouse_y, _hoverFurniture.x, _hoverFurniture.y);
-	if (_distance > 250) return;
-	var _alphaIndex = .3;
-	drawSpriteWithGpuFog(
-		c_white,
-		_hoverFurniture.sprite_index,
-		0,
-		_hoverFurniture.x,
-		_hoverFurniture.y,
-		1,
-		1,
-		_hoverFurniture.image_angle,
-		_alphaIndex
-	);
+
+	if (_hoverFurniture == noone) {
+		hoveredPlacedFurniture = noone;
+		return;
+	}
+
+	updateHoverBrackets(_hoverFurniture);
+
+	if (_hoverFurniture != hoveredPlacedFurniture) {
+		playHoverSound();
+		_hoverFurniture.playPlaceBounce(.12);
+		hoverPlacedUI.pop = 1;
+		hoverPlacedUI.padding = 14;
+		hoveredPlacedFurniture = _hoverFurniture;
+	}
+
+	var _pulse = .5 + sin(current_time / 180) * .5;
+	hoverPlacedUI.pop = lerp(hoverPlacedUI.pop, 0, .12);
+	hoverPlacedUI.padding = lerp(hoverPlacedUI.padding, 4 + _pulse * 2, .2);
+
+	drawFurnitureFlash(_hoverFurniture, c_white, .12 + _pulse * .1 + hoverPlacedUI.pop * .4);
+
+	var _padding = hoverPlacedUI.padding;
+	drawCornerBrackets(hoverPlacedUI.x1 - _padding, hoverPlacedUI.y1 - _padding, hoverPlacedUI.x2 + _padding, hoverPlacedUI.y2 + _padding, c_white, .9, 8, 2);
+
 	if (mouse_check_button_released(mb_left)){
+		playClickSound();
+		_hoverFurniture.playPlaceBounce(-.25);
+		addPlacementBurst(_hoverFurniture, c_white, 4);
+		hoveredPlacedFurniture = noone;
 		furnitureDisplayInfo.angle = _hoverFurniture.image_angle;
 		alreadyPlacedSelectedFurniture = _hoverFurniture;
 		furnitureDisplay.setFurniture(_hoverFurniture.sprite_index);
@@ -750,14 +807,130 @@ function handleAlreadyPlacedHoverFurniture(_hoverFurniture){
 	return;
 }
 
+function drawFurnitureFlash(_instance, _color, _alpha) {
+	var _base = getSpriteBottomCenter(_instance.sprite_index, _instance.xPosition, _instance.yPosition, _instance.image_xscale, _instance.image_yscale, _instance.image_angle);
+	drawSpriteFromBottomCenterWithFog(
+		_color,
+		_instance.sprite_index,
+		_instance.image_index,
+		_base[0],
+		_base[1],
+		_instance.image_xscale * (1 + _instance.placeSquash),
+		_instance.image_yscale * (1 - _instance.placeSquash),
+		_instance.image_angle,
+		_alpha
+	);
+}
+
+function drawSelectedFurnitureOrigin() {
+	var _instance = alreadyPlacedSelectedFurniture;
+	if (_instance == noone || !instance_exists(_instance)) return;
+
+	var _pulse = .5 + sin(current_time / 150) * .5;
+	var _color = trashButtonUI.isHovering ? #ff6b6b : #ffd166;
+
+	drawFurnitureFlash(_instance, _color, .2 + _pulse * .2);
+	drawCornerBrackets(_instance.bbox_left - 4, _instance.bbox_top - 4, _instance.bbox_right + 4, _instance.bbox_bottom + 4, _color, .5 + _pulse * .4, 8, 2);
+
+	if (!furnitureDisplay.isDisplaying || trashButtonUI.isHovering) return;
+
+	var _fromX = getMiddlePoint(_instance.bbox_left, _instance.bbox_right);
+	var _fromY = _instance.bbox_bottom;
+	var _toX = getMiddlePoint(furnitureDisplay.bbox_left, furnitureDisplay.bbox_right);
+	var _toY = furnitureDisplay.bbox_bottom;
+	var _distance = point_distance(_fromX, _fromY, _toX, _toY);
+	var _direction = point_direction(_fromX, _fromY, _toX, _toY);
+	var _dashLength = 6;
+	var _dashGap = 6;
+	var _offset = (current_time / 40) mod (_dashLength + _dashGap);
+
+	draw_set_color(_color);
+	draw_set_alpha(.7);
+	for (var _d = _offset - _dashLength; _d < _distance; _d += _dashLength + _dashGap) {
+		var _start = max(0, _d);
+		var _end = min(_distance, _d + _dashLength);
+		if (_end <= _start) continue;
+		draw_line_width(
+			_fromX + lengthdir_x(_start, _direction), _fromY + lengthdir_y(_start, _direction),
+			_fromX + lengthdir_x(_end, _direction), _fromY + lengthdir_y(_end, _direction),
+			2
+		);
+	}
+	draw_set_alpha(1);
+	draw_set_color(c_white);
+}
+
+function addPlacementBurst(_instance, _color = c_white, _dustCount = 12) {
+	var _x = getMiddlePoint(_instance.bbox_left, _instance.bbox_right);
+	var _y = _instance.bbox_bottom;
+	var _width = _instance.bbox_right - _instance.bbox_left;
+
+	array_push(placementEffects, {
+		isRing: true,
+		x: _x,
+		y: _y,
+		radius: _width * .3,
+		maxRadius: _width * .7 + 16,
+		alpha: .8,
+		color: _color
+	});
+
+	repeat (_dustCount) {
+		var _side = choose(-1, 1);
+		var _speed = random_range(1, 2.5);
+		array_push(placementEffects, {
+			isRing: false,
+			x: _x + random_range(-_width / 2, _width / 2),
+			y: _y - random_range(0, 4),
+			hsp: _side * _speed,
+			vsp: -random_range(.5, 2),
+			size: random_range(1.5, 3.5),
+			alpha: 1,
+			color: merge_color(#c8b89a, _color, .3)
+		});
+	}
+}
+
+function drawPlacementEffects() {
+	for (var i = array_length(placementEffects) - 1; i >= 0; i--) {
+		var _effect = placementEffects[i];
+
+		if (_effect.isRing) {
+			_effect.radius = lerp(_effect.radius, _effect.maxRadius, .15);
+			_effect.alpha -= .05;
+			draw_set_alpha(max(0, _effect.alpha));
+			draw_set_color(_effect.color);
+			draw_ellipse(_effect.x - _effect.radius, _effect.y - _effect.radius * .4, _effect.x + _effect.radius, _effect.y + _effect.radius * .4, true);
+			draw_ellipse(_effect.x - _effect.radius + 1, _effect.y - _effect.radius * .4 + 1, _effect.x + _effect.radius - 1, _effect.y + _effect.radius * .4 - 1, true);
+		} else {
+			_effect.x += _effect.hsp;
+			_effect.y += _effect.vsp;
+			_effect.vsp += .12;
+			_effect.hsp *= .92;
+			_effect.alpha -= .035;
+			draw_set_alpha(max(0, _effect.alpha));
+			draw_set_color(_effect.color);
+			draw_rectangle(_effect.x, _effect.y, _effect.x + _effect.size, _effect.y + _effect.size, false);
+		}
+
+		if (_effect.alpha <= 0) array_delete(placementEffects, i, 1);
+	}
+	draw_set_alpha(1);
+	draw_set_color(c_white);
+}
+
 function handleBuildable(){
 	if(!mouse_check_button_released(mb_left)) return;
-	
+
 	if (alreadyPlacedSelectedFurniture != noone){
 		alreadyPlacedSelectedFurniture.x = furnitureDisplayInfo.xPosition;
 		alreadyPlacedSelectedFurniture.y = furnitureDisplayInfo.yPosition;
 		alreadyPlacedSelectedFurniture.resetPosition();
 		alreadyPlacedSelectedFurniture.image_angle = furnitureDisplayInfo.angle;
+		alreadyPlacedSelectedFurniture.playPlaceBounce(.35);
+		addPlacementBurst(alreadyPlacedSelectedFurniture);
+		playTickSound();
+		screenShake(2);
 		furnitureDisplay.isDisplaying = false;
 		furnitureDisplay.ignoreId = noone;
 		requirementsCheck = false;
@@ -782,7 +955,12 @@ function handleBuildable(){
 	setFurnitureBaseId(_furniture);
 	
 	_furniture.loadSavedData(false);
-	
+
+	_furniture.playPlaceBounce(.45);
+	addPlacementBurst(_furniture, c_lime, 16);
+	playTickSound();
+	screenShake(3);
+
 	cleanInventoryWhenBuild(selectedFurniture.requirements);
 	checkRequirements(selectedFurniture);
 	
