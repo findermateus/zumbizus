@@ -1,3 +1,3 @@
 if (global.pause) exit;
 
-drawDialogueBox();
+drawDialogue();
