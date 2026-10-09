@@ -193,3 +193,33 @@ function PathTrail(_color, _pathTimer = 0) constructor {
 		part_system_destroy(system);
 	}
 }
+
+function drawCheckMark(_x, _y, _size, _color, _alpha, _progress = 1, _width = 3) {
+	var _x1 = _x - _size;
+	var _y1 = _y;
+	var _x2 = _x - _size * .3;
+	var _y2 = _y + _size * .7;
+	var _x3 = _x + _size;
+	var _y3 = _y - _size * .7;
+
+	var _first = clamp(_progress / .4, 0, 1);
+	var _second = clamp((_progress - .4) / .6, 0, 1);
+	var _oldAlpha = draw_get_alpha();
+	var _oldColor = draw_get_color();
+
+	for (var i = 0; i < 2; i++) {
+		var _offset = i == 0 ? 2 : 0;
+		draw_set_color(i == 0 ? c_black : _color);
+		draw_set_alpha(_alpha * (i == 0 ? .5 : 1));
+
+		if (_first > 0) {
+			draw_line_width(_x1 + _offset, _y1 + _offset, lerp(_x1, _x2, _first) + _offset, lerp(_y1, _y2, _first) + _offset, _width);
+		}
+		if (_second > 0) {
+			draw_line_width(_x2 + _offset, _y2 + _offset, lerp(_x2, _x3, _second) + _offset, lerp(_y2, _y3, _second) + _offset, _width);
+		}
+	}
+
+	draw_set_alpha(_oldAlpha);
+	draw_set_color(_oldColor);
+}

@@ -79,10 +79,12 @@ function Quest(_id, _name) constructor {
 
 		step.onComplete();
 
-		instance_create_layer(0, 0, "Alert", obj_quest_popup, {
-			textContent: step.description,
-			popupType: QUEST_POPUP_TYPE.STEP_COMPLETED
-		});
+		var _quest = self;
+		var _hasNextStep = currentStepIndex + 1 < array_length(steps);
+
+		with (obj_quest_manager) {
+			onStepCompleted(_quest, step, _hasNextStep);
+		}
 
 		currentStepIndex++;
 
@@ -153,7 +155,6 @@ enum Quests {
 }
 
 enum QUEST_POPUP_TYPE {
-    STEP_COMPLETED,
     QUEST_COMPLETED,
     QUEST_ADDED
 }
