@@ -26,7 +26,7 @@
   "origin":7,
   "parent":{
     "name":"DestroyedCar",
-    "path":"folders/Sprites/Enviroment/Decoration/DestroyedCar.yy",
+    "path":"folders/Sprites/Enviroment/Assets/DestroyedCar.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

@@ -45,7 +45,7 @@
   "origin":9,
   "parent":{
     "name":"Trees",
-    "path":"folders/Sprites/Enviroment/Trees.yy",
+    "path":"folders/Sprites/Enviroment/Assets/Trees.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",
@@ -94,7 +94,7 @@
     ],
     "visibleRange":null,
     "volume":1.0,
-    "xorigin":44,
+    "xorigin":42,
     "yorigin":124,
   },
   "swatchColours":null,

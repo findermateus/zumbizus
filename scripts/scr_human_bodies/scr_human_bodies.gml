@@ -9,6 +9,13 @@ enum genders {
 	others
 }
 
+enum Eye {
+	WITH_EYEBROW,
+	SHORT_VERTICAL,
+	LONG_VERTICAL,
+	HORIZONTAL
+}
+
 global.genders = {
 	male: genders.male,
 	female: genders.female,
@@ -27,11 +34,26 @@ global.genderList[global.genders.female] = {
 	id: global.genders.female
 };
 
+function loadEyeOptions() {
+	global.EYE_OPTIONS = [];
+	
+	global.EYE_OPTIONS[Eye.WITH_EYEBROW] = spr_human_eyes_1;
+	global.EYE_OPTIONS[Eye.SHORT_VERTICAL] = spr_human_eyes_2;
+	global.EYE_OPTIONS[Eye.LONG_VERTICAL] = spr_human_eyes_3;
+	global.EYE_OPTIONS[Eye.HORIZONTAL] = spr_human_eyes_4;
+}
+
+loadEyeOptions();
+
 function getBodySprite(_gender, _drawState) {
 	if (_gender == genders.female) {
 		return _drawState == drawStates.iddle ? spr_human_female_iddle : spr_human_female_walking;
 	}
 	return _drawState == drawStates.iddle ? spr_human_male_iddle : spr_human_male_walking;
+}
+
+function resolveEyeSprite(_eyeId) {
+	return global.EYE_OPTIONS[_eyeId];
 }
 
 function drawBackPartOfHair(_hair, _helmet, _x, _y, _direction, _scale, _angle, _alpha) {
@@ -41,13 +63,13 @@ function drawBackPartOfHair(_hair, _helmet, _x, _y, _direction, _scale, _angle, 
 	drawHair(_x, _y, _hair.hairId, _hair.color, _direction, _scale, _angle, _alpha, true);
 }
 
-function drawPersonBody(_x, _y, _gender, _imageIndex, _scale, _angle, _alpha, _skinColor, _hair, _armor = -1, _helmet = -1, _bag = -1, _direction = 1, _drawState = drawStates.iddle) {
+function drawPersonBody(_x, _y, _gender, _imageIndex, _scale, _angle, _alpha, _skinColor, _hair, _eyeId, _armor = -1, _helmet = -1, _bag = -1, _direction = 1, _drawState = drawStates.iddle) {
 	
 	if (_bag != -1) {
 		drawBackPack(_x, _y, _bag, _direction, _scale, _angle, _alpha, 0);
 	}
 	
-	if (_hair.hairId != hairIds.bald) {
+	if (_hair.hairId != HairOption.BALD) {
 		drawBackPartOfHair(_hair, _helmet, _x, _y, _direction, _scale, _angle, _alpha);
 	}
 	
@@ -55,10 +77,14 @@ function drawPersonBody(_x, _y, _gender, _imageIndex, _scale, _angle, _alpha, _s
 	
 	draw_sprite_ext(_sprite, _imageIndex, _x, _y, _scale * _direction, _scale, _angle, _skinColor, _alpha);
 	
+	var _eyeSprite = resolveEyeSprite(_eyeId);
+	
+	draw_sprite_ext(_eyeSprite, 0, _x, _y, _scale * _direction, _scale, _angle, _skinColor, _alpha);
+	
 	if (_armor != -1) {
 		drawArmor(_x, _y, _armor, _direction, _scale, _angle, _alpha, _drawState, _imageIndex, _gender);
 	}
-	if (_helmet == -1 && _hair.hairId != hairIds.bald) {
+	if (_helmet == -1 && _hair.hairId != HairOption.BALD) {
 		drawHair(_x, _y, _hair.hairId, _hair.color, _direction, _scale, _angle, _alpha);
 	}
 	if (_bag != -1) {
@@ -99,3 +125,80 @@ function drawBackPack(_x, _y, _bagId, _direction, _scale, _angle, _alpha, _index
 	var _sprite = _bag.sprite, _color = _bag.color;
 	draw_sprite_ext(_sprite, _index, _x, _y, _scale * _direction, _scale, _angle, _color, _alpha);
 }
+
+#region movimento do corpo (juice de andar/correr/parar/virar; roda no escopo da instância)
+
+#macro BODY_STEP_LENGTH 44
+
+function initBodyMotion() {
+	bodyLastX = x;
+	bodyLastY = y;
+	bodyStepPhase = 0;
+	bodyHop = 0;
+	bodyMoveAmount = 0;
+	bodySquash = 0;
+	bodySquashVelocity = 0;
+	bodyLean = 0;
+	bodyFacing = 1;
+	bodyWasMoving = false;
+	bodyWasTalking = false;
+}
+
+function addBodySquash(_force) {
+	bodySquash = clamp(bodySquash + _force, -.4, .4);
+	bodySquashVelocity = 0;
+}
+
+function updateBodyMotion(_facing, _isRunning = false, _isTalking = false) {
+	var _dx = x - bodyLastX;
+	var _dy = y - bodyLastY;
+	bodyLastX = x;
+	bodyLastY = y;
+
+	var _speed = point_distance(0, 0, _dx, _dy);
+	var _isMoving = _speed > .5;
+
+	if (_isMoving && !bodyWasMoving) addBodySquash(-.12);
+	if (!_isMoving && bodyWasMoving) addBodySquash(.1);
+	bodyWasMoving = _isMoving;
+
+	if (_isTalking && !bodyWasTalking) addBodySquash(-.18);
+	bodyWasTalking = _isTalking;
+
+	bodyMoveAmount = lerp(bodyMoveAmount, _isMoving, .2);
+	if (_isMoving) {
+		var _previousStep = floor(bodyStepPhase / pi);
+		bodyStepPhase += _speed * pi / BODY_STEP_LENGTH;
+
+		if (floor(bodyStepPhase / pi) != _previousStep) {
+			addBodySquash(.06);
+			createWalkingParticles(x, y, _dx, _dy, _isRunning ? 2 : 1);
+		}
+	}
+	var _hopHeight = _isRunning ? 3.5 : 2;
+	bodyHop = abs(sin(bodyStepPhase)) * _hopHeight * bodyMoveAmount;
+
+	var _leanTarget = -clamp(_dx / 5, -1, 1) * (_isRunning ? 9 : 5);
+	bodyLean = lerp(bodyLean, _leanTarget, .15);
+
+	bodyFacing = _facing >= 0 ? 1 : -1;
+
+	bodySquashVelocity += -bodySquash * .25;
+	bodySquashVelocity *= .72;
+	bodySquash = clamp(bodySquash + bodySquashVelocity, -.4, .4);
+}
+
+function getBodyMotionDraw(_scale = 1) {
+	var _breath = bodyWasMoving ? 1 : 1 + sin(current_time / 500) * .015;
+	var _scaleY = _scale * (1 - bodySquash) * _breath;
+	var _scaleX = _scale * (1 + bodySquash);
+
+	return {
+		yOffset: -bodyHop,
+		scaleY: _scaleY,
+		direction: bodyFacing * _scaleX / _scaleY,
+		angle: bodyLean
+	};
+}
+
+#endregion

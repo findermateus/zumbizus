@@ -13,6 +13,7 @@ function initSystem() {
 	global.activeInventory = false;
 	global.activeInventoryAction = global.inventory;
 	global.activeMenu = undefined;
+	global.activeMenuOnEscape = undefined;
 	global.motionPlanningGrid = 0;
 	draw_set_font(fnt_gui_default);
 	
@@ -46,7 +47,7 @@ function checkPlayerExistence(){
 }
 
 
-#macro TILESIZE	64
+#macro TILESIZE	16
 
 font_enable_effects(fnt_gui_default_outline, true, {
 	outlineEnable: true,
@@ -107,12 +108,16 @@ function isMenuOpen() {
 	return global.activeMenu != undefined;
 }
 
-function openMenu(_menu = "") {
+// _onEscape (opcional): chamado pelo obj_controller quando o ESC é pressionado com este menu ativo,
+// no lugar de pausar. Precisa terminar em closeMenu() (pode ser depois de uma animação).
+function openMenu(_menu = "", _onEscape = undefined) {
 	global.activeMenu = _menu;
+	global.activeMenuOnEscape = _onEscape;
 }
 
 function closeMenu() {
 	global.activeMenu = undefined;
+	global.activeMenuOnEscape = undefined;
 }
 
 function getHexFromString(_hexcodeString){
@@ -152,7 +157,8 @@ global.collidableObjects = [
 	obj_collision,
 	obj_furniture_colidable,
 	obj_furniture_usable,
-	obj_tree
+	obj_breakable,
+	obj_interactable_decoration_with_colision
 ];
 
 global.interactableObjects = [

@@ -32,8 +32,10 @@ function BagClothing(_sprite, _color = c_white): Clothing(_sprite, _color) const
 }
 
 global.clothesDisplay.armor[equipmentItems.simpleOutfit] = new ArmorClothing(spr_cosmetic_simple_shirt_iddle, spr_cosmetic_simple_shirt_walking, spr_cosmetic_female_simple_shirt_iddle, spr_cosmetic_female_simple_shirt_walking);
+global.clothesDisplay.armor[equipmentItems.tornLabCoat] = new ArmorClothing(spr_cosmetic_torn_lab_coat_iddle, spr_cosmetic_torn_lab_coat_walking, spr_cosmetic_female_torn_lab_coat_iddle, spr_cosmetic_female_torn_lab_coat_walking);
 global.clothesDisplay.armor[equipmentItems.leatherJacket] = new ArmorClothing(spr_cosmetic_leather_jacket_iddle, spr_cosmetic_leather_jacket_walking, spr_cosmetic_female_leather_jacket_iddle, spr_cosmetic_female_leather_jacket_walking);
 
 global.clothesDisplay.head[equipmentItems.simpleCap] = new HelmetClothing(spr_cosmetic_simple_cap);
 global.clothesDisplay.head[equipmentItems.boonieHat] = new HelmetClothing(spr_cosmetic_boonie_hat);
 global.clothesDisplay.bag[equipmentItems.simpleBag] = new BagClothing(spr_cosmetic_simple_bag);
+global.clothesDisplay.bag[equipmentItems.trailBag] = new BagClothing(spr_cosmetic_simple_bag);

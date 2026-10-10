@@ -120,9 +120,9 @@ global.weapons[weaponItems.baseballBatWithNails] = new MeeleWeapon(
 	270
 );
 
-global.weapons[weaponItems.sword] = new MeeleWeapon(
-	spr_weapon_sword,
-	spr_hitbox_weapon_sword,
+global.weapons[weaponItems.machete] = new MeeleWeapon(
+	spr_weapon_machete,
+	spr_hitbox_weapon_machete,
 	5,
 	10,
 	.5,
@@ -154,7 +154,7 @@ global.weapons[weaponItems.nailBoard] = new MeeleWeapon(
 
 global.weapons[weaponItems.axe] = new MeeleWeapon(
 	spr_weapon_axe,
-	spr_hitbox_weapon_sword,
+	spr_hitbox_weapon_machete,
 	20,
 	15,
 	.2,
@@ -167,6 +167,22 @@ global.weapons[weaponItems.axe] = new MeeleWeapon(
 		snd_sword_attack_3
 	],
 	270
+);
+
+global.weapons[weaponItems.metalPipe] = new MeeleWeapon(
+	spr_weapon_metal_pipe,
+	spr_hitbox_weapon_basebal,
+	10,
+	18,
+	.2,
+	7,
+	weaponTypes.impact,
+	weaponAttackType.swing,
+	[
+		snd_baseball_bat_attack_1,
+		snd_baseball_bat_attack_2,
+		snd_baseball_bat_attack_3,
+	]
 );
 
 {

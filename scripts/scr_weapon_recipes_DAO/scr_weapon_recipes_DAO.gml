@@ -12,6 +12,7 @@ function getItemsThatCanBeRepaired(_intentory){
 			});
 		}
 	}
+	
     for (var i = 0; i < height; i++) {
         for (var j = 0; j < width; j++) {
 			var _item = _intentory[# j, i];
@@ -28,6 +29,11 @@ function getItemsThatCanBeRepaired(_intentory){
 	
 	var _cleanedItems = array_filter(_items, function (_struct) {
 		var _item = _struct.item;
+		
+		if (getItemRepairRequirements(_item.itemId) == false) {
+			return false;
+		}
+		
 		return _item.durability < _item.maxDurability;
 	});
 	

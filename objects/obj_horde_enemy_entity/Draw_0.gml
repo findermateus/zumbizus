@@ -1,16 +1,16 @@
-draw_sprite_ext(enemySprite, currentSpriteFrame, x, y, spriteXScale, abs(spriteXScale), image_angle, c_white, image_alpha);
-drawHitFlash(enemySprite, currentSpriteFrame, x, y, spriteXScale, abs(spriteXScale), image_angle, c_white);
+var _drawX = x + getHitOffsetX();
+var _drawY = y + getHitOffsetY();
+var _xScale = spriteXScale * hitScaleX;
+var _yScale = abs(spriteXScale) * hitScaleY;
+var _angle = image_angle + hitTilt;
 
-if(global.debug){
-	draw_text(x + 20, y, script_get_name(currentState))
-	draw_text(x + 20, y + 30, enemyHealth);
-	draw_text(x + 20, y + 60, "Frame: " + string(currentSpriteFrame));
-	draw_text(x + 20, y + 90, "Sprite Length: " + string(spriteLength));
-	draw_text(x + 20, y + 120, "Sprite Speed: " + string(spriteSpeed));
-	draw_text(x + 20, y + 160, "Xscale: " + string(spriteXScale));
-	
-	if (position_meeting(mouse_x, mouse_y, id)) {
-		draw_text(x, y, iddleDirection);
-		draw_text(x, y+ 30, iddleSpeed);
-	}
+draw_sprite_ext(enemySprite, currentSpriteFrame, _drawX, _drawY, _xScale, _yScale, _angle, c_white, image_alpha);
+drawHitTint(enemySprite, currentSpriteFrame, _drawX, _drawY, _xScale, _yScale, _angle);
+drawHitFlash(enemySprite, currentSpriteFrame, _drawX, _drawY, _xScale, _yScale, _angle, c_white);
+drawHitImpact();
+
+if (global.debug) {
+	draw_text(x, y, "VELH: " + string(velh));
+	draw_text(x, y + 30, "VELV: " + string(velv));
+	draw_text(x, y + 60, "State: " + script_get_name(currentState));
 }

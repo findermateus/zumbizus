@@ -20,9 +20,6 @@ function walkingState(){
 	increaseHunger(.04);
 	switchBetweenWalkingAndIddle();
 	switchToAimState();
-	if (choose(0, 1)) {
-		if (velh != 0 || velv != 0) createWalkingParticles(x, y, velh, velv, 1);
-	}
 }
 
 function runningState() {
@@ -40,7 +37,6 @@ function runningState() {
 	increaseHunger(.05);
 	switchBetweenWalkingAndIddle();
 	switchToAimState();
-	if (velh != 0 || velv != 0) createWalkingParticles(x, y, velh, velv, 1);
 }
 
 function adjustPlayerSpeed(_speed){
@@ -88,13 +84,13 @@ function playerAttackState(){
 		return;
 	}
 	
-	// Se o botão direito ainda estiver segurado, volta a mirar
 	if (mouse_check_button(mb_right) && global.activeEquipedItem != BLANK_INVENTORY_SPACE) {
 		currentState = aimWeaponState;
 		
 		return;
 	}
 	
+	obj_camera.setDefaultValues();
 	obj_weapon.setStateIdle(); 
 	currentState = playerIddleState;
 }
@@ -109,11 +105,20 @@ function switchToAimState(){
 }
 
 function aimWeaponState(){
-	if (!mouse_check_button(mb_right) || global.activeEquipedItem == BLANK_INVENTORY_SPACE || isMenuOpen()){
+	var _isMenuOpen = isMenuOpen();
+	
+	if (!mouse_check_button(mb_right) || global.activeEquipedItem == BLANK_INVENTORY_SPACE || _isMenuOpen){
 		obj_weapon.setStateIdle();
+		
+		if (!_isMenuOpen) {
+			obj_camera.setDefaultValues();
+		}
+		
 		currentState = playerIddleState;
 		return;
 	}
+	
+	obj_camera.destinyCameraScale = .9;
 	
 	adjustPlayerInteractions(false);
 	
@@ -133,8 +138,6 @@ function aimWeaponState(){
 			currentState = playerAttackState;
 		}
 	}
-	
-	if (!_isStoped && (velh != 0 || velv != 0)) createWalkingParticles(x, y, velh, velv, .5);
 }
 
 function aimWeapon(_weapon){
@@ -178,16 +181,27 @@ function playerGetGrabbedState() {
     
     updateSpriteWithState(_sprite);
     
-    if (!instance_exists(obj_grabbing_controller)) {
+    if (!instance_exists(obj_grabbing_controller) || obj_grabbing_controller.escaped) {
         currentState = playerIddleState;
     }
 }
 
 function playerDialogueState() {
-	handleAngleOffset(true, .2, 0);
+	handleAngleOffset(false);
 	adjustPlayerInteractions(false);
 	updateSpriteWithState(sprites.iddle);
 	
+	obj_weapon.currentState = obj_weapon.weaponIdleState;
+	
+	velh = 0;
+	velv = 0;
+}
+
+function playerTradeState() {
+	handleAngleOffset(false);
+	adjustPlayerInteractions(false);
+	updateSpriteWithState(sprites.iddle);
+
 	velh = 0;
 	velv = 0;
 }

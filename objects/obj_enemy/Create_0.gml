@@ -2,6 +2,7 @@ event_inherited();
 
 gotWarned = false;
 iwarned = false;
+defeated = false;
 
 pathHandler = instance_create_layer(x, y, layer, obj_path_handler, {
 	father: id
@@ -67,3 +68,5 @@ genericCollision = function(_positionX, _posititonY) {
 
 	return false;
 }
+
+initHitJuice();

@@ -5,8 +5,4 @@ if (isLevelingUp) {
 
 if (global.pause) exit;
 
-if (barWidth > 5) {
-	drawXpBar();
-}
-
 handleXpPopUps();

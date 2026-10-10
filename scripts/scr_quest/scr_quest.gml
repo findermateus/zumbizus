@@ -5,7 +5,13 @@ enum QuestEvent {
 	ItemCrafted,
 	FurnitureCrafted,
 	DialogueEnded,
-	DialogueStarted
+	DialogueStarted,
+	ItemBought,
+	ItemSold,
+	ObjectInteracted,
+	ItemConsumed,
+	ItemEquiped,
+	ObjectDestroyed
 }
 
 function Quest(_id, _name) constructor {
@@ -35,11 +41,27 @@ function Quest(_id, _name) constructor {
 	
 	start = function() {
 		isActive = true;
+		
+		onStart();
 	
 		if (array_length(steps) > 0) {
 			steps[0].onStart();
 		}
 	};
+	
+	onStart = function() {};
+	
+	complete = function() {
+		isCompleted = true;
+
+		onComplete();
+
+		var _data = self;
+
+		with (obj_quest_manager) {
+			completeQuest(_data);
+		}
+	}
 	
 	onComplete = function () {};
 	
@@ -57,24 +79,18 @@ function Quest(_id, _name) constructor {
 
 		step.onComplete();
 
-		instance_create_layer(0, 0, "Alert", obj_quest_popup, {
-			textContent: step.description,
-			popupType: QUEST_POPUP_TYPE.STEP_COMPLETED
-		});
+		var _quest = self;
+		var _hasNextStep = currentStepIndex + 1 < array_length(steps);
+
+		with (obj_quest_manager) {
+			onStepCompleted(_quest, step, _hasNextStep);
+		}
 
 		currentStepIndex++;
 
 		if (currentStepIndex >= array_length(steps)) {
-			isCompleted = true;
-
-			onComplete();
-
-			var _data = self;
-
-			with (obj_quest_manager) {
-				completeQuest(_data);
-			}
-
+			complete();
+			
 			return;
 		}
 
@@ -101,13 +117,11 @@ function Quest(_id, _name) constructor {
 			
 			var _result = addItemToGrid(global.inventory, _buildedItem);
 			
-			if (_result == true) {
-				createIndicatorForQuestItem(_buildedItem, _quantity);
-				
-				continue;
+			if (_result != true) {
+				createItem(_buildedItem, true);	
 			}
 			
-			show_message("não connseguiu por tudo no inventory: " + _itemConfig.name);
+			createIndicatorForQuestItem(_buildedItem, _quantity);
 		}
 	};
 	
@@ -129,17 +143,18 @@ function QuestStep(_id, _description) constructor {
 
 function QuestReward(_xp) constructor {
 	xp = _xp;
-	items = []; // {itemId, itemType, quantity}
+	items = [];
 }
 
 enum Quests {
+	FindSafePlace,
 	BecomeALumberjack,
 	CraftACampfire,
-	KillingInTheNameOfLove
+	CookMeat,
+	ExploreDump
 }
 
 enum QUEST_POPUP_TYPE {
-    STEP_COMPLETED,
     QUEST_COMPLETED,
     QUEST_ADDED
 }

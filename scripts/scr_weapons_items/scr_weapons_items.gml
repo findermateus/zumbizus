@@ -1,6 +1,6 @@
 enum weaponItems {
 	baseballBat,
-	sword,
+	machete,
 	nailBoard,
 	pistol,
 	ump,
@@ -8,7 +8,8 @@ enum weaponItems {
 	assaultRifle,
 	sniperRifle,
 	baseballBatWithNails,
-	axe
+	axe,
+	metalPipe
 }
 
 function WeaponConfig() {
@@ -26,7 +27,8 @@ function WeaponConfig() {
 		bullets: undefined,
 		maxAmmo: undefined,
 		soundRadius: 100,
-		type: itemType.weapons
+		type: itemType.weapons,
+		value: 0
 	};
 }
 
@@ -40,8 +42,12 @@ function WeaponConfig() {
 	_config.durability = 100;
 	_config.maxDurability = 100;
 	_config.durabilityDecrease = 6;
+	_config.value = 40;
 
 	global.items[itemType.weapons][weaponItems.baseballBat] = _config;
+	global.itemMethods[itemType.weapons][weaponItems.baseballBat] = [
+		new ItemMethod("Equipar", "equip")
+	];
 }
 
 {
@@ -54,8 +60,12 @@ function WeaponConfig() {
 	_config.durability = 100;
 	_config.maxDurability = 100;
 	_config.durabilityDecrease = 4;
+	_config.value = 60;
 
 	global.items[itemType.weapons][weaponItems.baseballBatWithNails] = _config;
+	global.itemMethods[itemType.weapons][weaponItems.baseballBatWithNails] = [
+		new ItemMethod("Equipar", "equip")
+	];
 }
 
 {
@@ -69,22 +79,30 @@ function WeaponConfig() {
 	_config.durability = 100;
 	_config.maxDurability = 100;
 	_config.durabilityDecrease = 8;
+	_config.value = 35;
 
 	global.items[itemType.weapons][weaponItems.nailBoard] = _config;
+	global.itemMethods[itemType.weapons][weaponItems.nailBoard] = [
+		new ItemMethod("Equipar", "equip")
+	];
 }
 
 {
 	var _config = WeaponConfig();
-	_config.itemId = weaponItems.sword;
+	_config.itemId = weaponItems.machete;
 	_config.name = "Espada fudida";
 	_config.description = "Espada fudida, mais um pouco e ela quebra";
-	_config.sprite = spr_sword;
+	_config.sprite = spr_machete;
 	_config.sound = snd_sword;
 	_config.durability = 100;
 	_config.maxDurability = 100;
 	_config.durabilityDecrease = 3;
+	_config.value = 85;
 
-	global.items[itemType.weapons][weaponItems.sword] = _config;
+	global.items[itemType.weapons][weaponItems.machete] = _config;
+	global.itemMethods[itemType.weapons][weaponItems.machete] = [
+		new ItemMethod("Equipar", "equip")
+	];
 }
 
 {
@@ -97,8 +115,30 @@ function WeaponConfig() {
 	_config.durability = 100;
 	_config.maxDurability = 100;
 	_config.durabilityDecrease = 2;
+	_config.value = 100;
 
 	global.items[itemType.weapons][weaponItems.axe] = _config;
+	global.itemMethods[itemType.weapons][weaponItems.axe] = [
+		new ItemMethod("Equipar", "equip")
+	];
+}
+
+{
+	var _config = WeaponConfig();
+	_config.itemId = weaponItems.metalPipe;
+	_config.name = "Cano de metal";
+	_config.description = "Um cano de aço pesado e resistente. Simples, mas extremamente eficiente contra qualquer coisa que esteja no seu caminho.";
+	_config.sprite = spr_metal_pipe;
+	_config.sound = snd_baseball_bat;
+	_config.durability = 120;
+	_config.maxDurability = 120;
+	_config.durabilityDecrease = 4;
+	_config.value = 70;
+
+	global.items[itemType.weapons][weaponItems.metalPipe] = _config;
+	global.itemMethods[itemType.weapons][weaponItems.metalPipe] = [
+		new ItemMethod("Equipar", "equip")
+	];
 }
 
 {
@@ -112,7 +152,12 @@ function WeaponConfig() {
 	_config.bullets = 0;
 	_config.maxAmmo = 12;
 	_config.soundRadius = 500;
+	_config.value = 150;
 	global.items[itemType.weapons][weaponItems.pistol] = _config;
+	global.itemMethods[itemType.weapons][weaponItems.pistol] = [
+		new ItemMethod("Equipar", "equip"),
+		new ItemMethod("Descarregar", "unload")
+	];
 }
 
 {
@@ -126,7 +171,12 @@ function WeaponConfig() {
 	_config.bullets = 0;
 	_config.maxAmmo = 30;
 	_config.soundRadius = 600;
+	_config.value = 280;
 	global.items[itemType.weapons][weaponItems.ump] = _config;
+	global.itemMethods[itemType.weapons][weaponItems.ump] = [
+		new ItemMethod("Equipar", "equip"),
+		new ItemMethod("Descarregar", "unload")
+	];
 }
 
 {
@@ -140,7 +190,12 @@ function WeaponConfig() {
 	_config.bullets = 0;
 	_config.maxAmmo = 6;
 	_config.soundRadius = 1100;
+	_config.value = 320;
 	global.items[itemType.weapons][weaponItems.shotgun] = _config;
+	global.itemMethods[itemType.weapons][weaponItems.shotgun] = [
+		new ItemMethod("Equipar", "equip"),
+		new ItemMethod("Descarregar", "unload")
+	];
 }
 
 {
@@ -154,7 +209,12 @@ function WeaponConfig() {
 	_config.bullets = 0;
 	_config.maxAmmo = 30;
 	_config.soundRadius = 750;
+	_config.value = 450;
 	global.items[itemType.weapons][weaponItems.assaultRifle] = _config;
+	global.itemMethods[itemType.weapons][weaponItems.assaultRifle] = [
+		new ItemMethod("Equipar", "equip"),
+		new ItemMethod("Descarregar", "unload")
+	];
 }
 
 {
@@ -168,5 +228,10 @@ function WeaponConfig() {
 	_config.bullets = 0;
 	_config.maxAmmo = 5;
 	_config.soundRadius = 1000;
+	_config.value = 400;
 	global.items[itemType.weapons][weaponItems.sniperRifle] = _config;
+	global.itemMethods[itemType.weapons][weaponItems.sniperRifle] = [
+		new ItemMethod("Equipar", "equip"),
+		new ItemMethod("Descarregar", "unload")
+	];
 }

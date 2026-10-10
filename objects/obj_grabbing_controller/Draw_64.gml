@@ -1,51 +1,137 @@
+if (!instance_exists(obj_player)) exit;
+
 var _guiW = display_get_gui_width();
 var _guiH = display_get_gui_height();
-var _centerX = _guiW / 2;
-var _ratio = struggle_progress / struggle_target;
+var _ratio = clamp(displayedProgress / struggle_target, 0, 1);
+var _trailRatio = clamp(trailProgress / struggle_target, 0, 1);
+var _outro = escaped ? clamp(phaseTimer / 32, 0, 1) : 0;
+var _uiAlpha = 1 - _outro;
 
-var _shakeX = random_range(-juice_shake, juice_shake);
-var _shakeY = random_range(-juice_shake, juice_shake);
-var _waveY = sin(text_wave) * 5;
+if (!escaped) {
+	var _beat = max(0, sin(current_time / 140)) * .12;
+	with (obj_player) drawDamageVignette(_guiW, _guiH, .22 + _beat);
+}
 
-var _barW = 200 * juice_scale;
-var _barH = 30 * juice_scale;
-var _barSprite = spr_bar;
-var _barX = (_centerX - _barW / 2) + _shakeX;
-var _barY = (roomToGuiY(obj_player.bbox_bottom + 15)) + _shakeY;
+if (redFlash > 0 || whiteFlash > 0) {
+	draw_set_alpha(redFlash * .45);
+	draw_set_color(#b00010);
+	draw_rectangle(0, 0, _guiW, _guiH, false);
+	draw_set_alpha(whiteFlash);
+	draw_set_color(c_white);
+	draw_rectangle(0, 0, _guiW, _guiH, false);
+	draw_set_alpha(1);
+}
 
-draw_sprite_stretched_ext(_barSprite, 0, _barX, _barY, _barW, _barH, c_black, 0.5);
+var _center = getRingCenter();
+var _shakeX = random_range(-ringShake, ringShake);
+var _shakeY = random_range(-ringShake, ringShake);
+var _cx = _center[0] + _shakeX;
+var _cy = _center[1] + _shakeY;
 
-var _barWidthProggress = _barW * clamp(_ratio, 0, 1);
-var _color = merge_color(c_red, c_lime, _ratio);
-draw_sprite_stretched_ext(_barSprite, 2, _barX, _barY, _barWidthProggress, _barH, _color, 1);
+#region anel de luta
+var _ringRadius = 74 * ringScale * (1 + ringPulse * .12 + _outro * .6);
+var _ringThickness = 12 * ringScale;
+var _progressColor = getProgressColor(_ratio);
 
+if (_ringRadius > 1 && _uiAlpha > 0) {
+	drawRadialProgress(_cx, _cy, _ringRadius - _ringThickness, _ringRadius, 1, c_black, .45 * _uiAlpha);
+	drawRadialProgress(_cx, _cy, _ringRadius - _ringThickness, _ringRadius, _trailRatio, c_white, .35 * _uiAlpha);
+	drawRadialProgress(_cx, _cy, _ringRadius - _ringThickness, _ringRadius, _ratio, _progressColor, _uiAlpha);
+
+	if (ringPulse > 0) {
+		gpu_set_blendmode(bm_add);
+		drawRadialProgress(_cx, _cy, _ringRadius - _ringThickness - 4, _ringRadius + 4, _ratio, _progressColor, ringPulse * .5 * _uiAlpha);
+		gpu_set_blendmode(bm_normal);
+	}
+
+	draw_set_alpha(.6 * _uiAlpha);
+	draw_set_color(c_black);
+	for (var i = 1; i < 4; i++) {
+		var _angle = 90 - 90 * i;
+		draw_line_width(
+			_cx + lengthdir_x(_ringRadius - _ringThickness - 2, _angle), _cy + lengthdir_y(_ringRadius - _ringThickness - 2, _angle),
+			_cx + lengthdir_x(_ringRadius + 2, _angle), _cy + lengthdir_y(_ringRadius + 2, _angle),
+			3
+		);
+	}
+	draw_set_alpha(1);
+	draw_set_color(c_white);
+}
+#endregion
+
+#region título
+draw_set_font(fnt_gui_title);
 draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
-draw_set_font(fnt_gui_title);
 
-var _t = "RESISTA!";
-var _textScale = 1 + (juice_scale - 1) * 0.5;
-var _mouseScale = _textScale * 2;
+var _titleShake = escaped ? 0 : 1 + _ratio * 3;
+var _titleX = _cx + random_range(-_titleShake, _titleShake);
+var _titleY = _cy - _ringRadius - 40 + sin(current_time / 120) * 3;
+var _titleScale = titlePop * (escaped ? 1 + _outro * .5 : 1);
+var _titleAlpha = escaped ? 1 - max(0, _outro - .4) / .6 : 1;
+var _titleColor = escaped ? #5fd35f : merge_color(c_white, #ffd166, _ratio);
 
-var _tW = string_width(_t) * _textScale;
-var _sW = sprite_get_width(spr_mouse) * _mouseScale;
-var _gap = 20 * _textScale; 
-var _totalW = _tW + _gap + _sW;
+drawTextShadow(_titleX, _titleY, titleText, _titleAlpha, 4, _titleScale);
+draw_set_alpha(_titleAlpha);
+draw_text_transformed_color(_titleX, _titleY, titleText, _titleScale, _titleScale, 0, _titleColor, _titleColor, _titleColor, _titleColor, _titleAlpha);
+draw_set_alpha(1);
+#endregion
 
-var _tY = roomToGuiY(obj_player.bbox_top - 100) + _waveY + _shakeY;
-var _textCol = (_ratio > 0.8) ? c_red : c_white;
+#region prompt
+if (_uiAlpha > 0 && phase == "struggle") {
+	var _promptPulse = 1 + sin(current_time / lerp(160, 70, _ratio)) * .06;
+	var _promptY = _cy + _ringRadius + 50;
 
-var _drawStartX = _centerX - (_totalW / 2);
-var _textPosX = _drawStartX + (_tW / 2) + _shakeX;
-var _mousePosX = _drawStartX + _tW + _gap + (_sW / 2) + _shakeX;
+	draw_set_font(fnt_gui_default);
+	var _keyText = "ESPAÇO";
+	var _keyWidth = (string_width(_keyText) + 36) * _promptPulse;
+	var _keyHeight = 46 * _promptPulse;
+	var _orText = "ou";
+	var _orWidth = string_width(_orText);
+	var _mouseScale = 3 * _promptPulse;
+	var _mouseWidth = sprite_get_width(spr_mouse) * _mouseScale;
+	var _gap = 18;
+	var _totalWidth = _keyWidth + _gap + _orWidth + _gap + _mouseWidth;
+	var _startX = _cx - _totalWidth / 2;
 
-drawTextShadow(_textPosX, _tY, _t, draw_get_alpha());
-draw_text_transformed_color(_textPosX, _tY, _t, _textScale, _textScale, 0, _textCol, _textCol, c_white, c_white, 1);
+	var _press = promptPress * 5;
+	var _keyX = _startX;
+	var _keyY = _promptY - _keyHeight / 2;
+	draw_set_alpha(_uiAlpha);
+	draw_set_color(#3a3a3a);
+	draw_roundrect_ext(_keyX, _keyY + 6, _keyX + _keyWidth, _keyY + _keyHeight + 6, 10, 10, false);
+	draw_set_color(merge_color(#e8e8e8, #fff6d6, _ratio));
+	draw_roundrect_ext(_keyX, _keyY + _press, _keyX + _keyWidth, _keyY + _keyHeight + _press, 10, 10, false);
+	draw_set_color(#2a2a2a);
+	draw_text(_keyX + _keyWidth / 2, _keyY + _keyHeight / 2 + _press, _keyText);
 
-var _mouseIdx = (current_time / 1000) * sprite_get_speed(spr_mouse);
+	draw_set_color(c_white);
+	var _orX = _keyX + _keyWidth + _gap + _orWidth / 2;
+	drawTextShadow(_orX, _promptY, _orText, _uiAlpha);
+	draw_text(_orX, _promptY, _orText);
 
-drawSpriteShadow(_mousePosX, _tY, spr_mouse, _mouseIdx, 0, _mouseScale, _mouseScale, 4, 4, 1);
-draw_sprite_ext(spr_mouse, _mouseIdx, _mousePosX, _tY, _mouseScale, _mouseScale, 0, c_white, draw_get_alpha());
+	var _mouseX = _orX + _orWidth / 2 + _gap + _mouseWidth / 2;
+	var _mouseFrame = (current_time / 1000) * sprite_get_speed(spr_mouse) * (1 + _ratio);
+	drawSpriteShadow(_mouseX, _promptY + _press, spr_mouse, _mouseFrame, 0, _mouseScale, _mouseScale, 4, 4, _uiAlpha);
+	draw_sprite_ext(spr_mouse, _mouseFrame, _mouseX, _promptY + _press, _mouseScale, _mouseScale, 0, c_white, _uiAlpha);
+	draw_set_alpha(1);
+}
+#endregion
+
+#region faíscas
+gpu_set_blendmode(bm_add);
+for (var i = 0; i < array_length(sparks); i++) {
+	var _spark = sparks[i];
+	var _size = 2 + _spark.life * 3;
+	draw_set_alpha(_spark.life);
+	draw_set_color(_spark.color);
+	draw_rectangle(_spark.x - _size, _spark.y - _size, _spark.x + _size, _spark.y + _size, false);
+}
+gpu_set_blendmode(bm_normal);
+draw_set_alpha(1);
+#endregion
 
 draw_set_font(fnt_gui_default);
 draw_set_color(c_white);
+draw_set_halign(fa_left);
+draw_set_valign(fa_top);

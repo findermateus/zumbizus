@@ -5,8 +5,8 @@
   "isDnD":false,
   "name":"scr_npc",
   "parent":{
-    "name":"Base",
-    "path":"folders/Scripts/Base.yy",
+    "name":"NPC",
+    "path":"folders/Scripts/NPC.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",

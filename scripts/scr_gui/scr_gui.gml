@@ -17,12 +17,41 @@ function getAlphaWithTimer(_alphaTimer){
 	return (sin(_timer * 0.5) + 1) * _alphaTimer;
 }
 
-function createNotifyIndicator(_text, _x, _y){
+function createGUINotifyIndicator(_text, _x, _y){
 	var _alert = instance_create_layer(_x, _y, "Alert", obj_alert_gui, {
 		xPosition: _x,
 		yPosition: _y
 	});
 	_alert.textAlert = _text;
+}
+
+function createRoomNotifyIndicator(_text, _x, _y, _color = c_red) {
+	var _alert = instance_create_layer(_x, _y, "Alert", obj_alert);
+	_alert.textAlert = _text;
+	_alert.alertColor = _color;
+}
+
+function draw_interaction_button(_sprite, _box_x, _box_y, _box_w, _box_h, _text_x, _text_y, _text, _halign, _alpha) {
+    draw_sprite_stretched(_sprite, 0, _box_x, _box_y, _box_w, _box_h);
+
+    draw_set_halign(_halign);
+    drawTextShadow(_text_x, _text_y, _text, _alpha);
+    draw_set_color(c_white);
+    draw_text(_text_x, _text_y, _text);
+}
+
+function draw_ui_connection(_startX, _startY, _endX, _endY, _alpha) {
+    var _old_color = draw_get_color();
+
+    draw_set_color(c_white);
+    draw_set_alpha(_alpha * 0.5);
+    draw_line_width(_startX, _startY, _endX, _endY, 2);
+
+    draw_set_alpha(_alpha * 0.8);
+    draw_circle(_startX, _startY, 3, false);
+
+    draw_set_color(_old_color);
+    draw_set_alpha(_alpha);
 }
 
 function drawTextShadow(_x, _y, _text, _alpha, _offset = 3, _scale = 1){

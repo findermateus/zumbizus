@@ -25,8 +25,8 @@
   "nineSlice":null,
   "origin":7,
   "parent":{
-    "name":"Dump",
-    "path":"folders/Sprites/Enviroment/Dump.yy",
+    "name":"Assets",
+    "path":"folders/Sprites/Enviroment/Assets.yy",
   },
   "preMultiplyAlpha":false,
   "resourceType":"GMSprite",

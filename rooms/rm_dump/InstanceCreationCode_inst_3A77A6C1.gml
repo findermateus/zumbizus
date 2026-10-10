@@ -1,0 +1,1 @@
+yPositionToDrawShadow = getMiddlePoint(bbox_top, bbox_bottom);

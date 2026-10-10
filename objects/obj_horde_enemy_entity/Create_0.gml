@@ -44,16 +44,20 @@ var _spriteList = [
 
 sprites = _spriteList[irandom(array_length(_spriteList)-1)];
 state = states.unoccupied;
-maxIddleVel = 4;
-chasingVel = irandom_range(maxIddleVel, maxIddleVel + 3);
+maxIddleVel = 2;
+chasingVel = irandom_range(4, 7);
 distanceToChase = 500;
 iddleDirection = 0;
 iddleSpeed = 0;
 
+startPointX = x;
+startPointY = y;
+maxWalkDistance = 200;
+
 #region combat
 velh = 0;
 velv = 0;
-enemyHealth = 20;
+enemyHealth = 25;
 fallDirection = 0;
 pushForce = 0;
 #endregion
@@ -79,6 +83,11 @@ function adjustDirection(_hSpeed) {
 	shadowDirection = spriteXScale;
 }
 
+function faceTowardsX(_targetX, _deadZone = 2) {
+	var _deltaX = _targetX - x;
+	if (abs(_deltaX) > _deadZone) adjustDirection(_deltaX);
+}
+
 function updateSpriteWithState(_sprite, _state){
 	if(state != _state){
 		state = _state;
@@ -94,6 +103,7 @@ function updateSpriteWithState(_sprite, _state){
 }
 
 function enemyIddleState(){
+	enemyColision(obj_collision);
 	updateSpriteWithState(sprites.iddle, states.unoccupied);
 	switchFromDifferentStatesWhenNotAttacking();
 	handlePositionWithPathHandler(true);
@@ -109,7 +119,7 @@ function enemyChasePlayerState(){
 	var _playerX = obj_player.x;
 	var _playerY = obj_player.y;
 	pathHandler.calculatePath(chasingVel, _playerX, _playerY);
-	adjustDirection(pathHandler.currentDirection < x ? -1 : 1);
+	faceTowardsX(pathHandler.x);
 	handlePositionWithPathHandler();
 	if (point_distance(x, y, _playerX, _playerY) < attackDistance) {
 		currentState = setUpAttackState;
@@ -117,21 +127,38 @@ function enemyChasePlayerState(){
 }
 
 function enemyWalkToRandomDirectionState() {
+	enemyColision(obj_collision);
 	switchFromDifferentStatesWhenNotAttacking();
 	handlePositionWithPathHandler(true);
+	
 	if (state != states.walkRandomDirection) {
 		iddleDirection = irandom(365);
-		iddleSpeed = irandom(maxIddleVel);
+		iddleSpeed = irandom_range(1, maxIddleVel);
 	}
 	updateSpriteWithState(sprites.running, states.walkRandomDirection);
+	
 	var _hMovementSpeed = lengthdir_x(iddleSpeed, iddleDirection);
 	var _vMovementSpeed = lengthdir_y(iddleSpeed, iddleDirection);
-	var _horizontalCollision = genericCollision(x + _hMovementSpeed, y)
-	var _verticalCollision = genericCollision(x, y + _vMovementSpeed);
+	
+	var _nextX = x + _hMovementSpeed;
+	var _nextY = y + _vMovementSpeed;
+	
+	if (point_distance(startPointX, startPointY, _nextX, _nextY) > maxWalkDistance) {
+		iddleDirection = point_direction(x, y, startPointX, startPointY) + random_range(-20, 20);
+		return;
+	}
+	
+	var _padding = 5;
+	
+	var _horizontalCollision = genericCollision(_nextX, y) || (bbox_left + _hMovementSpeed < _padding) || (bbox_right + _hMovementSpeed > room_width - _padding);
+	var _verticalCollision = genericCollision(x, _nextY) || (bbox_top + _vMovementSpeed < _padding) || (bbox_bottom + _vMovementSpeed > room_height - _padding);
+	
 	adjustDirection(_hMovementSpeed);
+	
 	if (_horizontalCollision) {
 		iddleDirection = 180 - iddleDirection;
 	}
+	
 	if (_verticalCollision) {
 		iddleDirection = 360 - iddleDirection;
 	} 
@@ -147,6 +174,18 @@ function checkCollision() {
 }
 
 function switchFromDifferentStatesWhenNotAttacking(){
+	if (!instance_exists(obj_player)) return;
+	
+	var _interior = instance_place(x, y, obj_interior)
+	
+	if (instance_exists(_interior)) {
+		if (!_interior.hasFadeOut) {
+			currentState = enemyIddleState;
+			
+			return;
+		}
+	}
+	
 	switchToChase();
 	
 	if(timeToChangeStates > 0) {
@@ -158,13 +197,6 @@ function switchFromDifferentStatesWhenNotAttacking(){
 }
 
 function switchToChase(){
-	if (!instance_exists(obj_player)) return;
-	var _interior = instance_place(x, y, obj_interior)
-	
-	if (instance_exists(_interior)) {
-		if (!_interior.hasFadeOut) return;
-	}
-	
 	var _distanceToPlayer = point_distance(x, y, obj_player.x, obj_player.y);
 	if(_distanceToPlayer > distanceToChase) return;
 	if(collision_line(x, y, obj_player.x, obj_player.y, obj_collision, false, false)){
@@ -175,6 +207,7 @@ function switchToChase(){
 }
 
 function getKilledState(){
+	enemyColision(obj_collision);
 	var _shouldDie = false;
 	velh = lerp(velh, 0, .1);
 	velv = lerp(velv, 0, .1);
@@ -199,24 +232,23 @@ function fadeOutOfExistence() {
 function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weaponId = noone){
 	hitFlash = 1;
 	if (state == states.dying || currentState == getKilledState) return;
-	audio_play_sound(snd_enemy_hit, 0, false);
-	
+	audio_play_sound(snd_enemy_hit, 0, false, 1, 0, random_range(.9, 1.1));
+
 	enemyHealth -= _damage;
-	
-	if(_attackType) playWeaponEffectSound(_attackType);	
-	
-	addDamageToGuiList(x, y - sprite_get_height(enemySprite), _damage);
-	
-	if (enemyHealth <= 0) {
+	var _isKill = enemyHealth <= 0;
+
+	if(_attackType) playWeaponEffectSound(_attackType);
+
+	addDamageToGuiList(x, y - sprite_get_height(enemySprite), _damage, _isKill);
+	playHitFeedback(_damage, _direction, _force, _isKill);
+
+	if (_isKill) {
 		if (_attackType == weaponTypes.shoot) sprites.death = sprites.deathByShot;
-		createBloodEffect(_force * 2, _direction, getMiddlePoint(bbox_left, bbox_right), getMiddlePoint(bbox_top, bbox_bottom), _damage);
 		getKilled();
-	
+
 		return;
 	}
-	
-	createBloodEffect(_force, _direction, getMiddlePoint(bbox_left, bbox_right), getMiddlePoint(bbox_top, bbox_bottom), _damage);
-	
+
 	pushForce = _force;
 	fallDirection = _direction;
 	velh = lengthdir_x(pushForce, fallDirection);
@@ -229,8 +261,9 @@ function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weapo
 
 function getKilled() {
 	currentState = getKilledState;
+	defeated = true;
 	
-	obj_quest_manager.notifyEvent(QuestEvent.EnemyKilled, {enemyId: "horde"});
+	obj_quest_manager.notifyEvent(QuestEvent.EnemyKilled, {enemyType: obj_horde_enemy_entity, enemyId: id});
 	
 	xpAdd(choose(1, 2, 3));
 	
@@ -285,6 +318,7 @@ function endPath() {
 
 
 function recoverFromGettingHitState(){
+	enemyColision(obj_collision);
 	endPath();
 	handlePositionWithPathHandler(true);
 	updateSpriteWithState(sprites.iddle, states.hit);
@@ -301,11 +335,17 @@ function chasePoint(){
 		
 	var _canWalk = pathHandler.calculatePath(chasingVel, destinyX, destinyY);
 	
-	adjustDirection(pathHandler.currentDirection < x ? -1 : 1);
+	faceTowardsX(pathHandler.x);
 	
 	handlePositionWithPathHandler();
 	switchToChase();
-	if (!_canWalk) {
+	
+	var _reachedDestiny = point_distance(x, y, destinyX, destinyY) < 15;
+	
+	if (!_canWalk || _reachedDestiny) {
+		startPointX = x;
+		startPointY = y;
+		
 		currentState = enemyWalkToRandomDirectionState;
 		return;
 	}
@@ -344,6 +384,7 @@ function getRandomPositionOnCircle(_x, _y, _radius) {
 }
 
 function setUpAttackState() {
+	enemyColision(obj_collision);
 	hasHit = false;
 	updateSpriteWithState(sprites.iddle, states.setUpAttack);
 	var _playerX = getMiddlePoint(obj_player.bbox_left, obj_player.bbox_right);
@@ -360,12 +401,13 @@ function setUpAttackState() {
 hasHit = false;
 
 function grabPlayerState() {
+	enemyColision(obj_collision);
 	velh = 0;
 	velv = 0;
 	hasHit = false;
 	updateSpriteWithState(sprites.iddle, states.grabPlayer);
 	
-	if (!instance_exists(obj_grabbing_controller)) {
+	if (!instance_exists(obj_grabbing_controller) || obj_grabbing_controller.escaped) {
 		getHit(1, irandom(360), 10, weaponAttackType.swing, weaponItems.baseballBat);
 	}
 }
@@ -373,6 +415,8 @@ function grabPlayerState() {
 function attackState() {
 	velh = lerp(velh, 0, .05);
 	velv = lerp(velv, 0, .05);
+	
+	enemyColision(obj_collision);
 	
 	x += velh;
 	y += velv;

@@ -1,3 +1,19 @@
+var _residentData = getBaseResident(residentId);
+
+if (is_struct(_residentData)) {
+	name = _residentData.name;
+	genderId = _residentData.genderId;
+	skinColor = _residentData.skinColor;
+	hairOption = _residentData.hairOption;
+	hairColor = _residentData.hairColor;
+	eyeId = _residentData.eyeId;
+	outfitId = _residentData.outfitId;
+	helmetId = _residentData.helmetId;
+	bagId = _residentData.bagId;
+} else {
+	show_debug_message("AVISO: obj_npc_resident criado sem residente válido (residentId: " + string(residentId) + ")");
+}
+
 event_inherited();
 
 canTalk = false;
@@ -10,7 +26,7 @@ enum npcStates {
 	working
 }
 
-function iddle() {
+iddle = function() {
 	state = npcStates.iddle;
 	drawState = drawStates.iddle;
 	
@@ -34,13 +50,6 @@ furniture = false;
 walkSpeed = irandom_range(3,5);
 wanderSpeed = irandom_range(1, 2);
 angleOffset = 0;
-
-pathHandler = instance_create_layer(
-	x, y,
-	layer,
-	obj_path_handler,
-	{ father: id }
-);
 
 wanderTargetX = x;
 wanderTargetY = y;
@@ -66,48 +75,37 @@ greetingOptions = [
 ];
 
 function updateWorkerData() {
-	workerData = workerId != -1 ? getWorkerData(workerId) : false;
+	var _resident = getBaseResident(residentId);
+	var _workplace = is_struct(_resident) ? _resident.workplace : undefined;
+
+	workerData = is_struct(_workplace) ? _workplace : false;
 	
 	if (workerData != false) {
 		handleWorkingStation();
+	} else {
+		furniture = false;
 	}
-}
-
-function getInstanceByObjectId(_objectId) {
-	with(obj_furniture) {
-		if (objectId == _objectId) return self;
-	}
-	
-	return false;
-}
-
-angleTimer = 0;
-
-function handleAngleOffset(_canJiggle, _speed = .3, _force = 3){
-	if (!_canJiggle) {
-		angleOffset = lerp(angleOffset, 0, 0.1);
-		return;
-	}
-	
-	angleTimer += 1;
-	angleOffset = sin(angleTimer * _speed) * _force;
 }
 
 function handleWorkingStation() {
-    var _newFurniture = getInstanceByObjectId(workerData.objectId);
-    
-    if (_newFurniture == false) {
-        furniture = false;
-        currentState = iddle;
-        return;
-    }
-    
-    var _isNewDestination = (furniture == false) || (furniture != _newFurniture);
-    
-    if (_isNewDestination) {
-        furniture = _newFurniture;
-        currentState = goingToWork;
-    }
+	// Só procura a mobília de novo quando o local de trabalho muda ou a instância deixa de existir
+	var _isSameFurniture = furniture != false
+		&& instance_exists(furniture)
+		&& furniture.objectId == workerData.objectId
+		&& furniture.furnitureId == workerData.furnitureId;
+
+	if (_isSameFurniture) return;
+
+	var _newFurniture = getFurnitureInstance(workerData.furnitureId, workerData.objectId);
+
+	if (_newFurniture == noone) {
+		furniture = false;
+		currentState = iddle;
+		return;
+	}
+
+	furniture = _newFurniture;
+	currentState = goingToWork;
 }
 
 function goingToWork() {
@@ -116,8 +114,10 @@ function goingToWork() {
 
 	handleAngleOffset(true, .2, 5);
 	handleHover();
+	updateWorkerData();
 
-	if (furniture == false || !instance_exists(furniture)) {
+	if (workerData == false || furniture == false || !instance_exists(furniture)) {
+		furniture = false;
 		currentState = iddle;
 		return;
 	}
@@ -139,36 +139,11 @@ function goingToWork() {
 		}
 	}
 	
-	var _velh = _destinyX > x ? walkSpeed : -walkSpeed;
-	var _velv = _destinyY > y ? walkSpeed : -walkSpeed;
-	
-	if (choose(0, 1)) {
-		createWalkingParticles(x, y, _velh, _velv, 1);
-	}
-	
 	handleNpcPositionWithPathHandler();
 
 	if (point_distance(x, y, _destinyX, _destinyY) < 8) {
 		onArriveAtWork();
 	}
-}
-
-function handleNpcPositionWithPathHandler(_shouldStop = false) {
-	if (_shouldStop) {
-		pathHandler.x = x;
-		pathHandler.y = y;
-		
-		return;
-	}
-	
-	var _speed = 0.08;
-
-	if (point_distance(x, y, pathHandler.x, pathHandler.y) < 32) {
-		_speed = 0.3;
-	}
-
-	x = lerp(x, pathHandler.x, _speed);
-	y = lerp(y, pathHandler.y, _speed);
 }
 
 function onArriveAtWork() {
@@ -186,16 +161,22 @@ function working() {
 	state = npcStates.working;
 	drawState = drawStates.iddle;
 	handleAngleOffset(false);
-	
+
+	updateWorkerData();
+
+	if (workerData == false || furniture == false || !instance_exists(furniture)) {
+		furniture = false;
+		currentState = iddle;
+		return;
+	}
+
 	var _positions = furniture.workerPositions[workerData.slot];
-	
+
 	var _distance = point_distance(x, y, _positions.x, _positions.y);
-	
+
 	if (_distance > 12) {
 		currentState = goingToWork;
 	}
-	
-	updateWorkerData();
 }
 
 function chooseWanderDestination() {
@@ -222,7 +203,7 @@ function walkingWithoutDestiny() {
 		return;
 	}
 
-	if (wanderTimer > wanderCooldown || point_distance(x, y, wanderTargetX, wanderTargetY) < 8) {
+	if (wanderTimer > wanderCooldown || point_distance(x, y, wanderTargetX, wanderTargetY) < 16) {
 		wanderTimer = 0;
 		wanderCooldown = irandom_range(200, 260);
 		
@@ -237,23 +218,22 @@ function walkingWithoutDestiny() {
 		chooseWanderDestination();
 	}
 
-	pathHandler.calculatePath(
+	var _result = pathHandler.calculatePath(
 		wanderSpeed,
 		wanderTargetX,
 		wanderTargetY
 	);
 	
-	handleNpcPositionWithPathHandler();
-
-	if (choose(0, 1)) {
-		var _velh = currentDirection * wanderSpeed;
-		createWalkingParticles(x, y, _velh, 0, 1);
+	if (!_result) {
+		chooseWanderDestination();
 	}
+	
+	handleNpcPositionWithPathHandler();
 }
 
 updateWorkerData();
 
-if (workerData == false || furniture == false) return;
+if (workerData == false || furniture == false) exit;
 
 var _positions = furniture.workerPositions[workerData.slot];
 

@@ -1,6 +1,7 @@
 enum animals {
 	rabbit,
-	deer
+	deer,
+	rat
 }
 
 function animalDrop(_itemType, _itemId, _maxQuantity) {
@@ -26,4 +27,8 @@ global.passiveAnimals = [];
 
 global.passiveAnimals[animals.deer] = new AnimalPassive(animals.deer, "Cervo", 8, 2, [
 	animalDrop(itemType.consumables, consumableItems.raw_meat_1, 3)
+]);
+
+global.passiveAnimals[animals.rat] = new AnimalPassive(animals.rat, "Rato", 4, 2, [
+	animalDrop(itemType.consumables, consumableItems.raw_rat_meat, 1)
 ]);

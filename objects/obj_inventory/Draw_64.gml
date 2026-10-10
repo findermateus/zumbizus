@@ -17,7 +17,7 @@ if(global.debug && keyboard_check(vk_backspace)){
 	    "Hover Item: " + string(hoverItem),
 	    "Active hover Item: " + string(activeHoverItem),
 	    "Mouse hold toolbar: " + string(holdingItemFromToolBar),
-	    "Active inventory: " + string(global.activeInventoryAction),
+	    "Active inventory Action: " + string(global.activeInventoryAction),
 	    "Mouse is on Inventory: " + string(mouseIsOnInventory),
 	    "Mouse is on Inventory Grid: " + string(mouseIsOnInventoryGrid),
 	    "Secundary Inventory: " + string(secundaryInventory),

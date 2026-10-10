@@ -5,7 +5,10 @@ var _dependencies = [
 	obj_xp_controller,
 	obj_damage_controller,
 	obj_player_stats,
-	obj_quest_manager
+	obj_quest_manager,
+	obj_rain_controller,
+	obj_draw_entity_shadow,
+	obj_room_controller
 ];
 
 array_foreach(_dependencies, function (_dep) {
@@ -31,6 +34,12 @@ playerAngleOffset = 0;
 playerAngleTimer = 0;
 closestObjectToCatch = noone;
 hitFlash = 0;
+initBodyMotion();
+
+damageVignette = 0;
+
+grabCooldownTimer = 0; 
+grabCooldownMax = game_get_speed(gamespeed_fps) * 2;
 
 inputs = {
 	up: keyboard_check(ord("W")),
@@ -138,18 +147,23 @@ function updateEquipedItems(){
 }
 
 function updateQuickUseBar() {
-	if (global.stopInteractions) {
+	if (global.stopInteractions || global.activeInventory || global.activeMenu || global.pause) {
 		return;
 	}
+	
 	var _scrollUp = mouse_wheel_up();
 	var _scrollDown = mouse_wheel_down();
+	
 	global.activeQuickUseIndex += _scrollDown - _scrollUp;
+	
 	if (_scrollDown || _scrollUp) {
 		playClickSound();
 	}
+	
 	if (global.activeQuickUseIndex < 0) global.activeQuickUseIndex = ds_list_size(global.quickUse) - 1;
 	if (global.activeQuickUseIndex >= global.quickUseBarSize) global.activeQuickUseIndex = 0;
 	if (!keyboard_check_released(ord("E"))) return;
+	
 	useItemFromQuickUseBar(global.activeQuickUseIndex);
 }
 
@@ -199,6 +213,8 @@ damageSpeed = 10;
 function playerGetHit(_direction, _damage, _force = 5, _type = damageType.blunt, _shouldRecoverOrGetPushed = true) {
 	screenShake(10);
 	hitFlash = 1;
+	addBodySquash(.28);
+	registerDamageFeedback(_direction, _damage);
 	decreaseHealth(_damage);
 	createBloodEffect(_force, invertDirection(_direction), getMiddlePoint(bbox_left, bbox_right), getMiddlePoint(bbox_top, bbox_bottom), _damage);
 	var _velh = lengthdir_x(_force, _direction);
@@ -258,49 +274,110 @@ function drawPlayer() {
 	var _armorId = is_struct(_armor) ? _armor.itemId : -1;
 	var _helmetId = is_struct(_helmet) ? _helmet.itemId : -1;
 	var _bagId = is_struct(_bag) ? _bag.itemId : -1;
-	
+
+	var _motion = getBodyMotionDraw(_scale);
+	var _drawY = y + _motion.yOffset;
+	var _angle = playerAngleOffset * .5 + _motion.angle;
+
 	drawPersonBody(
 		x,
-		y,
+		_drawY,
 		global.player.gender,
 		currentSpriteFrame,
-		_scale,
-		playerAngleOffset,
+		_motion.scaleY,
+		_angle,
 		image_alpha,
 		_skinColor,
 		_hair,
+		global.player.eyeId,
 		_armorId,
 		_helmetId,
 		_bagId,
-		spriteXscale,
+		_motion.direction,
 		_drawState
 	);
-	
-	hitFlash = max(0, hitFlash - 0.1);
-	
+
+	hitFlash = max(0, hitFlash - 0.08);
+
 	if (hitFlash <= 0) return;
-	
-    gpu_set_fog(true, #e5383b, 0, 0);
-    
+
+	var _flashColor = merge_color(#e5383b, c_white, clamp((hitFlash - .6) / .4, 0, 1));
+    gpu_set_fog(true, _flashColor, 0, 0);
+
 	drawPersonBody(
 		x,
-		y,
+		_drawY,
 		global.player.gender,
 		currentSpriteFrame,
-		_scale,
-		playerAngleOffset,
+		_motion.scaleY,
+		_angle,
 		hitFlash,
 		_skinColor,
 		_hair,
+		global.player.eyeId,
 		_armorId,
 		_helmetId,
 		_bagId,
-		spriteXscale,
+		_motion.direction,
 		_drawState
 	);
-	
+
     gpu_set_fog(false, c_white, 0, 0);
 }
+
+#region feedback de dano na tela
+
+function registerDamageFeedback(_direction, _damage) {
+	damageVignette = min(1, damageVignette + .45 + _damage / 40);
+}
+
+function drawDamageFeedback() {
+	var _healthRatio = global.player.health / max(1, global.player.maxHealth);
+
+	damageVignette = max(0, damageVignette - .03);
+	var _lowHealth = 0;
+	if (_healthRatio < .35) {
+		var _beatSpeed = lerp(90, 220, _healthRatio / .35);
+		_lowHealth = (1 - _healthRatio / .35) * (.25 + max(0, sin(current_time / _beatSpeed)) * .35);
+	}
+	var _intensity = clamp(damageVignette + _lowHealth, 0, 1);
+	if (_intensity > .01) drawDamageVignette(display_get_gui_width(), display_get_gui_height(), _intensity);
+}
+
+function drawDamageVignette(_width, _height, _intensity) {
+	var _centerX = _width / 2;
+	var _centerY = _height / 2;
+	var _halfWidth = _width / 2;
+	var _halfHeight = _height / 2;
+	var _color = #b00010;
+	var _steps = 48;
+
+	var _inner = .95 - _intensity * .25;
+	var _bands = [
+		[_inner, 0],
+		[_inner + .2, .3],
+		[_inner + .45, .7],
+		[1.6, 1]
+	];
+	var _maxAlpha = _intensity * .6;
+
+	for (var b = 0; b < array_length(_bands) - 1; b++) {
+		var _from = _bands[b];
+		var _to = _bands[b + 1];
+
+		draw_primitive_begin(pr_trianglestrip);
+		for (var i = 0; i <= _steps; i++) {
+			var _angle = 360 * i / _steps;
+			var _cos = dcos(_angle);
+			var _sin = -dsin(_angle);
+			draw_vertex_color(_centerX + _cos * _halfWidth * _from[0], _centerY + _sin * _halfHeight * _from[0], _color, _from[1] * _maxAlpha);
+			draw_vertex_color(_centerX + _cos * _halfWidth * _to[0], _centerY + _sin * _halfHeight * _to[0], _color, _to[1] * _maxAlpha);
+		}
+		draw_primitive_end();
+	}
+}
+
+#endregion
 
 setClosestObjectToCatch = function () {
     var closestObject = noone;
@@ -362,7 +439,43 @@ function executeItemMethod(
 		case "dismantle":
 			dismantle(_inventoryJ, _inventoryI);
 			break;
+		case "wear":
+			wear(_item, _inventory, _inventoryJ, _inventoryI);
+			break;
 	}
+}
+
+function wear(_item, _inventory, _j, _i) {
+	var _equipType = "";
+	
+	switch (_item.equipType) {
+		case equipmentType.armor: 
+			_equipType = "armor"; 
+			
+			break; 
+		case equipmentType.bag: 
+			_equipType = "bag"; 
+			
+			break; 
+		case equipmentType.head: 
+			_equipType = "head";			
+			
+			break;
+	}
+	
+	if (_equipType == "") return;
+	
+	var _equipedItem = global.equipments[$ _equipType];
+	
+	if (_equipedItem == BLANK_INVENTORY_SPACE) {
+		cleanInventoryGrid(_inventory, _j, _i);
+		equipEquipment(_equipType, _item);
+		
+		return;
+	}
+	
+	_inventory[# _j, _i] =  _equipedItem;
+	equipEquipment(_equipType, _item)
 }
 
 function use(_item, _comingFromInventory, _inventory, _j, _i) {
@@ -397,6 +510,13 @@ function eat(_item, _comingFromInventory, _inventory, _j, _i) {
 	if (_buff != false) {
 		applyBuff(_buff);
 	}
+	
+	obj_quest_manager.notifyEvent(QuestEvent.ItemConsumed, {
+		itemId: _item.itemId,
+		type: _item.type,
+		quantity: 1
+	});
+	
 	if (!_comingFromInventory) return;
 	handleCleanInventoryAfterConsuming(_item, _data, _j, _i, _inventory);
 }
@@ -410,6 +530,13 @@ function drink(_item, _comingFromInventory, _inventory, _j, _i) {
 	if (_buff != false) {
 		applyBuff(_buff);
 	}
+	
+	obj_quest_manager.notifyEvent(QuestEvent.ItemConsumed, {
+		itemId: _item.itemId,
+		type: _item.type,
+		quantity: 1
+	});
+	
 	if (!_comingFromInventory) return;
 	handleCleanInventoryAfterConsuming(_item, _data, _j, _i, _inventory);
 }
@@ -508,7 +635,7 @@ function unload(_item, _inventory, _j, _i) {
 	var _totalAmmo = _item.bullets;
 
 	if (_totalAmmo == 0) {
-		createNotifyIndicator("Sem munição", getMouseXGui(), getMouseYGui());
+		createGUINotifyIndicator("Sem munição", getMouseXGui(), getMouseYGui());
 		return false;
 	}
 
@@ -549,9 +676,15 @@ function handleInteriors() {
 }
 
 function getGrabbed(_enemyId) {
-	instance_create_layer(x, y, "Controllers", obj_grabbing_controller, {
-		enemy: _enemyId
-	});
+    if (grabCooldownTimer > 0 || currentState == playerGetGrabbedState) {
+        return; 
+    }
+
+    instance_create_layer(x, y, "Controllers", obj_grabbing_controller, {
+        enemy: _enemyId
+    });
 	
-	currentState = playerGetGrabbedState;
+    grabCooldownTimer = grabCooldownMax;
+	
+    currentState = playerGetGrabbedState;
 }

@@ -1,61 +1,50 @@
 event_inherited();
 
-treeHealth = irandom_range(70, 100);
-alpha = 1;
-isDying = false;
+var _treeSprites = [
+    spr_tree,
+    spr_tree2,
+    spr_tree3,
+	spr_tree4,
+	spr_tree5,
+	spr_tree6
+];
 
-shake_power = 0;
-shake_decay = 0.2;
+var _minTreeSize = 250;
+var _maxTreeSize = 300;
 
-// --- JUICE DE IMPACTO ---
-shake_power = 0;
-shake_decay = 0.25;
-tree_scale_x = 1;
-tree_scale_y = 1;
+var _randomSprite = _treeSprites[irandom(array_length(_treeSprites) - 1)];
+        
+var _height = irandom_range(_minTreeSize, _maxTreeSize);
+var _scale = getScale(_height, sprite_get_height(_randomSprite));
+		
+sprite_index = _randomSprite;
+image_xscale = _scale;
+image_yscale = _scale;
 
-// --- JUICE DE QUEDA ---
-fall_angle = 0;
-fall_speed = 0;
-fall_direction = 1;
-
-drop = function (_id, _type, _minQtd, _maxQtd) {
-	return {
-		id: _id,
-		type: _type,
-		maxQtd: _maxQtd,
-		minQtd: _minQtd
-	};
-}
+spriteToDrawShadow = sprite_index
+hp = irandom_range(70, 100);
+required_tool = weaponItems.axe;
+tool_error_msg = "É necessário um machado!";
+hit_sounds = [snd_hit_tree1, snd_hit_tree2, snd_hit_tree3];
 
 drops = [
 	drop(trashItems.wood_log, itemType.trash, 3, 6),
 	drop(trashItems.twig, itemType.trash, 1, 4)
 ];
 
-function getHit(_damage, _direction = 0, _force = 0, _attackType = false, _weaponId = noone){
-	if (isDying) return;
+fall_speed = 0;
+fall_direction = 1;
 
-	var _isHittingWithAnAxe = (_weaponId == weaponItems.axe);
-	audio_play_sound(choose(snd_hit_tree1, snd_hit_tree2, snd_hit_tree3), 0, false);
-	
-	if (!_isHittingWithAnAxe) {
-		_damage = 1;
-		var _alert = instance_create_layer(roomToGuiX(x), roomToGuiY(y), "Alert", obj_alert);
-		_alert.textAlert = "É necessário um machado!";
-	}
-	
-	if (_isHittingWithAnAxe) {
-		hitFlash = 1;
-	}
-	shake_power = 5;
-	tree_scale_x = 1.2;
-	tree_scale_y = 0.8;
-	
-	addDamageToGuiList(x + choose(-32, 32), y, _damage);
-	treeHealth -= _damage;
-	
-	if (treeHealth <= 0) {
-		isDying = true;
-		fall_direction = (instance_exists(obj_player) && x - obj_player.x > 0) ? 1 : -1;
-	}
+onDeathStart = function() {
+    fall_direction = (instance_exists(obj_player) && x - obj_player.x > 0) ? 1 : -1;
+}
+
+processDeath = function() {
+    fall_speed += 0.4; 
+    fall_angle += fall_speed * fall_direction;
+    
+    if (abs(fall_angle) >= 90) {
+        screenShake(10);
+        handleDeath();
+    }
 }

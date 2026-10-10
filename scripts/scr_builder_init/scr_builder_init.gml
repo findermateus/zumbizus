@@ -93,8 +93,8 @@ function initializeFurnitures() {
 
 	global.furniture[furnitureCategories.creation] = [
 	    new FurnitureBuilder(global.furnitureIds.simpleCraftingStation, furnitureCategories.creation, "Estação de criação", spr_simple_crafting_station, 80, _simpleCraftingStationRequirements),
-	    new FurnitureBuilder(global.furnitureIds.meeleCraftingStation, furnitureCategories.creation, "Estação de construção para armas corpo a corpo", spr_meele_crafting_station, 80, _meeleCraftingStationRequirements),
-	    new FurnitureBuilder(global.furnitureIds.medicineCraftingStation, furnitureCategories.creation, "Estação de construção para medicina", spr_medicine_crafting_station, 80, _meeleCraftingStationRequirements),
+	    new FurnitureBuilder(global.furnitureIds.meeleCraftingStation, furnitureCategories.creation, "Estação de armas corpo a corpo", spr_meele_crafting_station, 80, _meeleCraftingStationRequirements),
+	    new FurnitureBuilder(global.furnitureIds.medicineCraftingStation, furnitureCategories.creation, "Estação médica", spr_medicine_crafting_station, 80, _meeleCraftingStationRequirements),
 	    new FurnitureBuilder(global.furnitureIds.campfire, furnitureCategories.creation, "Fogueira", spr_campfire, 80, _campfireRequirements, spr_campfire_icon),
 	];
 

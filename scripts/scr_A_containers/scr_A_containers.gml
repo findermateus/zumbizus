@@ -6,8 +6,7 @@ function containerConfig() {
 		gridHeight: 1,
 		sprite: spr_item_default,
 		soundOpen: snd_open_container,
-		soundClose: snd_close_inventory,
-		furnitureHealth: 100
+		soundClose: snd_close_inventory
 	}
 }
 
@@ -65,8 +64,8 @@ function initializeContainerList() {
 	{
 		var config = containerConfig();
 		config.id = global.furnitureIds.metalCabinetDoubleDoors;
-		config.gridWidth = 2;
-		config.gridHeight = 14;
+		config.gridWidth = 5;
+		config.gridHeight = 5;
 		config.sprite = spr_metal_cabinet_double_doors;
 
 		global.containerList[? config.id] = config;

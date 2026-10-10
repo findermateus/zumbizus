@@ -4,8 +4,6 @@
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":2,"eventType":3,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
-    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
   ],
   "managed":true,
   "name":"obj_tree",
@@ -15,8 +13,8 @@
     "path":"folders/Objects/Enviroment/Forest.yy",
   },
   "parentObjectId":{
-    "name":"obj_hittable",
-    "path":"objects/obj_hittable/obj_hittable.yy",
+    "name":"obj_breakable",
+    "path":"objects/obj_breakable/obj_breakable.yy",
   },
   "persistent":false,
   "physicsAngularDamping":0.1,

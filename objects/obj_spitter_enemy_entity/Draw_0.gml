@@ -5,11 +5,17 @@ if (chargeAmount > 0.6) {
     _shakeY = random_range(-1.5, 1.5) * chargeAmount;
 }
 
-var _finalXScale = image_xscale * drawScaleX;
+_shakeX += getHitOffsetX();
+_shakeY += getHitOffsetY();
 
-draw_sprite_ext(spriteToDrawShadow, currentSpriteFrame, x + _shakeX, y + _shakeY, _finalXScale, drawScaleY, 0, c_white, 1);
+var _finalXScale = image_xscale * drawScaleX * hitScaleX;
+var _finalYScale = drawScaleY * hitScaleY;
+var _angle = hitTilt;
 
-drawHitFlash(spriteToDrawShadow, currentSpriteFrame, x + _shakeX, y + _shakeY, _finalXScale, drawScaleY, image_angle, c_white);
+draw_sprite_ext(spriteToDrawShadow, currentSpriteFrame, x + _shakeX, y + _shakeY, _finalXScale, _finalYScale, _angle, c_white, 1);
+
+drawHitTint(spriteToDrawShadow, currentSpriteFrame, x + _shakeX, y + _shakeY, _finalXScale, _finalYScale, _angle);
+drawHitFlash(spriteToDrawShadow, currentSpriteFrame, x + _shakeX, y + _shakeY, _finalXScale, _finalYScale, _angle, c_white);
 
 var _color = #32CD32;
 
@@ -30,3 +36,5 @@ draw_sprite_ext(
 );
 
 gpu_set_blendmode(bm_normal);
+
+drawHitImpact();

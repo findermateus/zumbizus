@@ -1,4 +1,6 @@
 event_inherited();
+
+tag = "chest";
 actionDescription = "Abrir";
 containerData = undefined;
 //for (var i = 0; i < _containerWidth; ++i)
@@ -40,7 +42,6 @@ function setFurniture(_furniture, _furnitureInfo = {}){
 	containerData = ds_grid_create(_furnitureInfo.gridWidth, _furnitureInfo.gridHeight);
 	ds_grid_clear(containerData, BLANK_INVENTORY_SPACE);
 	sprite_index = _furnitureInfo.sprite;
-	furnitureHealth = _furnitureInfo.furnitureHealth;
 	xPosition = x;
 	yPosition = y;
 }
@@ -66,6 +67,10 @@ function active(){
 		containerOpen = true;
 		setSpriteOpen();
 		openInventoryWithContainer(id, sound, containerData);
+		
+		obj_quest_manager.notifyEvent(QuestEvent.ObjectInteracted, {
+			tag: tag
+		})
 		return;
 	}
 }

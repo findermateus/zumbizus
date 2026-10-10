@@ -1,4 +1,4 @@
 event_inherited();
 adjustObjectDepth();
-updateSpriteFrame();
+if (!isInHitStop()) updateSpriteFrame();
 spriteToDrawShadow = spriteToDraw;

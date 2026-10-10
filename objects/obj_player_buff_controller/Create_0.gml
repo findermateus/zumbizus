@@ -1,293 +1,380 @@
+#macro BUFF_MEDALLION_RADIUS 32
+#macro BUFF_MEDALLION_SPACING 80
+#macro BUFF_HUD_MARGIN 44
+
 totalHealthMultiplier = 1;
 totalStaminaMultiplier = 1;
-animationCurve = animcurve_get_channel(ac_gui, "buff");
-drawY = 0;
-buffUIPosition = [];
-buffEffectDescriptionX = 0;
-buffDescriptionX = 0;
-hoveringI = -1;
-textAlpha = 0;
-hoveringX = 0;
 
-function handleBuffs() {
-	resetStats()
-	
-	array_foreach(global.player.buffList, function (_buff, _index) {
-		_buff.passTime();
-		
-		if (_buff.type == buffTypes.health) {
-			totalHealthMultiplier *= _buff.multiplier;
-		}
-		
-		if (_buff.type == buffTypes.stamina) {
-			totalStaminaMultiplier *= _buff.multiplier;
-		}
-		
-		if (_buff.type == buffTypes.custom) {
-			handleCustomBuff(_buff);
-		}
-	})
-	
-	for (var i = 0; i < array_length(global.player.buffList); i ++) {
-		if (global.player.buffList[i].timeInSeconds != -1 && global.player.buffList[i].currentTime <= 0) {
-			removeBuff(i);
+buffVisuals = {};
+leavingBuffs = [];
+buffSparks = [];
+buffPopups = [];
+hudOffsetY = 0;
+hudAlpha = 1;
+tooltip = {
+	alpha: 0,
+	buff: undefined,
+	x: 0,
+	y: 0
+};
+
+#region ciclo de vida
+
+function runApplyHook(_buff) {
+	var _definition = getBuffDefinition(_buff.id);
+	if (!is_undefined(_definition)) _definition.onApply();
+}
+
+function runRemoveHook(_buff) {
+	var _definition = getBuffDefinition(_buff.id);
+	if (!is_undefined(_definition)) _definition.onRemove();
+}
+
+function recalculatePlayerStats() {
+	totalHealthMultiplier = 1;
+	totalStaminaMultiplier = 1;
+
+	for (var i = 0; i < array_length(global.player.buffList); i++) {
+		var _buff = global.player.buffList[i];
+		var _effects = _buff[$ "effects"] ?? [new BuffEffect(_buff.type, _buff.multiplier)];
+
+		for (var j = 0; j < array_length(_effects); j++) {
+			var _effect = _effects[j];
+			if (_effect.stat == buffTypes.health) totalHealthMultiplier *= _effect.multiplier;
+			if (_effect.stat == buffTypes.stamina) totalStaminaMultiplier *= _effect.multiplier;
 		}
 	}
-	
+
 	global.player.maxHealth = global.player.defaultMaxHealth * totalHealthMultiplier;
 	global.player.maxStamina = global.player.defaultMaxStamina * totalStaminaMultiplier;
 }
 
-function handleCustomBuff(_buff) {
-	switch (_buff.id) {
-		case buffs.bleeding: 
-			if (!instance_exists(obj_player_bleeding_handler)) {
-				instance_create_layer(0, 0, "Controllers", obj_player_bleeding_handler);
-			}
-		break;
-	}
-}
-
-function resetStats() {
-	totalHealthMultiplier = 1;
-	totalStaminaMultiplier = 1;
-	global.player.maxStamina = global.player.defaultMaxStamina;
-	global.player.maxHealth = global.player.defaultMaxHealth;
-}
-
-function applyBuff(_buff) {
+function findBuffIndex(_buffId) {
 	for (var i = 0; i < array_length(global.player.buffList); i++) {
-		var _savedBuff = global.player.buffList[i];
-		if (_savedBuff.id == _buff.id) {
-			_savedBuff.currentTime = _savedBuff.timeInSeconds;
-			return;
-		}
+		if (global.player.buffList[i].id == _buffId) return i;
 	}
+	return -1;
+}
+
+function applyBuff(_buff, _silent = false) {
+	if (!is_struct(_buff)) return;
+
+	var _index = findBuffIndex(_buff.id);
+	if (_index != -1) {
+		var _savedBuff = global.player.buffList[_index];
+		_savedBuff.currentTime = _savedBuff.timeInSeconds;
+		if (!_silent) playRefreshFeedback(_savedBuff);
+		return;
+	}
+
 	array_push(global.player.buffList, _buff);
+	runApplyHook(_buff);
+	recalculatePlayerStats();
+	createBuffVisual(_buff, _silent);
+	if (!_silent) addBuffPopup(_buff);
 }
 
-function drawBuffs() {
-	var _size = 70;
-	var _margin = 40;
-	var _target = global.stopInteractions || isMenuOpen() || global.activeInventory ? - (_size + 5) : _margin;
-	drawY = lerp(drawY, _target, .1);
-	
-	if (drawY < -_size) return;
-	
-	var _guiWidth = display_get_gui_width();
-	var _initialY = _margin;
-	var _initialX = _guiWidth - _margin - _size;
-	var _boxSprite = spr_buff_icon;
-	var _animationSpeed = (delta_time / 1000000) * .8;
-	
-	var _isHovering = false;
-	for (var i = 0; i < array_length(global.player.buffList); i++) {
-	   
-	   if (i >= array_length(buffUIPosition)) {
-	        buffUIPosition[i] = {
-	            animCurveIndex: 0,
-				jiggle: 0
-	        };
-	    }
-		
-	    var _buff = global.player.buffList[i];
-	    var _y = drawY;
-	    var _x = _initialX - ((_size + 15) * i);
-	    var _icon = _buff.icon == undefined ? getIconByBuffType(_buff.type) : _buff.icon;
-	    var _positive = _buff.positive;
+function removeBuff(_index, _expired = false) {
+	if (_index < 0 || _index >= array_length(global.player.buffList)) return;
 
-	    buffUIPosition[i].animCurveIndex = max(0, buffUIPosition[i].animCurveIndex + _animationSpeed * 1.1);
-
-	    var _curveValue = animcurve_channel_evaluate(animationCurve, buffUIPosition[i].animCurveIndex);
-	    var _animX = lerp(_x, _guiWidth, _curveValue);
-
-		var _jiggleX = 0;
-	    var _jiggleIntensity = 5;
-	    var _jiggleSpeed = 12;
-		var _timeRatio = _buff.currentTime / _buff.timeInSeconds;
-
-	    if (_timeRatio < .3) {
-	        buffUIPosition[i].jiggle += _jiggleSpeed;
-	        _jiggleX = sin(degtorad(buffUIPosition[i].jiggle)) * _jiggleIntensity;
-	    } else {
-	        buffUIPosition[i].jiggle = max(0, buffUIPosition[i].jiggle - 10);
-	    }
-
-		_animX += _jiggleX; 
-
-	    draw_sprite_stretched(_boxSprite, 0, _animX, _y, _size, _size);
-	    
-		var _fullWidth = sprite_get_width(_boxSprite);
-		var _fullHeight = sprite_get_height(_boxSprite);
-
-		var _drawHeight = _fullHeight * _timeRatio; 
-
-		draw_sprite_part_ext(
-		    _boxSprite,                                   
-		    1,                                            
-		    0,                                            
-		    _fullHeight - _drawHeight,                    
-		    _fullWidth,                                   
-		    _drawHeight,                                  
-		    _animX,                                       
-		    _y + (_size - (_size * _timeRatio)),          
-		    _size / _fullWidth,
-		    _size / _fullHeight,
-		    _positive ? c_lime : c_red,
-		    1                          
-		);
-
-	    var _iconSize = sprite_get_height(_icon);
-	    var _desiredScale = getScale(_size * .6, _iconSize);
-	    var _ix = _animX + _size / 2;
-	    var _iy = _y + _size / 2;
-
-		drawSpriteShadow(_ix, _iy, _icon, 0, 0, _desiredScale, _desiredScale);
-	    draw_sprite_ext(_icon, 0, _ix, _iy, _desiredScale, _desiredScale, 0, c_white, 1);
-		
-		if (mouseIsOnRectangle(_animX, _y, _animX + _size, _y + _size)) {
-			hoveringI = i;
-			hoveringX = _ix;
-			_isHovering = true;
-		}
-	}
-	
-	textAlpha = lerp(textAlpha, _isHovering, .1);
-	
-	if (hoveringI == -1 || textAlpha <= 0) return;
-	draw_set_font(fnt_default_small)
-	var _buff = global.player.buffList[hoveringI];
-	var _description = _buff.description;
-	var _baseTextX = hoveringX;
-	var _textY = drawY + _size + 7
-
-	var _effectDescription = "";
-	if (_buff.type != buffTypes.custom) {
-	    var _multiplier = multiplierToPercent(_buff.multiplier);
-	    var _percent = _multiplier > 0 ? "+" + string(_multiplier) + "%" : string(_multiplier) + "%";
-	    _effectDescription = _percent + getEffectDescriptionByType(_buff.type);
-	} else {
-	    _effectDescription = _buff.customDescription;
-	}
-	
-	var _descriptionWidth = string_width(_description);
-	var _effectDescriptionWidth = string_width(_effectDescription);
-
-	var _targetDescX = _baseTextX;
-	while(_targetDescX + _descriptionWidth/2 >= _guiWidth - 15) {
-	    _targetDescX--;
-	}
-
-	var _targetEffectX = _baseTextX;
-	while(_targetEffectX + _effectDescriptionWidth/2 >= _guiWidth - 15) {
-	    _targetEffectX--;
-	}
-
-	buffDescriptionX = lerp(buffDescriptionX, _targetDescX, .1);
-	buffEffectDescriptionX = lerp(buffEffectDescriptionX, _targetEffectX, .1);
-
-	draw_set_halign(fa_center);
-	var _setAlpha = draw_get_alpha();
-	draw_set_alpha(textAlpha);
-
-	drawTextShadow(buffDescriptionX, _textY, _description, textAlpha);
-	draw_text(buffDescriptionX, _textY, _description);
-
-	drawTextShadow(buffEffectDescriptionX, _margin, _effectDescription, textAlpha);
-	draw_text(buffEffectDescriptionX, _margin, _effectDescription);
-
-	draw_set_halign(fa_left);
-	draw_set_alpha(_setAlpha);
-	draw_set_font(fnt_gui_default)
-}
-
-function getEffectDescriptionByType(_type) {
-	switch(_type) {
-		case buffTypes.health:
-			return " de vida";
-		case buffTypes.stamina:
-			return " de stamina"
-		case buffTypes.damageAbsortion:
-			return " de absorção de dano"
-		default:
-			return "";
-	}
-}
-
-function getIconByBuffType(_type) {
-	if (_type == buffTypes.health) {
-		return spr_icon_health;
-	}
-	
-	if (_type == buffTypes.stamina) {
-		return spr_icon_stamina
-	}
-}
-
-function multiplierToPercent(_multiplier)
-{
-    var _percent = (_multiplier - 1) * 100;
-    return round(_percent);
-}
-
-function observeDebuffs() {
-	var _buffIds = array_map(global.player.buffList, function (_buff) {
-		return _buff.id;
-	});
-	
-	var _hungryDebuffKey = array_get_index(_buffIds, buffs.hungry);
-	var _hasHungryDebuff = _hungryDebuffKey != -1;
-	var _isHungry = global.player.currentHunger < global.player.defaultTotalHunger * .3;
-	
-	if (_isHungry && !_hasHungryDebuff) {
-		var _isVeryHungry = global.player.currentHunger < global.player.defaultTotalHunger * .15;
-		var _multiplier = _isVeryHungry ? .7 : .9;
-		var _description = _isVeryHungry ? "Está com muita fome" : "Está com fome";
-		var _hungerDebuff = new Buff(buffs.hungry, _multiplier, buffTypes.health, _description, -1, false, spr_icon_hunger_centralized);
-		array_push(global.player.buffList, _hungerDebuff);
-	}
-	
-	if (!_isHungry && _hasHungryDebuff) {
-		removeBuff(_hungryDebuffKey);
-	}
-	
-	var _thirstDebuffKey = array_get_index(_buffIds, buffs.thirst);
-	var _hasThirstDebuff = _thirstDebuffKey != -1;
-	var _isThirsty = global.player.currentThirst < global.player.defaultTotalThirst * .3;
-	
-	if (_isThirsty && !_hasThirstDebuff) {
-		var _isVeryThirsty = global.player.currentThirst < global.player.defaultTotalThirst * .15;
-		var _multiplier = _isVeryThirsty ? .6 : .4;
-		var _description = _isVeryThirsty ? "Está com muita sede" : "Está com sede";
-		var _thirstDebuff = new Buff(buffs.thirst, _multiplier, buffTypes.stamina, _description, -1, false, spr_icon_thirst_centralized);
-		array_push(global.player.buffList, _thirstDebuff);
-	}
-	
-	if (!_isThirsty && _hasThirstDebuff) {
-		removeBuff(_thirstDebuffKey);
-	}
-}
-
-function removeBuff(_key) {
-	
-	//sei lá pq adicionei esse if, mas estava quebrando dizendo que a chave não existia no array.
-	if (arrayKeyExists(buffUIPosition, _key)) {
-		buffUIPosition[_key].animCurveIndex = 0;
-	}
-	
-	var _lastKey = array_length(global.player.buffList) - 1;
-	
-	if (arrayKeyExists(buffUIPosition, _lastKey)) {
-		buffUIPosition[_lastKey].animCurveIndex = 0;
-	}
-	array_delete(global.player.buffList, _key, 1);
-	hoveringI = -1;
+	var _buff = global.player.buffList[_index];
+	array_delete(global.player.buffList, _index, 1);
+	runRemoveHook(_buff);
+	recalculatePlayerStats();
+	sendVisualToLeaving(_buff, _expired);
 }
 
 function removeBuffByBuffId(_buffId) {
-	for (var i = 0; i < array_length(global.player.buffList); i ++) {
-		if (global.player.buffList[i].id == _buffId) {
-			removeBuff(i);
+	for (var i = array_length(global.player.buffList) - 1; i >= 0; i--) {
+		if (global.player.buffList[i].id == _buffId) removeBuff(i);
+	}
+}
+
+function clearBuffs() {
+	for (var i = array_length(global.player.buffList) - 1; i >= 0; i--) {
+		runRemoveHook(global.player.buffList[i]);
+	}
+	global.player.buffList = [];
+	buffVisuals = {};
+	leavingBuffs = [];
+	recalculatePlayerStats();
+}
+
+function onBuffListLoaded() {
+	for (var i = 0; i < array_length(global.player.buffList); i++) {
+		var _buff = global.player.buffList[i];
+		runApplyHook(_buff);
+		createBuffVisual(_buff, true);
+	}
+	recalculatePlayerStats();
+}
+
+function tickBuffs() {
+	var _delta = delta_time / 1000000;
+
+	for (var i = array_length(global.player.buffList) - 1; i >= 0; i--) {
+		var _buff = global.player.buffList[i];
+		if (_buff.timeInSeconds == -1) continue;
+
+		_buff.currentTime = max(0, _buff.currentTime - _delta);
+		if (_buff.currentTime <= 0) removeBuff(i, true);
+	}
+}
+
+#endregion
+
+#region debuffs de condição (fome e sede)
+
+function setConditionBuff(_group, _desiredId) {
+	var _activeId = -1;
+	for (var i = 0; i < array_length(_group); i++) {
+		if (findBuffIndex(_group[i]) != -1) {
+			_activeId = _group[i];
+			break;
+		}
+	}
+
+	if (_activeId == _desiredId) return;
+	if (_activeId != -1) removeBuffByBuffId(_activeId);
+	if (_desiredId != -1) applyBuff(buildBuffFromDefinition(_desiredId));
+}
+
+function observeDebuffs() {
+	var _hunger = global.player.currentHunger;
+	var _totalHunger = global.player.defaultTotalHunger;
+	var _hungerLevel = _hunger < _totalHunger * .15 ? buffs.veryHungry : (_hunger < _totalHunger * .3 ? buffs.hungry : -1);
+	setConditionBuff([buffs.hungry, buffs.veryHungry], _hungerLevel);
+
+	var _thirst = global.player.currentThirst;
+	var _totalThirst = global.player.defaultTotalThirst;
+	var _thirstLevel = _thirst < _totalThirst * .15 ? buffs.veryThirst : (_thirst < _totalThirst * .3 ? buffs.thirst : -1);
+	setConditionBuff([buffs.thirst, buffs.veryThirst], _thirstLevel);
+}
+
+#endregion
+
+#region estado visual e feedback
+
+function getBuffVisual(_buff) {
+	return buffVisuals[$ string(_buff.id)];
+}
+
+function createBuffVisual(_buff, _silent) {
+	buffVisuals[$ string(_buff.id)] = {
+		x: _silent ? -1 : display_get_gui_width() + 80,
+		scale: _silent ? 1 : 1.5,
+		scaleVelocity: 0,
+		flash: _silent ? 0 : 1,
+		ring: 0,
+		hover: 0
+	};
+}
+
+function playRefreshFeedback(_buff) {
+	var _visual = getBuffVisual(_buff);
+	if (is_undefined(_visual)) return;
+	_visual.scale = 1.3;
+	_visual.scaleVelocity = 0;
+	_visual.ring = 1;
+	_visual.flash = .6;
+}
+
+function sendVisualToLeaving(_buff, _expired) {
+	var _visual = getBuffVisual(_buff);
+	variable_struct_remove(buffVisuals, string(_buff.id));
+	if (is_undefined(_visual) || _visual.x < 0) return;
+
+	array_push(leavingBuffs, {
+		buff: _buff,
+		x: _visual.x,
+		scale: _visual.scale,
+		angle: 0,
+		life: 1
+	});
+
+	if (_expired) {
+		var _y = BUFF_HUD_MARGIN + BUFF_MEDALLION_RADIUS + hudOffsetY;
+		repeat (10) {
+			var _direction = random(360);
+			var _speed = random_range(2, 5);
+			array_push(buffSparks, {
+				x: _visual.x,
+				y: _y,
+				hsp: lengthdir_x(_speed, _direction),
+				vsp: lengthdir_y(_speed, _direction),
+				life: 1,
+				color: getBuffColor(_buff)
+			});
 		}
 	}
 }
+
+function addBuffPopup(_buff) {
+	if (!instance_exists(obj_player)) return;
+
+	var _text = _buff.type == buffTypes.custom ? _buff.description : getBuffEffectText(_buff);
+	array_push(buffPopups, {
+		text: _text,
+		color: getBuffColor(_buff),
+		x: obj_player.x,
+		y: obj_player.bbox_top - 12,
+		life: 0,
+		maxLife: 100
+	});
+}
+
+function updateBuffVisual(_visual, _targetX) {
+	_visual.x = _visual.x < 0 ? _targetX : lerp(_visual.x, _targetX, .2);
+	_visual.scaleVelocity += (1 - _visual.scale) * .25;
+	_visual.scaleVelocity *= .7;
+	_visual.scale += _visual.scaleVelocity;
+	_visual.flash = max(0, _visual.flash - .06);
+	_visual.ring = max(0, _visual.ring - .04);
+}
+
+#endregion
+
+#region HUD
+
+function isBuffHudVisible() {
+	var _isChestOpen = global.activeInventory && instance_exists(obj_inventory) && obj_inventory.secundaryInventory != false;
+	if (_isChestOpen) return true;
+	return !(global.stopInteractions || isMenuOpen() || global.activeInventory);
+}
+
+function drawBuffHud() {
+	var _isVisible = isBuffHudVisible();
+	hudOffsetY = lerp(hudOffsetY, _isVisible ? 0 : -(BUFF_HUD_MARGIN + BUFF_MEDALLION_RADIUS * 2 + 20), .15);
+	hudAlpha = lerp(hudAlpha, _isVisible, .15);
+
+	var _guiWidth = display_get_gui_width();
+	var _centerY = BUFF_HUD_MARGIN + BUFF_MEDALLION_RADIUS + hudOffsetY;
+	var _hoveredBuff = undefined;
+	var _hoveredX = 0;
+
+	for (var i = 0; i < array_length(global.player.buffList); i++) {
+		var _buff = global.player.buffList[i];
+		var _visual = getBuffVisual(_buff);
+		if (is_undefined(_visual)) {
+			createBuffVisual(_buff, true);
+			_visual = getBuffVisual(_buff);
+		}
+
+		var _targetX = _guiWidth - BUFF_HUD_MARGIN - BUFF_MEDALLION_RADIUS - i * BUFF_MEDALLION_SPACING;
+		updateBuffVisual(_visual, _targetX);
+
+		var _isHover = hudAlpha > .5 && point_distance(device_mouse_x_to_gui(0), device_mouse_y_to_gui(0), _visual.x, _centerY) <= BUFF_MEDALLION_RADIUS;
+		_visual.hover = lerp(_visual.hover, _isHover, .25);
+		if (_isHover) {
+			_hoveredBuff = _buff;
+			_hoveredX = _visual.x;
+		}
+
+		if (hudAlpha < .02) continue;
+		draw_set_alpha(hudAlpha);
+		drawBuffMedallion(_buff, _visual.x, _centerY + getBuffJiggle(_buff), BUFF_MEDALLION_RADIUS, _visual.scale * (1 + _visual.hover * .08), _visual.flash, _visual.ring);
+		draw_set_alpha(1);
+	}
+
+	drawLeavingBuffs(_centerY);
+	drawBuffSparks();
+	drawBuffTooltip(_hoveredBuff, _hoveredX, _centerY + BUFF_MEDALLION_RADIUS + 14);
+}
+
+function getBuffJiggle(_buff) {
+	if (_buff.isPermanent() || _buff.getTimeRatio() >= .3) return 0;
+	return sin(current_time / 60) * 1.5;
+}
+
+function drawLeavingBuffs(_centerY) {
+	for (var i = array_length(leavingBuffs) - 1; i >= 0; i--) {
+		var _leaving = leavingBuffs[i];
+		_leaving.life -= .07;
+		_leaving.scale = lerp(_leaving.scale, 0, .18);
+		_leaving.angle += 8;
+
+		if (_leaving.life <= 0) {
+			array_delete(leavingBuffs, i, 1);
+			continue;
+		}
+
+		draw_set_alpha(_leaving.life * hudAlpha);
+		drawBuffMedallion(_leaving.buff, _leaving.x, _centerY, BUFF_MEDALLION_RADIUS, _leaving.scale, 0, 0, _leaving.angle);
+		draw_set_alpha(1);
+	}
+}
+
+function drawBuffSparks() {
+	for (var i = array_length(buffSparks) - 1; i >= 0; i--) {
+		var _spark = buffSparks[i];
+		_spark.x += _spark.hsp;
+		_spark.y += _spark.vsp;
+		_spark.hsp *= .9;
+		_spark.vsp *= .9;
+		_spark.life -= .04;
+
+		if (_spark.life <= 0) {
+			array_delete(buffSparks, i, 1);
+			continue;
+		}
+
+		draw_set_alpha(_spark.life * hudAlpha);
+		draw_set_color(_spark.color);
+		draw_rectangle(_spark.x - 2, _spark.y - 2, _spark.x + 2, _spark.y + 2, false);
+	}
+	draw_set_alpha(1);
+	draw_set_color(c_white);
+}
+
+function drawBuffTooltip(_buff, _x, _y) {
+	if (!is_undefined(_buff)) tooltip.buff = _buff;
+	tooltip.alpha = lerp(tooltip.alpha, !is_undefined(_buff), .2);
+
+	if (tooltip.alpha < .02 || is_undefined(tooltip.buff)) return;
+	if (findBuffIndex(tooltip.buff.id) == -1) {
+		tooltip.alpha = 0;
+		return;
+	}
+
+	if (!is_undefined(_buff)) {
+		tooltip.x = tooltip.alpha < .1 ? _x : lerp(tooltip.x, _x, .3);
+		tooltip.y = _y;
+	}
+
+	drawBuffDetailsPanel(tooltip.buff, tooltip.x, tooltip.y + (1 - tooltip.alpha) * -8, tooltip.alpha, true);
+}
+
+function drawBuffPopups() {
+	for (var i = array_length(buffPopups) - 1; i >= 0; i--) {
+		var _popup = buffPopups[i];
+		_popup.life++;
+
+		if (_popup.life >= _popup.maxLife) {
+			array_delete(buffPopups, i, 1);
+			continue;
+		}
+
+		var _progress = _popup.life / _popup.maxLife;
+		var _rise = (1 - power(1 - _progress, 3)) * 60;
+		var _scale = _progress < .15 ? lerp(1.6, 1, _progress / .15) : 1;
+		var _alpha = _progress > .7 ? 1 - (_progress - .7) / .3 : 1;
+		var _x = roomToGuiX(_popup.x);
+		var _y = roomToGuiY(_popup.y) - _rise - i * 26;
+
+		draw_set_font(fnt_gui_default);
+		draw_set_halign(fa_center);
+		draw_set_valign(fa_bottom);
+		drawTextShadow(_x, _y, _popup.text, _alpha, 3, _scale);
+		draw_set_alpha(_alpha);
+		draw_set_color(_popup.color);
+		draw_text_transformed(_x, _y, _popup.text, _scale, _scale, 0);
+	}
+	draw_set_color(c_white);
+	draw_set_alpha(1);
+	draw_set_halign(fa_left);
+	draw_set_valign(fa_top);
+}
+
+#endregion
+
+onBuffListLoaded();

@@ -1,0 +1,2 @@
+extractionTrail.destroy();
+trailPointTrail.destroy();

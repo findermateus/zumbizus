@@ -41,7 +41,7 @@
         "GMTimeLine",
         "GMObject",
         "GMRoom",
-      ],"listItems":null,"multiselect":false,"name":"light_depth","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"0","varType":0,},
+      ],"listItems":null,"multiselect":false,"name":"light_depth","rangeEnabled":false,"rangeMax":10.0,"rangeMin":0.0,"resourceType":"GMObjectProperty","resourceVersion":"2.0","value":"-30000","varType":0,},
     {"$GMObjectProperty":"v1","%Name":"shadow_depth","filters":[
         "GMTileSet",
         "GMSprite",

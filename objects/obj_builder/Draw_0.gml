@@ -1,2 +1,3 @@
 currentState();
 drawGridLines();
+drawPlacementEffects();

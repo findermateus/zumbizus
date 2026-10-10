@@ -3,15 +3,6 @@ checkInventoryInput();
 
 if(keyboard_check_released(vk_alt)) global.debug = !global.debug;
 
-//if(keyboard_check_released(ord("P"))){
-//	var _savePlayerData = true;
-//	var _saveRoomData = room == RoomPlayerBase;
-//	saveGame(_savePlayerData, _saveRoomData);
-//}
-//if(keyboard_check_released(ord("L"))){
-//	loadGame();
-//}
-
 if (keyboard_check_pressed(ord("N"))){
 	increaseHunger(100);
 }
@@ -19,23 +10,38 @@ if (keyboard_check_pressed(ord("J"))){
 	increaseThirst(70);
 }
 
-if (keyboard_check_pressed(ord("B"))){
-	decreaseHealth(20);
+if (global.debug && keyboard_check_released(ord("Z"))) {
+	var _zombie = choose(obj_horde_enemy_entity, obj_horde_enemy_entity, obj_spitter_enemy_entity);
+	
+	instance_create_layer(mouse_x, mouse_y, "Instances", _zombie)
 }
 
-
-//if (keyboard_check_released(vk_space)){
-//	getNpcListFromDatabase();
-//}
-
-if (global.debug && keyboard_check_released(ord("Z"))) {
-	instance_create_layer(mouse_x, mouse_y, "Instances", obj_horde_enemy_entity)
+if (keyboard_check_pressed(ord("C"))) {
+	global.player.money += 100;
 }
 
 if (keyboard_check_pressed(vk_escape)) {
-	if (!isGamePaused) {
+	if (isGamePaused) {
+		unPauseGame();
+	} else if (!handleMenuEscape()) {
 		pauseGame();
-		return
+		return;
 	}
-	unPauseGame();
+}
+
+if (keyboard_check_released(ord("P"))) {
+	saveGame(true);
+}
+
+if (global.debug && keyboard_check_pressed(ord("B"))) {
+		if (instance_exists(obj_map_transition)) return;
+	
+		playClickSound();
+	
+		var _room = room == rm_debug ? rm_player_base : rm_debug;
+	
+		instance_create_layer(0, 0, "Controllers", obj_map_transition, {
+			destination:  _room,
+			mapName: "Debug"
+		});
 }

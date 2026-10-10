@@ -1,6 +1,10 @@
 global.activeEquipedItemIndex = BLANK_INVENTORY_SPACE ;
 global.activeEquipedItem = BLANK_INVENTORY_SPACE ;
 
+function getEquipedItem() {
+	return global.activeEquipedItem;
+}
+
 function equipItem(_index){
 	if (global.activeEquipedItemIndex == _index){
 		global.activeEquipedItemIndex = BLANK_INVENTORY_SPACE;

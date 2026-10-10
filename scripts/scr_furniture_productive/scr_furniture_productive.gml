@@ -17,7 +17,6 @@ function ProductiveFurniture(_id, _attribute, _workerQuantity, _workerRequiremen
 function ProductiveFurnitureData(_id, _objectId) constructor {
 	id = _id;
 	objectId = _objectId;
-	workers = [];
 }
 
 global.productiveFurnitures = ds_map_create();

@@ -14,11 +14,27 @@ function setUpWeaponCraftingGlobals() {
 		new RequirementBuilder(trashItems.rock, 2, itemType.trash)
 	];
 	
-	global.craftingItems[craftingCategories.weapons] = [
+	global.craftingRecipes[craftingCategories.weapons] = [
 		new CraftingItem(weaponItems.nailBoard, itemType.weapons, 1, _nailBoardRequirements, blueprints.nailBoard),
 		new CraftingItem(weaponItems.baseballBatWithNails, itemType.weapons, 1, _baseballNailsBatRequirements, blueprints.baseballBatWithNails),
 		new CraftingItem(weaponItems.axe, itemType.weapons, 1, _axeRequirements, blueprints.axe)
 	];
+}
+
+function getItemRecipee(_itemCategory, _itemId) {
+	if (!arrayKeyExists(global.craftingRecipes, _itemCategory)) {
+		return undefined;
+	}
+	
+	var _recipees = global.craftingRecipes[_itemCategory];
+	
+	for (var i = 0; i < array_length(_recipees); i++) {
+		if (_recipees[i].id == _itemId) {
+			return _recipees[i];
+		}
+	}
+	
+	return undefined;
 }
 
 function setUpWeaponRepairGlobals() {
@@ -50,7 +66,7 @@ function setUpWeaponRepairGlobals() {
 		new CraftingItem(weaponItems.nailBoard, itemType.weapons, 1, _nailBoardRepairRequirements, blueprints.nailBoard),
 		new CraftingItem(weaponItems.baseballBat, itemType.weapons, 1, _baseballBatWithNailsRequirements),
 		new CraftingItem(weaponItems.baseballBatWithNails, itemType.weapons, 1, _baseballBatWithNailsRequirements, blueprints.baseballBatWithNails),
-		new CraftingItem(weaponItems.sword, itemType.weapons, 1, _bladeReq),
+		new CraftingItem(weaponItems.machete, itemType.weapons, 1, _bladeReq),
 		new CraftingItem(weaponItems.axe, itemType.weapons, 1, _axeRequirements)
 	];
 }

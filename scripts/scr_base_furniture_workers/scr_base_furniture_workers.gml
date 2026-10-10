@@ -1,123 +1,111 @@
+// A atribuição de trabalho vive só no residente (BaseResident.workplace).
+// Os workers de uma mobília são derivados dos residentes e ficam em cache até a próxima mudança.
 
-function setWorkerData(_objectId, _furnitureId, _workerId, _slot) {
-	var _worker = getWorkerData(_workerId);
-	if (_worker == false) {
-		global.workingNpcs[_workerId] = {
-			furnitureId: _furnitureId,
-			objectId: _objectId,
-			slot: _slot
-		};
-	}
+global.furnitureWorkersCache = {};
+
+function invalidateFurnitureWorkersCache() {
+	global.furnitureWorkersCache = {};
 }
 
-function cleanWorkerData(_workerId) {
-	var _worker = getWorkerData(_workerId);
-	if (_worker == false) return;
-	
-	var _furnitureData = getFurnitureData(_worker.furnitureId, _worker.objectId);
-	if (_furnitureData != undefined && is_array(_furnitureData.workers)) {
-		_furnitureData.workers[_worker.slot] = -1;
-	}
-	
-	global.workingNpcs[_workerId] = false;
+function getFurnitureWorkersCacheKey(_furnitureId, _objectId) {
+	return string(_furnitureId) + ":" + string(_objectId);
 }
 
-function getWorkerData(_workerId) {
-	if (array_length(global.workingNpcs) <= _workerId) {
-		return false;
-	}
-	
-	var _worker = global.workingNpcs[_workerId];
-	
-	return is_struct(_worker) ? _worker : false;
-}
-
+/// @returns {Array} | -1
 function getFurnitureWorkers(_furnitureId, _objectId) {
+	var _cacheKey = getFurnitureWorkersCacheKey(_furnitureId, _objectId);
+	var _cached = global.furnitureWorkersCache[$ _cacheKey];
+
+	if (!is_undefined(_cached)) return _cached;
+
 	var _furniturePreset = global.productiveFurnitures[? _furnitureId];
-	var _return = [];
-	
-	for (var i = 0; i < _furniturePreset.workerQuantity; i++) {
-		_return[i] = -1;
+	var _workerQuantity = is_struct(_furniturePreset) ? _furniturePreset.workerQuantity : 0;
+	var _workers = array_create(_workerQuantity, -1);
+
+	var _residents = getBaseResidentList();
+
+	for (var i = 0; i < array_length(_residents); i++) {
+		var _workplace = _residents[i].workplace;
+
+		if (!isResidentWorkplace(_workplace, _furnitureId, _objectId)) continue;
+		if (_workplace.slot < 0 || _workplace.slot >= _workerQuantity) continue;
+
+		_workers[_workplace.slot] = _residents[i];
 	}
-	
-	var _furnitureData = getFurnitureData(_furnitureId, _objectId);
-	if (_furnitureData == undefined) return _return;
-	
-	var _alreadySetWorkersLength = array_length(_furnitureData.workers);
-	var _returnLength = array_length(_return);
-	
-	if (_returnLength == _alreadySetWorkersLength) {
-		return _furnitureData.workers;
+
+	global.furnitureWorkersCache[$ _cacheKey] = _workers;
+
+	return _workers;
+}
+
+function isResidentWorkplace(_workplace, _furnitureId, _objectId) {
+	return is_struct(_workplace) && _workplace.furnitureId == _furnitureId && _workplace.objectId == _objectId;
+}
+
+/// @returns {Struct.BaseResident|Real} | -1
+function assignResidentToFurniture(_residentId, _furnitureId, _objectId, _slot) {
+	var _resident = getBaseResident(_residentId);
+
+	if (is_undefined(_resident)) return -1;
+
+	var _previousOccupant = getFurnitureWorkers(_furnitureId, _objectId)[_slot];
+
+	if (is_struct(_previousOccupant) && _previousOccupant != _resident) {
+		_previousOccupant.workplace = undefined;
 	}
-	
-	for (var i = 0; i < _returnLength; i++) {
-		if (!arrayKeyExists(_furnitureData.workers, i)) {
-			_furnitureData.workers[i] = _return[i];
+
+	_resident.workplace = {
+		furnitureId: _furnitureId,
+		objectId: _objectId,
+		slot: _slot
+	};
+
+	invalidateFurnitureWorkersCache();
+
+	return _previousOccupant == _resident ? -1 : _previousOccupant;
+}
+
+function unassignResident(_residentId) {
+	var _resident = getBaseResident(_residentId);
+
+	if (is_undefined(_resident)) return;
+
+	_resident.workplace = undefined;
+
+	invalidateFurnitureWorkersCache();
+}
+
+function unassignFurnitureWorkers(_furnitureId, _objectId) {
+	var _residents = getBaseResidentList();
+
+	for (var i = 0; i < array_length(_residents); i++) {
+		if (isResidentWorkplace(_residents[i].workplace, _furnitureId, _objectId)) {
+			_residents[i].workplace = undefined;
 		}
 	}
-	
-	return _furnitureData.workers;
+
+	invalidateFurnitureWorkersCache();
 }
 
-function removeWorkerFromFurnitureBySlot(_furnitureId, _objectId, _workerSlot) {
-	var _furnitureData = getFurnitureData(_furnitureId, _objectId);
-	if (_furnitureData == undefined) return -1;
-	
-	cleanFurnitureWorkersData(_furnitureId, _objectId);
-	
-	var _worker = _furnitureData.workers[_workerSlot];
-	_furnitureData.workers[_workerSlot] = -1;
-	
-	if (_worker != -1) {
-		cleanWorkerData(_worker.id);
+/// @returns {Id.Instance} | noone
+function getFurnitureInstance(_furnitureId, _objectId) {
+	with (obj_furniture) {
+		if (objectId == _objectId && furnitureId == _furnitureId) return id;
 	}
-	
-	return _worker;
+
+	return noone;
 }
 
-function addWorkerToFurniture(_furnitureId, _objectId, _workerSlot, _workerId, _workerLevel = undefined) {
+function canResidentWorkAt(_resident, _furnitureId) {
 	var _furniturePreset = global.productiveFurnitures[? _furnitureId];
-	var _furnitureData = getFurnitureData(_furnitureId, _objectId);
-	if (_furnitureData == undefined) return -1;
-	
-	if (_workerLevel == undefined) {
-		var _npc = global.npcList[_workerId];
-		var _furnitureAttribute = _furniturePreset.attribute;
-		_workerLevel = _npc.attributes[_furnitureAttribute].level;
-	}
-	
-	var _worker = new Worker(_workerId);
-	
-	cleanFurnitureWorkersData(_furnitureId, _objectId);
-	
-	// remove o worker de onde ele já estava
-	cleanWorkerData(_workerId);
-	
-	var _oldSlotWorker = _furnitureData.workers[_workerSlot];
-	if (_oldSlotWorker != -1) {
-		cleanWorkerData(_oldSlotWorker.id);
-	}
-	
-	_furnitureData.workers[_workerSlot] = _worker;
-	setWorkerData(_objectId, _furnitureId, _workerId, _workerSlot);
-	
-	return _oldSlotWorker;
-}
 
-/// @method cleanFurnitureWorkersData(id da mobilia, id do objeto) serve para carregar os arrays impedindo erros
-function cleanFurnitureWorkersData(_furnitureId, _objectId) {
-	var _furniturePreset = global.productiveFurnitures[? _furnitureId];
-	var _furnitureData = getFurnitureData(_furnitureId, _objectId);
-	
-	if (_furnitureData == undefined) return;
-	
-	if (!is_array(_furnitureData.workers)) {
-		_furnitureData.workers = [];
+	if (!is_struct(_furniturePreset)) return false;
+
+	var _requirements = _furniturePreset.workerRequirements;
+
+	for (var i = 0; i < array_length(_requirements); i++) {
+		if (!_requirements[i].verifyWorker(_resident)) return false;
 	}
-	
-	for (var i = 0; i < _furniturePreset.workerQuantity; i++) {
-		if (!arrayKeyExists(_furnitureData.workers, i)) {
-			_furnitureData.workers[i] = -1;
-		}
-	}
+
+	return true;
 }

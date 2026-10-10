@@ -1,9 +1,7 @@
 event_inherited();
 furnitureInfo = {};
 furniture = {};
-furnitureHealth = 1;
 curveAnimationIndex = 0;
-animationCurveInventoryFull = animcurve_get_channel(ac_inventory,"inventory_full");
 xPosition = x;
 yPosition = y;
 furnitureCategory = furnitureCategories.storage;
@@ -15,6 +13,27 @@ yPositionToDrawShadow = yPosition;
 
 currentSpriteFrame = 0;
 shadowDirection = 0;
+
+placeSquash = 0;
+placeSquashVelocity = 0;
+
+function playPlaceBounce(_force = .3) {
+	placeSquash = _force;
+	placeSquashVelocity = 0;
+}
+
+function updatePlaceBounce() {
+	if (placeSquash == 0 && placeSquashVelocity == 0) return;
+
+	placeSquashVelocity += -placeSquash * .3;
+	placeSquashVelocity *= .75;
+	placeSquash += placeSquashVelocity;
+
+	if (abs(placeSquash) < .002 && abs(placeSquashVelocity) < .002) {
+		placeSquash = 0;
+		placeSquashVelocity = 0;
+	}
+}
 
 //IMPORTANTE, toda mobilia produtiva que permite workers deve adaptar esse método
 function loadSavedData(_data) {
@@ -41,8 +60,8 @@ function loadFurnitureByDefaultId(){
 
 function setFurniture(_furniture, _furnitureInfo = {}){
 	furnitureInfo = _furnitureInfo;
-	furnitureHealth = furnitureInfo.furnitureHealth;
 	furniture = _furniture;
+	furnitureId = _furniture[$ "furnitureId"] ?? furnitureId;
 	xPosition = x;
 	yPosition = y;
 	setShadow(_furniture.sprite, 0, 1);
@@ -53,43 +72,8 @@ function resetPosition(){
 	yPosition = y;
 }
 
-function dropItemsWhenDestroyed(){
-	var _items = furniture.requirements;
-	for(var i = 0; i < array_length(_items); i++){
-		var _item = _items[i];
-		var _quantityToCreate = irandom(_item.quantity);
-		if (_quantityToCreate > 0){
-			var _itemObject = instance_create_layer(x, y, "Items", obj_item);
-			_itemObject.defineItem(_item.type, _item.itemId);
-			_itemObject.item.quantity = _quantityToCreate;
-			_itemObject.createdWithBounce(irandom_range(8, 12), irandom(365));
-		}
-	}
-}
-
-function getHit(_damage = 1){
-	furnitureHealth -= _damage;
-	curveAnimationIndex = 0;
-	xPosition = x;
-	yPosition = y;
-	currentState = shake;
-	if (furnitureHealth <= 0){
-		instance_destroy(id, true);
-	}
-}
-
 function innactive(){
 	return;
-}
-
-function shake(){
-	if(curveAnimationIndex>=1){
-		curveAnimationIndex = 0;
-		currentState = innactive;
-	}
-	curveAnimationIndex += (delta_time/1000000);
-	xPosition += animcurve_channel_evaluate(animationCurveInventoryFull, curveAnimationIndex) * 2;
-	yPosition += animcurve_channel_evaluate(animationCurveInventoryFull, curveAnimationIndex) * 2;
 }
 
 currentState = innactive;
