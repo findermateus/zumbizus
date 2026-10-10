@@ -184,9 +184,19 @@ function drawDefaultInventory(){
 	mouseIsOnPrimaryInventory = true;
 	mouseIsOnSecundaryInventory = false;
 	drawInventoryGrid(global.inventory, _inventoryBox);
+
+	var _effects = getPanelTransition(.2);
+	var _effectsX = _x + CHARACTER_PANEL_WIDTH + INVENTORY_PANEL_GAP + _effects.offset;
+	var _effectsY = _y + _inventoryHeight + INVENTORY_PANEL_GAP;
+	draw_set_alpha(_effects.alpha);
+	var _effectsHeight = drawActiveEffectsPanel(_effectsX, _effectsY, _inventoryWidth, gui_height - 70 - _effectsY);
 	draw_set_alpha(1);
 
-	return _y + max(_characterHeight, _inventoryHeight);
+	if (checkMousePositionWithInventory(_effectsX, _effectsX + _inventoryWidth, _effectsY, _effectsY + _effectsHeight)) {
+		mouseIsOnInventory = true;
+	}
+
+	return max(_y + _characterHeight, _effectsY + _effectsHeight);
 }
 
 function drawPersonalizedInventory(_x, _y, _inventory, _mouseIsOnOtherMenu = false) {

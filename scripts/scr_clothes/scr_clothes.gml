@@ -38,3 +38,4 @@ global.clothesDisplay.armor[equipmentItems.leatherJacket] = new ArmorClothing(sp
 global.clothesDisplay.head[equipmentItems.simpleCap] = new HelmetClothing(spr_cosmetic_simple_cap);
 global.clothesDisplay.head[equipmentItems.boonieHat] = new HelmetClothing(spr_cosmetic_boonie_hat);
 global.clothesDisplay.bag[equipmentItems.simpleBag] = new BagClothing(spr_cosmetic_simple_bag);
+global.clothesDisplay.bag[equipmentItems.trailBag] = new BagClothing(spr_cosmetic_simple_bag);

@@ -414,6 +414,136 @@ function drawQuickUseSection(_x, _y, _width) {
 
 #endregion
 
+#region efeitos ativos (buffs/debuffs no inventário)
+
+#macro EFFECT_ROW_HEIGHT 64
+#macro EFFECT_ROW_GAP 8
+
+function getActiveEffectsPanelHeight(_rows) {
+	var _visibleRows = max(1, _rows);
+	return INVENTORY_PANEL_PADDING * 2 + INVENTORY_PANEL_HEADER + _visibleRows * EFFECT_ROW_HEIGHT + (_visibleRows - 1) * EFFECT_ROW_GAP;
+}
+
+function drawActiveEffectsPanel(_x, _y, _width, _maxHeight) {
+	var _buffList = global.player.buffList;
+	var _count = array_length(_buffList);
+
+	var _maxRows = max(1, floor((_maxHeight - INVENTORY_PANEL_PADDING * 2 - INVENTORY_PANEL_HEADER + EFFECT_ROW_GAP) / (EFFECT_ROW_HEIGHT + EFFECT_ROW_GAP)));
+	var _hasOverflow = _count > _maxRows;
+	var _rows = _hasOverflow ? _maxRows : _count;
+	var _height = getActiveEffectsPanelHeight(_rows);
+
+	drawInventoryPanelBackground(_x, _y, _width, _height);
+
+	var _contentX = _x + INVENTORY_PANEL_PADDING;
+	var _contentWidth = _width - INVENTORY_PANEL_PADDING * 2;
+	var _rowY = drawPanelHeader(_contentX, _y + INVENTORY_PANEL_PADDING, _contentWidth, "Efeitos ativos", "", string(_count), #c9c9c9);
+	var _alpha = draw_get_alpha();
+
+	if (_count == 0) {
+		draw_set_font(fnt_gui_default);
+		draw_set_halign(fa_center);
+		draw_set_valign(fa_middle);
+		draw_set_color(#7d7d7d);
+		draw_text(_x + _width / 2, _rowY + EFFECT_ROW_HEIGHT / 2, "Nenhum efeito ativo");
+		draw_set_color(c_white);
+		draw_set_halign(fa_left);
+		draw_set_valign(fa_top);
+		return _height;
+	}
+
+	var _drawnRows = _hasOverflow ? _rows - 1 : _rows;
+	for (var i = 0; i < _drawnRows; i++) {
+		drawActiveEffectRow(_buffList[i], _contentX, _rowY, _contentWidth);
+		_rowY += EFFECT_ROW_HEIGHT + EFFECT_ROW_GAP;
+	}
+
+	if (_hasOverflow) {
+		draw_set_font(fnt_gui_default);
+		draw_set_halign(fa_center);
+		draw_set_valign(fa_middle);
+		draw_set_color(#a8a8a8);
+		draw_text(_x + _width / 2, _rowY + EFFECT_ROW_HEIGHT / 2, "+" + string(_count - _drawnRows) + " efeitos");
+		draw_set_color(c_white);
+		draw_set_halign(fa_left);
+		draw_set_valign(fa_top);
+	}
+
+	draw_set_alpha(_alpha);
+	return _height;
+}
+
+function drawActiveEffectRow(_buff, _x, _y, _width) {
+	var _anim = getSlotAnim("fx:" + string(_buff.id));
+	var _isHover = mouseIsOnRectangle(_x, _y, _x + _width, _y + EFFECT_ROW_HEIGHT);
+	_anim.hover = lerp(_anim.hover, _isHover, .25);
+
+	var _alpha = draw_get_alpha();
+	var _lift = _anim.hover * 3;
+	var _rowY = _y - _lift;
+	var _color = getBuffColor(_buff);
+
+	var _scale = 1;
+	var _flash = 0;
+	var _ring = 0;
+	if (instance_exists(obj_player_buff_controller)) {
+		var _visual = obj_player_buff_controller.getBuffVisual(_buff);
+		if (!is_undefined(_visual)) {
+			_scale = _visual.scale;
+			_flash = _visual.flash;
+			_ring = _visual.ring;
+		}
+	}
+
+	draw_set_color(_color);
+	draw_set_alpha(_alpha * (.06 + _anim.hover * .08));
+	draw_roundrect_ext(_x, _rowY, _x + _width, _rowY + EFFECT_ROW_HEIGHT, 12, 12, false);
+	draw_set_alpha(_alpha * .5);
+	draw_rectangle(_x, _rowY + 8, _x + 3, _rowY + EFFECT_ROW_HEIGHT - 8, false);
+	draw_set_color(c_white);
+	draw_set_alpha(_alpha);
+
+	var _medallionRadius = 24;
+	var _medallionX = _x + 16 + _medallionRadius;
+	var _centerY = _rowY + EFFECT_ROW_HEIGHT / 2;
+	var _jiggle = (!_buff.isPermanent() && _buff.getTimeRatio() < .3) ? sin(current_time / 60) * 1.5 : 0;
+	drawBuffMedallion(_buff, _medallionX + _jiggle, _centerY, _medallionRadius, _scale, _flash, _ring);
+
+	var _textX = _medallionX + _medallionRadius + 16;
+	var _timeText = _buff.isPermanent() ? "Contínuo" : formatSeconds(_buff.currentTime);
+	draw_set_font(fnt_gui_default);
+	var _timeWidth = string_width(_timeText);
+	var _maxTextWidth = _x + _width - 16 - _timeWidth - 16 - _textX;
+
+	var _title = _buff.description;
+	var _titleScale = min(1, _maxTextWidth / max(1, string_width(_title)));
+	draw_set_halign(fa_left);
+	draw_set_valign(fa_bottom);
+	drawTextShadow(_textX, _centerY + 2, _title, _alpha, 2, _titleScale);
+	draw_text_transformed(_textX, _centerY + 2, _title, _titleScale, _titleScale, 0);
+
+	var _effect = getBuffEffectText(_buff);
+	draw_set_font(fnt_default_small);
+	var _effectScale = min(1, _maxTextWidth / max(1, string_width(_effect)));
+	draw_set_valign(fa_top);
+	draw_set_color(_color);
+	draw_text_transformed(_textX, _centerY + 4, _effect, _effectScale, _effectScale, 0);
+
+	draw_set_font(fnt_gui_default);
+	draw_set_halign(fa_right);
+	draw_set_valign(fa_middle);
+	var _isEnding = !_buff.isPermanent() && _buff.getTimeRatio() < .3;
+	drawTextShadow(_x + _width - 16, _centerY, _timeText, _alpha);
+	draw_set_color(_isEnding ? #ffb3b3 : #c9c9c9);
+	draw_text(_x + _width - 16, _centerY, _timeText);
+
+	draw_set_color(c_white);
+	draw_set_halign(fa_left);
+	draw_set_valign(fa_top);
+}
+
+#endregion
+
 #region equipamentos
 
 function getEquipmentSlotFromItem(_item) {

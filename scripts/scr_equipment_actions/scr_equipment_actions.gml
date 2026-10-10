@@ -9,14 +9,22 @@ function handleEquipmentSwitch(_type){
 	_handleMethods[$ _type]();
 }
 
+function getBaseInventorySlots() {
+	return global.inventoryWidth * global.inventoryHeight;
+}
+
 function handleBagSwitch(){
-	if (global.equipments.bag == BLANK_INVENTORY_SPACE){
-		setInventorySize(global.inventoryWidth, global.inventoryHeight);
-		return;
+	var _slots = getBaseInventorySlots();
+
+	if (global.equipments.bag != BLANK_INVENTORY_SPACE){
+		_slots += global.equipments.bag.equipmentData.capacity;
 	}
-	var _itemData = global.equipments.bag.equipmentData;
-	var _inventoryWidth = global.inventoryWidth + _itemData.capacity
-	setInventorySize(_inventoryWidth, global.inventoryHeight);
+
+	setInventorySlots(_slots);
+}
+
+function setInventorySlots(_slots) {
+	setInventorySize(max(1, _slots), 1);
 }
 
 function handleHeadSwitch() {

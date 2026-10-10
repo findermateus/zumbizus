@@ -23,11 +23,27 @@ function EquipmentConfig() {
 	_config.name = "Mochila Zoada";
 	_config.description = "Mochila fraca feita a partir de panos.";
 	_config.sprite = spr_simple_bag;
-	_config.equipmentData.capacity = 2;
+	_config.equipmentData.capacity = 10;
 	_config.value = 115;
 
 	global.items[itemType.equipment][equipmentItems.simpleBag] = _config;
 	global.itemMethods[itemType.equipment][equipmentItems.simpleBag] = [
+		new ItemMethod("Equipar", "wear")
+	];
+}
+
+{
+	var _config = EquipmentConfig();
+	_config.itemId = equipmentItems.trailBag;
+	_config.equipType = equipmentType.bag;
+	_config.name = "Mochila de Trilha";
+	_config.description = "Mochila grande e reforçada, cheia de bolsos.";
+	_config.sprite = spr_simple_bag;
+	_config.equipmentData.capacity = 15;
+	_config.value = 320;
+
+	global.items[itemType.equipment][equipmentItems.trailBag] = _config;
+	global.itemMethods[itemType.equipment][equipmentItems.trailBag] = [
 		new ItemMethod("Equipar", "wear")
 	];
 }

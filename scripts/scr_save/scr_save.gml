@@ -194,12 +194,23 @@ function loadPlayerData() {
 }
 
 function loadArrayToDsGrid(_data, _destiny) {
+	var _items = [];
+	for (var i = 0; i < array_length(_data); i++) {
+		var _row = _data[i];
+		if (!is_array(_row)) continue;
+		for (var j = 0; j < array_length(_row); j++) {
+			array_push(_items, _row[j]);
+		}
+	}
+
 	var _height = ds_grid_height(_destiny);
 	var _width = ds_grid_width(_destiny);
+	var _index = 0;
 
 	for (var i = 0; i < _height; i++) {
 		for (var j = 0; j < _width; j++) {
-			_destiny[# j, i] = _data[i][j];
+			_destiny[# j, i] = _index < array_length(_items) ? _items[_index] : BLANK_INVENTORY_SPACE;
+			_index++;
 		}
 	}
 }
@@ -294,7 +305,13 @@ function getPlayerBuffsSaveData() {
 }
 
 function loadPlayerBuffs(_buffs) {
-	global.player.buffList = [];
+	var _hasController = instance_exists(obj_player_buff_controller);
+
+	if (_hasController) {
+		obj_player_buff_controller.clearBuffs();
+	} else {
+		global.player.buffList = [];
+	}
 
 	if (!is_struct(_buffs)) return;
 	if (!variable_struct_exists(_buffs, "buffList")) return;
@@ -304,30 +321,30 @@ function loadPlayerBuffs(_buffs) {
 
 		if (!is_struct(_buffData)) continue;
 
-		var _icon = variable_struct_exists(_buffData, "icon")
-			? _buffData.icon
-			: undefined;
+		var _buff = buildBuffFromDefinition(_buffData.id);
 
-		var _customDescription = variable_struct_exists(_buffData, "customDescription")
-			? _buffData.customDescription
-			: "";
-
-		var _buff = new Buff(
-			_buffData.id,
-			_buffData.multiplier,
-			_buffData.type,
-			_buffData.description,
-			_buffData.timeInSeconds,
-			_buffData.positive,
-			_icon,
-			_customDescription
-		);
+		if (_buff == false) {
+			_buff = new Buff(
+				_buffData.id,
+				_buffData.multiplier,
+				_buffData.type,
+				_buffData.description,
+				_buffData.timeInSeconds,
+				_buffData.positive,
+				undefined,
+				_buffData[$ "customDescription"] ?? ""
+			);
+		}
 
 		if (variable_struct_exists(_buffData, "currentTime")) {
 			_buff.currentTime = _buffData.currentTime;
 		}
 
-		array_push(global.player.buffList, _buff);
+		if (_hasController) {
+			obj_player_buff_controller.applyBuff(_buff, true);
+		} else {
+			array_push(global.player.buffList, _buff);
+		}
 	}
 }
 

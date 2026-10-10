@@ -1,1 +1,2 @@
-drawBuffs();
+drawBuffHud();
+drawBuffPopups();

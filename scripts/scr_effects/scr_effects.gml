@@ -96,6 +96,26 @@ function drawSpriteFitCentered(_sprite, _cx, _cy, _maxSize, _scaleMultiplier = 1
 	draw_sprite_ext(_sprite, 0, _cx - _offset[0], _cy - _offset[1], _scale, _scale, _angle, _color, _alpha);
 }
 
+function drawRadialProgress(_cx, _cy, _innerRadius, _outerRadius, _ratio, _color, _alpha) {
+	if (_ratio <= 0 || _alpha <= 0) return;
+
+	var _steps = max(2, ceil(48 * _ratio));
+	draw_primitive_begin(pr_trianglestrip);
+	for (var i = 0; i <= _steps; i++) {
+		var _angle = 90 - 360 * _ratio * (i / _steps);
+		draw_vertex_color(_cx + lengthdir_x(_outerRadius, _angle), _cy + lengthdir_y(_outerRadius, _angle), _color, _alpha);
+		draw_vertex_color(_cx + lengthdir_x(_innerRadius, _angle), _cy + lengthdir_y(_innerRadius, _angle), _color, _alpha);
+	}
+	draw_primitive_end();
+}
+
+function formatSeconds(_seconds) {
+	var _total = max(0, ceil(_seconds));
+	var _minutes = _total div 60;
+	var _rest = _total mod 60;
+	return string(_minutes) + ":" + (_rest < 10 ? "0" : "") + string(_rest);
+}
+
 function addDamageToGuiList(_x, _y, _value, _isKill = false){
 	if (!instance_exists(obj_damage_controller)) return;
 	with (obj_damage_controller) {
