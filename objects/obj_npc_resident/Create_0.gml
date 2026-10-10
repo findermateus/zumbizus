@@ -139,13 +139,6 @@ function goingToWork() {
 		}
 	}
 	
-	var _velh = _destinyX > x ? walkSpeed : -walkSpeed;
-	var _velv = _destinyY > y ? walkSpeed : -walkSpeed;
-	
-	if (choose(0, 1)) {
-		createWalkingParticles(x, y, _velh, _velv, 1);
-	}
-	
 	handleNpcPositionWithPathHandler();
 
 	if (point_distance(x, y, _destinyX, _destinyY) < 8) {
@@ -236,11 +229,6 @@ function walkingWithoutDestiny() {
 	}
 	
 	handleNpcPositionWithPathHandler();
-
-	if (choose(0, 1)) {
-		var _velh = currentDirection * wanderSpeed;
-		createWalkingParticles(x, y, _velh, 0, 1);
-	}
 }
 
 updateWorkerData();

@@ -407,7 +407,7 @@ function grabPlayerState() {
 	hasHit = false;
 	updateSpriteWithState(sprites.iddle, states.grabPlayer);
 	
-	if (!instance_exists(obj_grabbing_controller)) {
+	if (!instance_exists(obj_grabbing_controller) || obj_grabbing_controller.escaped) {
 		getHit(1, irandom(360), 10, weaponAttackType.swing, weaponItems.baseballBat);
 	}
 }

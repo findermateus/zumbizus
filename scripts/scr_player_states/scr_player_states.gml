@@ -20,9 +20,6 @@ function walkingState(){
 	increaseHunger(.04);
 	switchBetweenWalkingAndIddle();
 	switchToAimState();
-	if (choose(0, 1)) {
-		if (velh != 0 || velv != 0) createWalkingParticles(x, y, velh, velv, 1);
-	}
 }
 
 function runningState() {
@@ -40,7 +37,6 @@ function runningState() {
 	increaseHunger(.05);
 	switchBetweenWalkingAndIddle();
 	switchToAimState();
-	if (velh != 0 || velv != 0) createWalkingParticles(x, y, velh, velv, 1);
 }
 
 function adjustPlayerSpeed(_speed){
@@ -142,8 +138,6 @@ function aimWeaponState(){
 			currentState = playerAttackState;
 		}
 	}
-	
-	if (!_isStoped && (velh != 0 || velv != 0)) createWalkingParticles(x, y, velh, velv, .5);
 }
 
 function aimWeapon(_weapon){
@@ -187,7 +181,7 @@ function playerGetGrabbedState() {
     
     updateSpriteWithState(_sprite);
     
-    if (!instance_exists(obj_grabbing_controller)) {
+    if (!instance_exists(obj_grabbing_controller) || obj_grabbing_controller.escaped) {
         currentState = playerIddleState;
     }
 }

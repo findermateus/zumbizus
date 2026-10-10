@@ -3,101 +3,340 @@
 #macro QUICK_USE_HEIGHT 150
 #macro QUICK_USE_SLOT_SIZE 60
 #macro QUICK_USE_SELECTED_SLOT_SIZE 75
+#macro STATUS_HUD_MARGIN 30
+#macro STATUS_BAR_WIDTH 230
+#macro STATUS_BAR_GAP 6
+#macro LEVEL_MEDALLION_RADIUS 36
+#macro LEVEL_MEDALLION_PADDING 6
 
 gui_height = display_get_gui_height();
 gui_width = display_get_gui_width();
 xMouseToGui = device_mouse_x_to_gui(0);
 yMouseToGui = device_mouse_y_to_gui(0);
-jiggleData = ds_map_create();
 healthStatus = { value: 1, max: 1, jiggleTimer: 0 };
 staminaStatus = { value: 1, max: 1, jiggleTimer: 0 };
-jiggleDecrease = 0.1;
 equipedItemsUI = [];
 equipedItemsY = gui_height + EQUIPED_ITEM_GRID_SIZE;
 equipedItemsX2 = 0;
 
 quickUseItemsY = gui_height + QUICK_USE_HEIGHT;
 
-function drawJiggleStatusBar(_id, _statusStruct, _x, _y, _width, _bThickness, _sprite, _defaultMaxValue) {
-	if (_statusStruct.value < _statusStruct.max * .3) {
-		_statusStruct.jiggleTimer = 5;
-	}
-	
-	if (!ds_map_exists(jiggleData, _id)) {
-		ds_map_add(jiggleData, _id, { y: _y, amplitude: 0 });
-	}
+#region painel de status (vida, stamina, nível/XP)
 
-	_statusStruct = _statusStruct > _defaultMaxValue ? _defaultMaxValue : _statusStruct;
-
-	var _data = ds_map_find_value(jiggleData, _id);
-	var _jiggleSpeed = 0.000015;
-	
-	var _angle = 0;
-	
-	if (_statusStruct.jiggleTimer > 0.1) {
-		_data.amplitude = 4;
-		_statusStruct.jiggleTimer -= jiggleDecrease;
-	}
-
-	if (_data.amplitude > 0.01) {
-		var _jigglePhase = get_timer() * _jiggleSpeed;
-		var _jiggleOffset = sin(_jigglePhase) * _data.amplitude;
-		_data.y = _y + _jiggleOffset;
-		_data.amplitude *= 0.9;
-	} else {
-		_data.y = _y;
-		_data.amplitude = 0;
-	}
-
-	var _size = drawPlayerStatusBar(
-		_statusStruct.value,
-		_defaultMaxValue,
-		_x,
-		_data.y,
-		_width,
-		1,
-		_bThickness,
-		_sprite,
-		_angle
-	);
-	
-	if (global.debug) draw_text(_x, _y, string(round(_statusStruct.value)) + "/" + string(round(_defaultMaxValue)));
-	
-	return _size;
+function createVitalBarUI() {
+	return {
+		display: 0,
+		trail: 0,
+		lastValue: 0,
+		flash: 0,
+		shake: 0,
+		glow: 0,
+		recovering: false,
+		initialized: false
+	};
 }
 
-function drawHealth(_x, _y, _width, _bThickness) {
-	return drawJiggleStatusBar("health", healthStatus, _x, _y, _width, _bThickness, spr_life_bar, max(global.player.defaultMaxHealth, global.player.maxHealth));
-}
+healthBarUI = createVitalBarUI();
+staminaBarUI = createVitalBarUI();
+panelOffsetX = 0;
+staminaIdleTimer = 0;
+levelUI = {
+	pop: 0,
+	popVelocity: 0,
+	flash: 0,
+	xpDisplay: 0,
+	xpTrail: 0,
+	lastLevel: global.player.level
+};
+panelSparks = [];
 
-function drawStamina(_x, _y, _width, _bThickness) {
-	return drawJiggleStatusBar("stamina", staminaStatus, _x, _y, _width, _bThickness, spr_energy_bar, max(global.player.defaultMaxStamina, global.player.maxStamina));
-}
-
-function drawPlayerStatsList(
-	_color = c_green,
-	_xPosition = 30,
-	_barWidth = 250,
-	_borderThickness = 3
-) {
-	static _x = _xPosition;
-	if (isMenuOpen()) {
-		_x = lerp(_x, -_barWidth - 10, .1);
-		if (_x < -_barWidth) return;
-	} else {
-		_x = lerp(_x, _xPosition, .1);
+/// @param _reactsToDrops false para a stamina, que cai um pouquinho todo frame ao correr
+function updateVitalBar(_ui, _value, _reactsToDrops) {
+	if (!_ui.initialized) {
+		_ui.display = _value;
+		_ui.trail = _value;
+		_ui.lastValue = _value;
+		_ui.initialized = true;
 	}
 
-	var _vMargin = 15;
+	if (_value < _ui.lastValue - .01 && _reactsToDrops) {
+		_ui.flash = 1;
+		_ui.shake = min(9, 3 + (_ui.lastValue - _value) * .3);
+	}
+	if (_value > _ui.lastValue + .01) _ui.glow = 1;
+	_ui.recovering = _value > _ui.lastValue + .001;
+	_ui.lastValue = _value;
 
-	var _yPosition = display_get_gui_height() - 100 - _vMargin * 2;
+	_ui.display = lerp(_ui.display, _value, .25);
+	_ui.trail = _ui.display < _ui.trail ? lerp(_ui.trail, _ui.display, .035) : _ui.display;
+	_ui.flash = max(0, _ui.flash - .08);
+	_ui.shake = lerp(_ui.shake, 0, .2);
+	_ui.glow = max(0, _ui.glow - .03);
+}
 
-	var _currentY = _yPosition;
-	
-	var _barHeight = drawStamina(_x, _currentY, _barWidth, _borderThickness);
-	_currentY -= _barHeight;
-	_currentY -= _vMargin;
-	drawHealth(_x, _currentY, _barWidth, _borderThickness);
+
+function drawStatusFillOverlay(_sprite, _x, _y, _scale, _fromRatio, _toRatio, _color, _alpha) {
+	if (_toRatio <= _fromRatio || _alpha <= 0) return;
+
+	var _fillStart = 21;
+	var _fillableWidth = sprite_get_width(_sprite) - _fillStart;
+	var _left = _fillStart + _fillableWidth * _fromRatio;
+
+	gpu_set_fog(true, _color, 0, 0);
+	draw_sprite_general(_sprite, 1, _left, 0, _fillableWidth * (_toRatio - _fromRatio), sprite_get_height(_sprite), _x + _left * _scale, _y, _scale, _scale, 0, c_white, c_white, c_white, c_white, _alpha);
+	gpu_set_fog(false, c_white, 0, 0);
+}
+
+/// @param _options { isExhausted, alpha }
+function drawHudStatusBar(_ui, _sprite, _x, _y, _width, _maxValue, _options = {}) {
+	var _isExhausted = _options[$ "isExhausted"] ?? false;
+	var _oldAlpha = draw_get_alpha();
+	var _alpha = _oldAlpha * (_options[$ "alpha"] ?? 1);
+
+	if (_ui.shake > .2) {
+		_x += random_range(-_ui.shake, _ui.shake);
+		_y += random_range(-_ui.shake, _ui.shake) * .5;
+	}
+
+	var _scale = _width / sprite_get_width(_sprite);
+	var _max = max(1, _maxValue);
+	var _ratio = clamp(_ui.display / _max, 0, 1);
+	var _valueRatio = clamp(_ui.lastValue / _max, 0, 1);
+
+	draw_set_alpha(_alpha);
+	drawSpriteWithGpuFog(c_black, _sprite, 0, _x + 3, _y + 4, _scale, _scale, 0, _alpha * .35);
+	drawInventoryStatusRow(_sprite, _ui.display, _maxValue, _ui.trail, _x, _y, _width);
+
+	if (_ui.flash > 0) drawStatusFillOverlay(_sprite, _x, _y, _scale, 0, _ratio, c_white, _alpha * _ui.flash * .8);
+
+	if (_ui.glow > 0) {
+		gpu_set_blendmode(bm_add);
+		drawStatusFillOverlay(_sprite, _x, _y, _scale, _ratio, _valueRatio, #5fd35f, _alpha * _ui.glow * .6);
+		gpu_set_blendmode(bm_normal);
+	}
+
+	if (_ui.recovering && !_isExhausted && _ratio > .05) {
+		var _band = .18;
+		var _position = ((current_time / 900) mod (1 + _band)) - _band;
+		gpu_set_blendmode(bm_add);
+		drawStatusFillOverlay(_sprite, _x, _y, _scale, max(0, _position) * _ratio, min(1, _position + _band) * _ratio, c_white, _alpha * .25);
+		gpu_set_blendmode(bm_normal);
+	}
+
+	if (_isExhausted) {
+		var _labelAlpha = _alpha * (.6 + sin(current_time / 120) * .4);
+		var _labelY = _y + sprite_get_height(_sprite) * _scale / 2;
+		draw_set_font(fnt_default_small);
+		draw_set_halign(fa_left);
+		draw_set_valign(fa_middle);
+		drawTextShadow(_x + _width + 10, _labelY, "Exausto", _labelAlpha, 2);
+		draw_set_alpha(_labelAlpha);
+		draw_set_color(#ffb3b3);
+		draw_text(_x + _width + 10, _labelY, "Exausto");
+		draw_set_color(c_white);
+		draw_set_valign(fa_top);
+		draw_set_font(fnt_gui_default);
+	}
+
+	draw_set_alpha(_oldAlpha);
+}
+
+function onXpPopArrive() {
+	levelUI.pop = max(levelUI.pop, .18);
+	levelUI.popVelocity = 0;
+	levelUI.flash = 1;
+}
+
+function updateLevelMedallion() {
+	if (global.player.level > levelUI.lastLevel) {
+		levelUI.lastLevel = global.player.level;
+		levelUI.pop = .5;
+		levelUI.popVelocity = 0;
+		levelUI.flash = 1;
+		levelUI.xpDisplay = 0;
+		levelUI.xpTrail = 0;
+		addPanelSparks(24, #ffd166);
+	}
+
+	var _ratio = clamp(global.player.xp / max(1, global.xpNext), 0, 1);
+	levelUI.xpTrail = lerp(levelUI.xpTrail, _ratio, .2);
+	levelUI.xpDisplay = lerp(levelUI.xpDisplay, _ratio, .06);
+
+	levelUI.popVelocity += -levelUI.pop * .25;
+	levelUI.popVelocity *= .7;
+	levelUI.pop += levelUI.popVelocity;
+	levelUI.flash = max(0, levelUI.flash - .05);
+}
+
+function getLevelMedallionCenter() {
+	var _layout = getStatusLayout();
+	return [_layout.medallionX, _layout.medallionY];
+}
+
+function addPanelSparks(_count, _color) {
+	var _center = getLevelMedallionCenter();
+	repeat (_count) {
+		var _direction = random(360);
+		var _speed = random_range(2, 6);
+		array_push(panelSparks, {
+			x: _center[0] + lengthdir_x(LEVEL_MEDALLION_RADIUS, _direction),
+			y: _center[1] + lengthdir_y(LEVEL_MEDALLION_RADIUS, _direction),
+			hsp: lengthdir_x(_speed, _direction),
+			vsp: lengthdir_y(_speed, _direction),
+			life: 1,
+			color: _color
+		});
+	}
+}
+
+function drawLevelMedallion(_cx, _cy) {
+	var _radius = LEVEL_MEDALLION_RADIUS * (1 + levelUI.pop);
+	var _ringThickness = 7;
+	var _alpha = draw_get_alpha();
+
+	draw_set_color(c_black);
+	draw_set_alpha(_alpha * .35);
+	draw_circle(_cx + 3, _cy + 4, _radius, false);
+	draw_set_color(#1b1b1b);
+	draw_set_alpha(_alpha * .92);
+	draw_circle(_cx, _cy, _radius, false);
+
+	drawRadialProgress(_cx, _cy, _radius - _ringThickness, _radius, 1, c_black, _alpha * .55);
+	drawRadialProgress(_cx, _cy, _radius - _ringThickness, _radius, levelUI.xpTrail, #fff1d6, _alpha * .45);
+	drawRadialProgress(_cx, _cy, _radius - _ringThickness, _radius, levelUI.xpDisplay, #ffd166, _alpha);
+
+	if (levelUI.flash > 0) {
+		gpu_set_blendmode(bm_add);
+		drawRadialProgress(_cx, _cy, _radius - _ringThickness - 3, _radius + 3, 1, #ffd166, _alpha * levelUI.flash * .5);
+		gpu_set_blendmode(bm_normal);
+	}
+
+	var _label = "NÍVEL";
+	var _levelText = string(global.player.level);
+	var _gap = 2;
+	draw_set_font(fnt_default_small);
+	var _labelWidth = string_width(_label);
+	var _labelHeight = string_height(_label);
+	draw_set_font(fnt_gui_title);
+	var _numberWidth = string_width(_levelText);
+	var _numberHeight = string_height(_levelText);
+
+	var _innerRadius = LEVEL_MEDALLION_RADIUS - _ringThickness - LEVEL_MEDALLION_PADDING;
+	var _available = _innerRadius * 2 * .78;
+	var _contentHeight = _labelHeight + _gap + _numberHeight;
+	var _fitScale = min(1, _available / _contentHeight, _available / max(_labelWidth, _numberWidth));
+	var _popScale = 1 + levelUI.pop;
+
+	var _top = _cy - _contentHeight * _fitScale * _popScale / 2;
+	var _labelY = _top + _labelHeight * _fitScale * _popScale / 2;
+	var _numberY = _top + (_labelHeight + _gap) * _fitScale * _popScale + _numberHeight * _fitScale * _popScale / 2;
+
+	draw_set_halign(fa_center);
+	draw_set_valign(fa_middle);
+	draw_set_font(fnt_default_small);
+	draw_set_alpha(_alpha);
+	draw_set_color(#a8a8a8);
+	draw_text_transformed(_cx, _labelY, _label, _fitScale * _popScale, _fitScale * _popScale, 0);
+
+	var _levelScale = _fitScale * _popScale;
+	draw_set_font(fnt_gui_title);
+	drawTextShadow(_cx, _numberY, _levelText, _alpha, 3, _levelScale);
+	draw_set_color(merge_color(c_white, #ffd166, levelUI.flash));
+	draw_text_transformed(_cx, _numberY, _levelText, _levelScale, _levelScale, 0);
+
+	draw_set_color(c_white);
+	draw_set_alpha(_alpha);
+	draw_set_halign(fa_left);
+	draw_set_valign(fa_top);
+	draw_set_font(fnt_gui_default);
+}
+
+function drawPanelSparks() {
+	gpu_set_blendmode(bm_add);
+	for (var i = array_length(panelSparks) - 1; i >= 0; i--) {
+		var _spark = panelSparks[i];
+		_spark.x += _spark.hsp;
+		_spark.y += _spark.vsp;
+		_spark.hsp *= .9;
+		_spark.vsp *= .9;
+		_spark.life -= .035;
+
+		if (_spark.life <= 0) {
+			array_delete(panelSparks, i, 1);
+			continue;
+		}
+
+		var _size = 1 + _spark.life * 3;
+		draw_set_alpha(_spark.life);
+		draw_set_color(_spark.color);
+		draw_rectangle(_spark.x - _size, _spark.y - _size, _spark.x + _size, _spark.y + _size, false);
+	}
+	gpu_set_blendmode(bm_normal);
+	draw_set_alpha(1);
+	draw_set_color(c_white);
+}
+
+function getStatusHudWidth() {
+	return STATUS_BAR_WIDTH;
+}
+
+function getStatusLayout() {
+	var _barHeight = sprite_get_height(spr_life_bar) * STATUS_BAR_WIDTH / sprite_get_width(spr_life_bar);
+	var _left = STATUS_HUD_MARGIN + panelOffsetX;
+	var _top = gui_height - STATUS_HUD_MARGIN - (_barHeight * 2 + STATUS_BAR_GAP);
+
+	return {
+		barHeight: _barHeight,
+		medallionX: _left + LEVEL_MEDALLION_RADIUS,
+		medallionY: _top - 14 - LEVEL_MEDALLION_RADIUS,
+		barsX: _left,
+		barsY: _top
+	};
+}
+
+function drawStatusPanel() {
+	var _hudWidth = getStatusHudWidth();
+	panelOffsetX = lerp(panelOffsetX, isMenuOpen() ? -(_hudWidth + STATUS_HUD_MARGIN + 20) : 0, .12);
+
+	var _healthMax = max(global.player.defaultMaxHealth, global.player.maxHealth);
+	var _staminaMax = max(global.player.defaultMaxStamina, global.player.maxStamina);
+	updateVitalBar(healthBarUI, global.player.health, true);
+	updateVitalBar(staminaBarUI, global.player.stamina, false);
+	updateLevelMedallion();
+
+	staminaIdleTimer = global.player.stamina >= global.player.maxStamina - .5 ? staminaIdleTimer + 1 : 0;
+	var _staminaAlpha = staminaIdleTimer > 120 ? .55 : 1;
+
+	var _layout = getStatusLayout();
+	if (instance_exists(obj_xp_controller)) {
+		obj_xp_controller.xpX2Position = _layout.medallionX;
+		obj_xp_controller.xpYMiddlePosition = _layout.medallionY;
+	}
+
+	if (panelOffsetX < -(_hudWidth + STATUS_HUD_MARGIN)) return;
+
+	drawLevelMedallion(_layout.medallionX, _layout.medallionY);
+
+	var _xpText = "XP " + string(global.player.xp) + "/" + string(global.xpNext);
+	var _xpTextX = _layout.medallionX + LEVEL_MEDALLION_RADIUS + 14;
+	draw_set_font(fnt_default_small);
+	draw_set_halign(fa_left);
+	draw_set_valign(fa_middle);
+	drawTextShadow(_xpTextX, _layout.medallionY, _xpText, 1, 2);
+	draw_set_color(#ffd166);
+	draw_text(_xpTextX, _layout.medallionY, _xpText);
+	draw_set_color(c_white);
+	draw_set_halign(fa_left);
+	draw_set_valign(fa_top);
+	draw_set_font(fnt_gui_default);
+
+	drawHudStatusBar(healthBarUI, spr_life_bar, _layout.barsX, _layout.barsY, STATUS_BAR_WIDTH, _healthMax);
+	drawHudStatusBar(staminaBarUI, spr_energy_bar, _layout.barsX, _layout.barsY + _layout.barHeight + STATUS_BAR_GAP, STATUS_BAR_WIDTH, _staminaMax, {
+		isExhausted: global.player.stamina <= 0,
+		alpha: _staminaAlpha
+	});
+
+	drawPanelSparks();
 }
 
 function setHealthGuiJiggle() {
@@ -107,6 +346,8 @@ function setHealthGuiJiggle() {
 function setStaminaGuiJiggle() {
 	staminaStatus.jiggleTimer = 5;
 }
+
+#endregion
 
 function equipedItemUi() {
 	return {

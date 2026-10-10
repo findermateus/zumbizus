@@ -47,6 +47,7 @@ destinyX = x;
 destinyY = y;
 
 angleTimer = 0;
+initBodyMotion();
 
 function handleAngleOffset(_canJiggle, _speed = .3, _force = 3){
 	if (!_canJiggle) {
@@ -92,13 +93,6 @@ function goToDestiny() {
 		if (abs(destinyX - x) > 1) {
 			currentDirection = (destinyX > x) ? 1 : -1;
 		}
-	}
-	
-	var _velh = destinyX > x ? walkSpeed : -walkSpeed;
-	var _velv = destinyY > y ? walkSpeed : -walkSpeed;
-	
-	if (choose(0, 1)) {
-		createWalkingParticles(x, y, _velh, _velv, 1);
 	}
 	
 	handleNpcPositionWithPathHandler();
@@ -276,14 +270,15 @@ function draw() {
 	currentImageIndex %= spriteLength;
 	
 	var _imageIndex = drawState == drawStates.iddle ? 0 : currentImageIndex;
-	
+	var _motion = getBodyMotionDraw(1);
+
 	drawPersonBody(
 		x,
-		y,
+		y + _motion.yOffset,
 		genderId,
 		_imageIndex,
-		1,
-		angleOffset,
+		_motion.scaleY,
+		angleOffset * .5 + _motion.angle,
 		image_alpha,
 		skinColor,
 		new PersonHair(hairOption, hairColor),
@@ -291,7 +286,7 @@ function draw() {
 		outfitId,
 		helmetId,
 		bagId,
-		currentDirection,
+		_motion.direction,
 		drawState
 	);
 }
@@ -347,13 +342,6 @@ companionState = function() {
 
     if (drawState == drawStates.walking) {
         handleAngleOffset(true, .25, 4);
-            
-        var _velh = destinyX > x ? walkSpeed : -walkSpeed;
-        var _velv = destinyY > y ? walkSpeed : -walkSpeed;
-
-        if (choose(0, 1)) {
-            createWalkingParticles(x, y, _velh, _velv, 1);
-        }
     } else {
         handleAngleOffset(false);
 		handleNpcPositionWithPathHandler(true);

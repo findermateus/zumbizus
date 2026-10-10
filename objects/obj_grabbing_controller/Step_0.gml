@@ -3,33 +3,52 @@ if (!instance_exists(enemy)) {
     exit;
 }
 
-obj_camera.setTargetWithZoom(obj_player);
+phaseTimer++;
 
-obj_player.x = lerp(obj_player.x, enemy.x, 0.1); 
-obj_player.y = lerp(obj_player.y, enemy.y, 0.1);
+if (escaped) {
+	if (phaseTimer > 32) instance_destroy();
+} else {
+	obj_camera.setTargetWithZoom(obj_player);
 
-if (keyboard_check_pressed(vk_space) || mouse_check_button_pressed(mb_left)) {
-    struggle_progress += struggle_power;
-    
-	juice_scale = 1.3;
-    juice_shake = 4;
-	
-	screenShake(struggle_power / 2);
-	
-    obj_player.x += random_range(-2, 2);
+	obj_player.x = lerp(obj_player.x, enemy.x, 0.1);
+	obj_player.y = lerp(obj_player.y, enemy.y, 0.1);
+
+	if (phase == "intro" && phaseTimer > 20) {
+		phase = "struggle";
+		titleText = "SE SOLTE!";
+		titlePop = 1.3;
+	}
+
+	if (keyboard_check_pressed(vk_space) || mouse_check_button_pressed(mb_left)) {
+		struggle();
+	}
+
+	struggle_progress = max(0, struggle_progress - struggle_decay);
+
+	if (struggle_progress >= struggle_target) {
+		escape();
+	}
 }
 
-struggle_progress = max(0, struggle_progress - struggle_decay);
+ringScaleVelocity += (1 - ringScale) * .25;
+ringScaleVelocity *= .7;
+ringScale += ringScaleVelocity;
+ringPulse = max(0, ringPulse - .08);
+ringShake = lerp(ringShake, 0, .15);
+promptPress = max(0, promptPress - .15);
+titlePop = lerp(titlePop, 1, .15);
+redFlash = max(0, redFlash - .04);
+whiteFlash = max(0, whiteFlash - .04);
 
-if (struggle_progress >= struggle_target) {
-    var _dir = point_direction(obj_player.x, obj_player.y, enemy.x, enemy.y);
-    enemy.x += lengthdir_x(20, _dir);
-    enemy.y += lengthdir_y(20, _dir);
-    
-	obj_camera.setDefaultValues();
-    instance_destroy();
+displayedProgress = lerp(displayedProgress, struggle_progress, .35);
+trailProgress = displayedProgress > trailProgress ? displayedProgress : lerp(trailProgress, displayedProgress, .05);
+
+for (var i = array_length(sparks) - 1; i >= 0; i--) {
+	var _spark = sparks[i];
+	_spark.x += _spark.hsp;
+	_spark.y += _spark.vsp;
+	_spark.hsp *= .9;
+	_spark.vsp *= .9;
+	_spark.life -= .04;
+	if (_spark.life <= 0) array_delete(sparks, i, 1);
 }
-
-juice_scale = lerp(juice_scale, 1, 0.15);
-juice_shake = lerp(juice_shake, 0, 0.1);
-text_wave += 0.1;

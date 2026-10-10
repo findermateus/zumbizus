@@ -1,14 +1,7 @@
 displayHeight = display_get_gui_height();
 guiWidth = display_get_gui_width();
-defaultBarWidth = guiWidth * .35;
-barWidth = defaultBarWidth;
-textAlpha = 1;
-barHeight = 30;
-barXPosition = guiWidth / 2 - barWidth / 2;
-currentXpBarWidth = 0;
-currentXpSubBarWidth = 0;
 xpX2Position = 0;
-xpYMiddlePosition = 0;
+xpYMiddlePosition = displayHeight;
 xpPopList = ds_list_create();
 
 titlePercent = 0;
@@ -22,9 +15,6 @@ function handleLevelUp() {
         levelUpPending = true;
         return;
     }
-    
-    currentXpBarWidth = 0;
-    currentXpSubBarWidth = 0;
     
     audio_play_sound(snd_level_up, 0, false);
     pauseSystems();
@@ -105,49 +95,11 @@ function handleXpPopUps() {
 		_popUp.x = lerp(_popUp.x, xpX2Position, _lerpEffect);
 		_popUp.y = lerp(_popUp.y, xpYMiddlePosition, _lerpEffect);
 		_popUp.alpha = lerp(_popUp.alpha, 0, _lerpEffect);
-		if (_popUp.pursuing && _popUp.size < .22) ds_list_delete(xpPopList, i);
+		if (_popUp.pursuing && _popUp.size < .22) {
+			ds_list_delete(xpPopList, i);
+			if (instance_exists(obj_player_stats)) obj_player_stats.onXpPopArrive();
+		}
 	}
-	draw_set_font(fnt_default);
-}
-
-function drawXpBar() {
-	var _barYPosition = 34;
-	var _sprite = spr_level_bar;
-	draw_sprite_stretched(_sprite, 0, barXPosition, _barYPosition, barWidth, barHeight);
-	 
-	var _progress = global.player.xp / global.xpNext;
-	var _barWidthByXp = barWidth * clamp(_progress, 0, 1);
-	currentXpSubBarWidth = lerp(currentXpSubBarWidth, _barWidthByXp, .2);
-	currentXpBarWidth = lerp(currentXpBarWidth, _barWidthByXp, .06);
-	
-	draw_sprite_stretched(_sprite, 1, barXPosition, _barYPosition, currentXpSubBarWidth, barHeight);
-	draw_sprite_stretched(_sprite, 2, barXPosition, _barYPosition, currentXpBarWidth, barHeight);
-	
-	xpX2Position = barXPosition + currentXpBarWidth;
-	
-	draw_set_font(fnt_default_small);
-	draw_set_valign(fa_middle);
-	var _alpha = draw_get_alpha();
-	draw_set_alpha(textAlpha);
-	
-	var _textX = barXPosition + 8;
-	var _currentXpText = string(" XP ") + string(global.player.xp) + "/" + string(global.xpNext);
-	var _currentXpY = _barYPosition + barHeight / 2;
-	xpYMiddlePosition = _currentXpY
-	drawTextShadow(_textX, _currentXpY, _currentXpText, draw_get_alpha());
-	draw_text(_textX, _currentXpY, _currentXpText);
-	
-	draw_set_halign(fa_left);
-	draw_set_valign(fa_top);
-	
-	var _currentLevelText = "Level " + string(global.player.level);
-	var _textHeight = string_height(_currentLevelText);
-	var _levelTextY = _barYPosition - _textHeight - 3;
-	
-	drawTextShadow(_textX, _levelTextY, _currentLevelText, textAlpha);
-	draw_text(_textX, _levelTextY, _currentLevelText);
-	
-	draw_set_alpha(_alpha);
 	draw_set_font(fnt_default);
 }
 

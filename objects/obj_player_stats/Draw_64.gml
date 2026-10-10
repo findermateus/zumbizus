@@ -1,5 +1,5 @@
 if (global.pause) exit;
 
-drawPlayerStatsList();
+drawStatusPanel();
 drawEquipedItems();
 drawQuickUse();

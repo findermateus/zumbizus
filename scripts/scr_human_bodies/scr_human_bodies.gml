@@ -125,3 +125,80 @@ function drawBackPack(_x, _y, _bagId, _direction, _scale, _angle, _alpha, _index
 	var _sprite = _bag.sprite, _color = _bag.color;
 	draw_sprite_ext(_sprite, _index, _x, _y, _scale * _direction, _scale, _angle, _color, _alpha);
 }
+
+#region movimento do corpo (juice de andar/correr/parar/virar; roda no escopo da instância)
+
+#macro BODY_STEP_LENGTH 44
+
+function initBodyMotion() {
+	bodyLastX = x;
+	bodyLastY = y;
+	bodyStepPhase = 0;
+	bodyHop = 0;
+	bodyMoveAmount = 0;
+	bodySquash = 0;
+	bodySquashVelocity = 0;
+	bodyLean = 0;
+	bodyFacing = 1;
+	bodyWasMoving = false;
+	bodyWasTalking = false;
+}
+
+function addBodySquash(_force) {
+	bodySquash = clamp(bodySquash + _force, -.4, .4);
+	bodySquashVelocity = 0;
+}
+
+function updateBodyMotion(_facing, _isRunning = false, _isTalking = false) {
+	var _dx = x - bodyLastX;
+	var _dy = y - bodyLastY;
+	bodyLastX = x;
+	bodyLastY = y;
+
+	var _speed = point_distance(0, 0, _dx, _dy);
+	var _isMoving = _speed > .5;
+
+	if (_isMoving && !bodyWasMoving) addBodySquash(-.12);
+	if (!_isMoving && bodyWasMoving) addBodySquash(.1);
+	bodyWasMoving = _isMoving;
+
+	if (_isTalking && !bodyWasTalking) addBodySquash(-.18);
+	bodyWasTalking = _isTalking;
+
+	bodyMoveAmount = lerp(bodyMoveAmount, _isMoving, .2);
+	if (_isMoving) {
+		var _previousStep = floor(bodyStepPhase / pi);
+		bodyStepPhase += _speed * pi / BODY_STEP_LENGTH;
+
+		if (floor(bodyStepPhase / pi) != _previousStep) {
+			addBodySquash(.06);
+			createWalkingParticles(x, y, _dx, _dy, _isRunning ? 2 : 1);
+		}
+	}
+	var _hopHeight = _isRunning ? 3.5 : 2;
+	bodyHop = abs(sin(bodyStepPhase)) * _hopHeight * bodyMoveAmount;
+
+	var _leanTarget = -clamp(_dx / 5, -1, 1) * (_isRunning ? 9 : 5);
+	bodyLean = lerp(bodyLean, _leanTarget, .15);
+
+	bodyFacing = _facing >= 0 ? 1 : -1;
+
+	bodySquashVelocity += -bodySquash * .25;
+	bodySquashVelocity *= .72;
+	bodySquash = clamp(bodySquash + bodySquashVelocity, -.4, .4);
+}
+
+function getBodyMotionDraw(_scale = 1) {
+	var _breath = bodyWasMoving ? 1 : 1 + sin(current_time / 500) * .015;
+	var _scaleY = _scale * (1 - bodySquash) * _breath;
+	var _scaleX = _scale * (1 + bodySquash);
+
+	return {
+		yOffset: -bodyHop,
+		scaleY: _scaleY,
+		direction: bodyFacing * _scaleX / _scaleY,
+		angle: bodyLean
+	};
+}
+
+#endregion
