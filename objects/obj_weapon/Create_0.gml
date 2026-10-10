@@ -69,7 +69,215 @@ weaponAction = {
 }
 #endregion
 
-// --- ESTADOS LÓGICOS
+#region
+drawAngle = 0;
+aimAngleNeedsSnap = true;
+weaponKick = 0;
+weaponKickVelocity = 0;
+weaponPunch = 0;
+weaponPunchVelocity = 0;
+muzzleFlash = 0;
+muzzleSize = 1;
+swingTrail = [];
+swingLunge = 0;
+swingHitBoost = 0;
+weaponFlash = 0;
+emptyShake = 0;
+casings = [];
+reloadUI = {
+	start: 0,
+	duration: 1000,
+	flash: 0
+};
+
+function getWeaponTipVector(_sprite, _yScale) {
+	var _xOffset = sprite_get_xoffset(_sprite);
+	var _yOffset = sprite_get_yoffset(_sprite);
+	var _width = sprite_get_width(_sprite);
+	var _height = sprite_get_height(_sprite);
+	var _corners = [
+		[-_xOffset, -_yOffset],
+		[_width - _xOffset, -_yOffset],
+		[-_xOffset, _height - _yOffset],
+		[_width - _xOffset, _height - _yOffset]
+	];
+
+	var _best = _corners[0];
+	var _bestLength = 0;
+	for (var i = 0; i < array_length(_corners); i++) {
+		var _length = point_distance(0, 0, _corners[i][0], _corners[i][1]);
+		if (_length > _bestLength) {
+			_bestLength = _length;
+			_best = _corners[i];
+		}
+	}
+
+	return {
+		length: _bestLength,
+		angleOffset: point_direction(0, 0, _best[0], _best[1] * _yScale)
+	};
+}
+
+function getWeaponBob() {
+	return instance_exists(father) && variable_instance_exists(father, "bodyHop") ? father.bodyHop : 0;
+}
+
+function updateWeaponJuice() {
+	weaponKickVelocity += -weaponKick * .3;
+	weaponKickVelocity *= .65;
+	weaponKick += weaponKickVelocity;
+
+	weaponPunchVelocity += -weaponPunch * .3;
+	weaponPunchVelocity *= .62;
+	weaponPunch += weaponPunchVelocity;
+
+	muzzleFlash = max(0, muzzleFlash - 1);
+	swingLunge = lerp(swingLunge, 0, .2);
+	swingHitBoost = max(0, swingHitBoost - .05);
+	weaponFlash = max(0, weaponFlash - .1);
+	emptyShake = lerp(emptyShake, 0, .25);
+	reloadUI.flash = max(0, reloadUI.flash - .06);
+
+	for (var i = array_length(casings) - 1; i >= 0; i--) {
+		var _casing = casings[i];
+		_casing.life--;
+
+		if (!_casing.landed) {
+			_casing.x += _casing.hsp;
+			_casing.y += _casing.vsp;
+			_casing.vsp += .45;
+			_casing.angle += _casing.spin;
+
+			if (_casing.y >= _casing.floorY) {
+				_casing.y = _casing.floorY;
+				if (abs(_casing.vsp) > 1.5) {
+					_casing.vsp *= -.4;
+					_casing.hsp *= .6;
+					_casing.spin *= .5;
+				} else {
+					_casing.landed = true;
+				}
+			}
+		}
+
+		if (_casing.life <= 0) array_delete(casings, i, 1);
+	}
+}
+
+function ejectCasing(_isShell) {
+	if (array_length(casings) >= 30) array_delete(casings, 0, 1);
+
+	var _backwards = weapon.wDirection + 180 + random_range(-25, 25);
+	var _speed = random_range(2, 3.5);
+	array_push(casings, {
+		x: weapon.xPosition,
+		y: weapon.yPosition,
+		hsp: lengthdir_x(_speed, _backwards),
+		vsp: -random_range(3, 5),
+		angle: random(360),
+		spin: random_range(-25, 25),
+		floorY: father.y + random_range(-6, 6),
+		landed: false,
+		life: 90,
+		isShell: _isShell
+	});
+}
+
+function drawCasings() {
+	for (var i = 0; i < array_length(casings); i++) {
+		var _casing = casings[i];
+		var _alpha = min(1, _casing.life / 20);
+		var _width = _casing.isShell ? 7 : 5;
+		var _height = _casing.isShell ? 3.5 : 2.5;
+		var _color = _casing.isShell ? #c0392b : #d4a83a;
+		draw_sprite_ext(spr_pixel, 0, _casing.x, _casing.y, _width, _height, _casing.angle, _color, _alpha);
+	}
+}
+
+function drawMuzzleFlash(_x, _y, _direction) {
+	if (muzzleFlash <= 0) return;
+
+	var _strength = muzzleFlash / 3;
+	var _size = muzzleSize * (.7 + _strength * .5);
+
+	gpu_set_blendmode(bm_add);
+	draw_set_alpha(_strength);
+	draw_set_color(#ffd27a);
+
+	for (var i = 0; i < 5; i++) {
+		var _spikeDirection = _direction + (i - 2) * 32;
+		var _length = (i == 2 ? 26 : 13) * _size;
+		var _halfWidth = 3.5 * _size;
+		draw_triangle(
+			_x + lengthdir_x(_halfWidth, _spikeDirection + 90), _y + lengthdir_y(_halfWidth, _spikeDirection + 90),
+			_x + lengthdir_x(_halfWidth, _spikeDirection - 90), _y + lengthdir_y(_halfWidth, _spikeDirection - 90),
+			_x + lengthdir_x(_length, _spikeDirection), _y + lengthdir_y(_length, _spikeDirection),
+			false
+		);
+	}
+	draw_set_color(c_white);
+	draw_circle(_x, _y, 5 * _size, false);
+
+	gpu_set_blendmode(bm_normal);
+	draw_set_alpha(1);
+}
+
+function drawSwingTrail(_sprite, _yScale) {
+	var _count = array_length(swingTrail);
+	if (_count < 2) return;
+
+	var _tip = getWeaponTipVector(_sprite, _yScale);
+	var _innerRadius = _tip.length * .35;
+	var _outerRadius = _tip.length;
+	var _strength = 1 + swingHitBoost;
+	var _color = swingHitBoost > 0 ? #fff1c4 : c_white;
+
+	gpu_set_blendmode(bm_add);
+	draw_primitive_begin(pr_trianglestrip);
+	for (var i = 0; i < _count; i++) {
+		var _entry = swingTrail[i];
+		var _age = (i + 1) / _count;
+		var _direction = _entry.angle + _tip.angleOffset;
+		draw_vertex_color(_entry.x + lengthdir_x(_outerRadius, _direction), _entry.y + lengthdir_y(_outerRadius, _direction), _color, _age * .45 * _strength);
+		draw_vertex_color(_entry.x + lengthdir_x(_innerRadius, _direction), _entry.y + lengthdir_y(_innerRadius, _direction), _color, _age * .05);
+	}
+	draw_primitive_end();
+	gpu_set_blendmode(bm_normal);
+
+	for (var i = max(0, _count - 4); i < _count - 1; i++) {
+		var _entry = swingTrail[i];
+		var _alpha = .12 * (i - (_count - 4) + 1);
+		draw_sprite_ext(_sprite, 0, _entry.x, _entry.y, weapon.xScale, _yScale, _entry.angle, c_white, _alpha);
+	}
+}
+
+function drawReloadProgress() {
+	var _isReloading = currentState == reloadingState && weaponAction.item != BLANK_INVENTORY_SPACE;
+	if (!_isReloading && reloadUI.flash <= 0) return;
+	if (!instance_exists(father)) return;
+
+	var _ratio = 1;
+	if (_isReloading) {
+		_ratio = weaponAction.item.reloadingType == reloadingTypes.perBullet
+			? reloadingAnimation.index / max(1, reloadingAnimation.length)
+			: (current_time - reloadUI.start) / max(1, reloadUI.duration);
+		_ratio = clamp(_ratio, 0, 1);
+	}
+
+	var _cx = weapon.xPosition - 24;
+	var _cy = weapon.yPosition + 22;
+	var _alpha = _isReloading ? 1 : reloadUI.flash;
+	var _radius = 11 + reloadUI.flash * 4;
+
+	draw_set_color(c_black);
+	draw_set_alpha(_alpha * .55);
+	draw_circle(_cx, _cy, _radius + 2, false);
+	drawRadialProgress(_cx, _cy, _radius - 4, _radius, 1, c_black, _alpha * .5);
+	drawRadialProgress(_cx, _cy, _radius - 4, _radius, _ratio, _isReloading ? #ffd166 : #5fd35f, _alpha);
+	draw_set_color(c_white);
+	draw_set_alpha(1);
+}
+#endregion
 
 function drawNothing() {
 }
@@ -101,8 +309,7 @@ function weaponAimState(){
 }
 
 function weaponAttackingState(){
-	// O controle do desenho é feito pelo drawState (handleAttackAnimation)
-	// A transição de volta para AimState é feita nos scripts de animação
+
 }
 
 function reloadingState() {
@@ -120,8 +327,9 @@ function setStateIdle(){
     }
 
     currentState = weaponIdleState;
-    
-    drawState = drawNothing; 
+
+    drawState = drawNothing;
+    aimAngleNeedsSnap = true;
 }
 
 function getWeaponBackDrawData(){
@@ -185,7 +393,10 @@ function attackWithPlayer(){
 	if (weaponAction.item == BLANK_INVENTORY_SPACE) return false;
 	
 	if(weaponAction.item.type == weaponTypes.shoot && !weaponAction.info.bullets){
-		if(mouse_check_button_pressed(mb_left)) audio_play_sound(weaponAction.item.emptyShot, 0, false);
+		if(mouse_check_button_pressed(mb_left)) {
+			audio_play_sound(weaponAction.item.emptyShot, 0, false);
+			emptyShake = 4;
+		}
 		return false;
 	}
 	
@@ -224,6 +435,7 @@ function resetActiveItem() {
 }
 
 function finishReloading(){
+	reloadUI.flash = 1;
 	adjustPlayerInteractions(true);
 	obj_camera.setDefaultValues();
 	

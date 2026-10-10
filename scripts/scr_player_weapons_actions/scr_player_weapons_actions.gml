@@ -85,6 +85,12 @@ function handleInitialAttackVariables(){
 		weaponAction.angle = weapon.angle;
 		weapon.angleSwitching *= -1;
 		weapon.yScale *= -1;
+
+		weaponPunch = .25;
+		weaponPunchVelocity = 0;
+		swingLunge = 14;
+		swingTrail = [];
+		with (father) addBodySquash(-.08);
 	}
 	
 	if(weaponAction.item.type == weaponTypes.shoot){
@@ -118,6 +124,15 @@ function handleFireWeaponAttack(){
 	}
 	createBulletShot(_dir, _xPosition, _yPosition);
 	createBulletExplosion(_xPosition, _yPosition, weaponAction.item.damage, weapon.wDirection);
+
+	muzzleFlash = 3;
+	muzzleSize = clamp(.6 + weaponAction.item.damage / 30, .6, 1.6);
+	weaponKick = min(25, weaponAction.item.recoilForce * .9);
+	weaponKickVelocity = 0;
+	weaponPunch = .3;
+	weaponPunchVelocity = 0;
+	ejectCasing(weaponAction.item.attackType == weaponAttackType.tripleBullets);
+	with (father) addBodySquash(.05);
 }
 
 function handleStepsForFireWeapon(){
@@ -145,7 +160,16 @@ function setUpReloading(){
     }
     
     obj_camera.setTargetWithZoom(obj_player);
-    
+
+    reloadUI.start = current_time;
+    if (weaponAction.item.reloadingSprite != spr_item_default) {
+    	reloadUI.duration = weaponAction.item.reloadTime / 60 * 1000;
+    } else if (audio_exists(weaponAction.item.reloadSound)) {
+    	reloadUI.duration = audio_sound_length(weaponAction.item.reloadSound) * 1000;
+    } else {
+    	reloadUI.duration = 1000;
+    }
+
     // MUDANÇA DE ESTADO SINCRONIZADA
     obj_player.currentState = playerReloadingState;
     currentState = reloadingState;
@@ -228,21 +252,42 @@ function handleAttackAnimation(){
 	}
 }
 
+function getAimingDrawData() {
+	if (aimAngleNeedsSnap) {
+		drawAngle = weapon.angle;
+		aimAngleNeedsSnap = false;
+	}
+	drawAngle += angle_difference(weapon.angle, drawAngle) * .35;
+
+	var _shake = emptyShake > .2 ? random_range(-emptyShake, emptyShake) : 0;
+	var _angle = drawAngle + weaponKick * weapon.yScale;
+	var _y = weapon.yPosition - getWeaponBob() + _shake * .5;
+
+	if (currentState == reloadingState) {
+		_angle += (25 + sin(current_time / 90) * 6) * weapon.yScale;
+		_y += 3;
+	}
+
+	return { x: weapon.xPosition + _shake, y: _y, angle: _angle };
+}
+
 function drawWeaponAiming(){
 	if(global.activeEquipedItem == BLANK_INVENTORY_SPACE) return;
-	
+
 	if(currentState == reloadingState && weaponAction.item.reloadingSprite != spr_item_default){
 		drawReloadAnimation();
 		return;
 	}
-	
+
 	var _weaponId = global.activeEquipedItem.itemId;
 	var _weapon = global.weapons[_weaponId];
-	draw_sprite_ext(_weapon.sprite, 0, weapon.xPosition, weapon.yPosition, weapon.xScale, weapon.yScale, weapon.angle, c_white, 1);
+	var _data = getAimingDrawData();
+	draw_sprite_ext(_weapon.sprite, 0, _data.x, _data.y, weapon.xScale, weapon.yScale, _data.angle, c_white, 1);
 }
 
 function drawReloadAnimation(){
-	draw_sprite_ext(reloadingAnimation.sprite, reloadingAnimation.index, weapon.xPosition, weapon.yPosition, weapon.xScale, weapon.yScale, weapon.angle, c_white, 1);
+	var _data = getAimingDrawData();
+	draw_sprite_ext(reloadingAnimation.sprite, reloadingAnimation.index, _data.x, _data.y, weapon.xScale, weapon.yScale, _data.angle, c_white, 1);
 }
 
 function drawWeaponAttackingWithAnimation(){
@@ -252,7 +297,26 @@ function drawWeaponAttackingWithAnimation(){
 }
 
 function drawWeaponAttackingSwing(){
-	draw_sprite_ext(weaponAction.item.sprite, 0, weapon.xPosition, weapon.yPosition, weapon.xScale, weaponAction.yScale, weaponAction.angle, c_white, 1);
+	var _sprite = weaponAction.item.sprite;
+	var _x = weapon.xPosition + lengthdir_x(swingLunge, weapon.wDirection);
+	var _y = weapon.yPosition + lengthdir_y(swingLunge, weapon.wDirection) - getWeaponBob();
+
+	array_push(swingTrail, { angle: weaponAction.angle, x: _x, y: _y });
+	if (array_length(swingTrail) > 8) array_delete(swingTrail, 0, 1);
+	drawSwingTrail(_sprite, weaponAction.yScale);
+
+	var _xScale = weapon.xScale * (1 + weaponPunch);
+	var _yScale = weaponAction.yScale * (1 - weaponPunch * .3);
+	draw_sprite_ext(_sprite, 0, _x, _y, _xScale, _yScale, weaponAction.angle, c_white, 1);
+
+	if (weaponFlash > 0) {
+		gpu_set_fog(true, c_white, 0, 0);
+		draw_sprite_ext(_sprite, 0, _x, _y, _xScale, _yScale, weaponAction.angle, c_white, weaponFlash);
+		gpu_set_fog(false, c_white, 0, 0);
+	}
+
+	drawAngle = weaponAction.angle;
+
 	weaponAction.angle = lerp(weaponAction.angle, weaponAction.destinyAngle, weaponAction.item.attackSpeed);
 	if (abs(weaponAction.angle - weaponAction.destinyAngle) < 1) weaponAim(true);
 }
@@ -268,9 +332,20 @@ function drawWeaponShooting(_recoilForce, _delay){
 	weapon.wDirection = point_direction(father.x, father.y, mouse_x, mouse_y);
 	weapon.angle = weapon.wDirection;
 	weapon.yScale = sign(mouse_x - weapon.xPosition);
-	
-	draw_sprite_ext(weaponAction.item.sprite, 0, _drawX, _drawY, weapon.xScale, weapon.yScale, weapon.angle, c_white, 1);
-	
+
+	var _sprite = weaponAction.item.sprite;
+	var _angle = weapon.angle + weaponKick * weapon.yScale;
+	var _xScale = weapon.xScale * (1 + weaponPunch * .25);
+	var _yScale = weapon.yScale * (1 - weaponPunch * .15);
+	_drawY -= getWeaponBob();
+
+	draw_sprite_ext(_sprite, 0, _drawX, _drawY, _xScale, _yScale, _angle, c_white, 1);
+
+	var _barrelLength = (sprite_get_width(_sprite) - sprite_get_xoffset(_sprite)) * _xScale;
+	drawMuzzleFlash(_drawX + lengthdir_x(_barrelLength, _angle), _drawY + lengthdir_y(_barrelLength, _angle), _angle);
+
+	drawAngle = weapon.angle;
+
 	if (curveAnimationIndex >= 1){
 		curveAnimationIndex = 0;
 		weaponAim(true);
@@ -334,6 +409,9 @@ function hitEnemies(_hitBox, _weapon){
 		}
 		createHitBoxImpact(_xPosition, _yPosition, 10, 20);
 		weaponAction.info.durability -= weaponAction.info.durabilityDecrease;
+
+		weaponFlash = 1;
+		swingHitBoost = 1;
 	}
 
 	instance_destroy(_hitBox);

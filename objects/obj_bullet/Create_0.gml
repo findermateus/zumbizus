@@ -50,14 +50,34 @@ function hitShit(){
 function showBulletTrack(){
 	shouldDrawTrack = true;
 	alphaValue = lerp(alphaValue, 0, .1);
-	if (alphaValue <= 0) instance_destroy(id);
+	if (alphaValue <= .02) instance_destroy(id);
 }
+
 function drawTrack(){
 	if(!shouldDrawTrack) return;
-	var _color = c_white;
-	draw_set_alpha(alphaValue);
-	draw_line_width_color(bulletTrackX1, bulletTrackY1, x + lengthdir_x(actualDistance, bulletDirection), y + lengthdir_y(actualDistance, bulletDirection), thickness, _color, _color);
+
+	var _x2 = x + lengthdir_x(actualDistance, bulletDirection);
+	var _y2 = y + lengthdir_y(actualDistance, bulletDirection);
+
+	gpu_set_blendmode(bm_add);
 	draw_set_alpha(1);
+	var _glow = merge_color(c_black, #ffb347, alphaValue * .6);
+	var _core = merge_color(c_black, c_white, alphaValue);
+	draw_line_width_color(bulletTrackX1, bulletTrackY1, _x2, _y2, thickness + 4, c_black, _glow);
+	draw_line_width_color(bulletTrackX1, bulletTrackY1, _x2, _y2, thickness, c_black, _core);
+
+	if (actualDistance < maximumDistance - 1) {
+		var _progress = 1 - alphaValue;
+		draw_set_alpha(alphaValue);
+		draw_set_color(#ffe6a0);
+		draw_circle(_x2, _y2, 3 + _progress * 14, true);
+		draw_circle(_x2, _y2, 2 + _progress * 13, true);
+		draw_circle(_x2, _y2, 3 * alphaValue, false);
+	}
+
+	gpu_set_blendmode(bm_normal);
+	draw_set_alpha(1);
+	draw_set_color(c_white);
 }
 
 currentState = hitShit;

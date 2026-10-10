@@ -258,7 +258,6 @@ function handleDialogueInput() {
 	}
 
 	punch = .03;
-	playTickSound();
 
 	if (currentPage < pageCount - 1) {
 		startPage(currentPage + 1);

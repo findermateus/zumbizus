@@ -4,4 +4,6 @@ currentState();
 
 defineWeaponPosition();
 
+updateWeaponJuice();
+
 adjustClosestDepth();

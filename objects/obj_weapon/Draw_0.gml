@@ -1,6 +1,8 @@
 if (global.timeStopped) exit;
 
-drawState(); 
+drawCasings();
+drawState();
+drawReloadProgress();
 
 if(global.debug){
 	draw_text(father.x, father.y - 50, "State: " + script_get_name(currentState));
