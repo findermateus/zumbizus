@@ -8,9 +8,7 @@ function EquipmentConfig() {
 		sound: snd_can,
 		actionSound: snd_equip_item,
 		fitInGrid: fitInGridType.verticaly,
-		equipmentData: {
-			capacity: 0
-		},
+		equipmentData: {},
 		type: itemType.equipment,
 		value: 0
 	};
@@ -56,7 +54,6 @@ function EquipmentConfig() {
 	_config.description = "Roupa feita a trapos simples.";
 	_config.sprite = spr_simple_shirt_icon;
 	_config.fitInGrid = fitInGridType.horizontaly;
-	_config.equipmentData.capacity = 2;
 	_config.value = 12;
 
 	global.items[itemType.equipment][equipmentItems.simpleOutfit] = _config;
@@ -96,7 +93,6 @@ function EquipmentConfig() {
 	_config.description = "Roupa preta com uma jaqueta de couro.";
 	_config.sprite = spr_leather_jacket_icon;
 	_config.fitInGrid = fitInGridType.horizontaly;
-	_config.equipmentData.capacity = 2;
 	_config.value = 50;
 
 
@@ -113,7 +109,6 @@ function EquipmentConfig() {
 	_config.name = "Boné";
 	_config.description = "Um boné simples e bonitinho.";
 	_config.sprite = spr_simple_cap;
-	_config.equipmentData.capacity = 2;
 	_config.value = 15;
 	
 	global.items[itemType.equipment][equipmentItems.simpleCap] = _config;
@@ -129,7 +124,6 @@ function EquipmentConfig() {
 	_config.name = "Chapéu de Selva";
 	_config.description = "Bucket Hat";
 	_config.sprite = spr_boonie_hat;
-	_config.equipmentData.capacity = 2;
 	_config.value = 30;
 
 	

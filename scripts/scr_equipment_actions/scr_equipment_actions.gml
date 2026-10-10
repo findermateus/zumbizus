@@ -17,7 +17,7 @@ function handleBagSwitch(){
 	var _slots = getBaseInventorySlots();
 
 	if (global.equipments.bag != BLANK_INVENTORY_SPACE){
-		_slots += global.equipments.bag.equipmentData.capacity;
+		_slots += global.equipments.bag.equipmentData[$ "capacity"] ?? 0;
 	}
 
 	setInventorySlots(_slots);
